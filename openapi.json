@@ -1,6 +1,452 @@
 {
   "components": {
     "schemas": {
+      "CatalogOut": {
+        "description": "Tutto il catalogo in una risposta (API, § 6.2).",
+        "properties": {
+          "daily_routine": {
+            "items": {
+              "$ref": "#/components/schemas/RoutineItemOut"
+            },
+            "title": "Daily Routine",
+            "type": "array"
+          },
+          "equipment": {
+            "items": {
+              "$ref": "#/components/schemas/EquipmentOut"
+            },
+            "title": "Equipment",
+            "type": "array"
+          },
+          "exercises": {
+            "items": {
+              "$ref": "#/components/schemas/ExerciseSummaryOut"
+            },
+            "title": "Exercises",
+            "type": "array"
+          },
+          "families": {
+            "items": {
+              "$ref": "#/components/schemas/FamilyOut"
+            },
+            "title": "Families",
+            "type": "array"
+          },
+          "muscle_groups": {
+            "items": {
+              "$ref": "#/components/schemas/MuscleGroupOut"
+            },
+            "title": "Muscle Groups",
+            "type": "array"
+          },
+          "muscles": {
+            "items": {
+              "$ref": "#/components/schemas/MuscleOut"
+            },
+            "title": "Muscles",
+            "type": "array"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/SourceOut"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "stretches": {
+            "items": {
+              "$ref": "#/components/schemas/StretchOut"
+            },
+            "title": "Stretches",
+            "type": "array"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/TagOut"
+            },
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "muscle_groups",
+          "muscles",
+          "equipment",
+          "families",
+          "tags",
+          "exercises",
+          "sources",
+          "stretches",
+          "daily_routine"
+        ],
+        "title": "CatalogOut",
+        "type": "object"
+      },
+      "EquipmentOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "sort_order": {
+            "title": "Sort Order",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "sort_order"
+        ],
+        "title": "EquipmentOut",
+        "type": "object"
+      },
+      "ExerciseDetailOut": {
+        "description": "Dettaglio di un esercizio (US-02).",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "solid",
+              "limited",
+              "opinion"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "equipment_detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equipment Detail"
+          },
+          "equipment_id": {
+            "title": "Equipment Id",
+            "type": "integer"
+          },
+          "family_rank": {
+            "title": "Family Rank",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "kind": {
+            "enum": [
+              "compound",
+              "isolation"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "muscles": {
+            "items": {
+              "$ref": "#/components/schemas/MuscleLinkDetailOut"
+            },
+            "title": "Muscles",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "primary_family_id": {
+            "title": "Primary Family Id",
+            "type": "integer"
+          },
+          "secondary_family_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secondary Family Id"
+          },
+          "sources": {
+            "items": {
+              "$ref": "#/components/schemas/SourceOut"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "stretch": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Stretch",
+            "type": "string"
+          },
+          "stretch_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stretch Note"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/TagLinkOut"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "variants": {
+            "items": {
+              "$ref": "#/components/schemas/VariantOut"
+            },
+            "title": "Variants",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "primary_family_id",
+          "secondary_family_id",
+          "family_rank",
+          "equipment_id",
+          "equipment_detail",
+          "kind",
+          "stretch",
+          "stretch_note",
+          "confidence",
+          "notes",
+          "is_active",
+          "created_at",
+          "updated_at",
+          "muscles",
+          "tags",
+          "sources",
+          "variants"
+        ],
+        "title": "ExerciseDetailOut",
+        "type": "object"
+      },
+      "ExerciseSummaryOut": {
+        "description": "Riepilogo di un esercizio: basta per la lista e per i filtri (US-01).",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "solid",
+              "limited",
+              "opinion"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          },
+          "equipment_detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equipment Detail"
+          },
+          "equipment_id": {
+            "title": "Equipment Id",
+            "type": "integer"
+          },
+          "family_rank": {
+            "title": "Family Rank",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "kind": {
+            "enum": [
+              "compound",
+              "isolation"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "muscles": {
+            "items": {
+              "$ref": "#/components/schemas/MuscleLinkOut"
+            },
+            "title": "Muscles",
+            "type": "array"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "primary_family_id": {
+            "title": "Primary Family Id",
+            "type": "integer"
+          },
+          "secondary_family_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secondary Family Id"
+          },
+          "stretch": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Stretch",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/TagLinkOut"
+            },
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "primary_family_id",
+          "secondary_family_id",
+          "family_rank",
+          "equipment_id",
+          "equipment_detail",
+          "kind",
+          "stretch",
+          "confidence",
+          "is_active",
+          "muscles",
+          "tags"
+        ],
+        "title": "ExerciseSummaryOut",
+        "type": "object"
+      },
+      "FamilyOut": {
+        "description": "Famiglia di movimento.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "muscle_group_id": {
+            "title": "Muscle Group Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "sort_order": {
+            "title": "Sort Order",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "description",
+          "muscle_group_id",
+          "sort_order"
+        ],
+        "title": "FamilyOut",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
       "HealthOut": {
         "description": "Stato dell'applicazione.",
         "properties": {
@@ -32,6 +478,560 @@
         ],
         "title": "HealthOut",
         "type": "object"
+      },
+      "MuscleGroupOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "sort_order": {
+            "title": "Sort Order",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "sort_order"
+        ],
+        "title": "MuscleGroupOut",
+        "type": "object"
+      },
+      "MuscleLinkDetailOut": {
+        "description": "Muscolo coinvolto, con la nota (es. \"solo con i manubri\").",
+        "properties": {
+          "level": {
+            "enum": [
+              "P",
+              "S"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "muscle_id": {
+            "title": "Muscle Id",
+            "type": "integer"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "required": [
+          "muscle_id",
+          "level",
+          "note"
+        ],
+        "title": "MuscleLinkDetailOut",
+        "type": "object"
+      },
+      "MuscleLinkOut": {
+        "description": "Muscolo coinvolto, con livello P (primario) o S (secondario).",
+        "properties": {
+          "level": {
+            "enum": [
+              "P",
+              "S"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "muscle_id": {
+            "title": "Muscle Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "muscle_id",
+          "level"
+        ],
+        "title": "MuscleLinkOut",
+        "type": "object"
+      },
+      "MuscleOut": {
+        "description": "Muscolo con priorità e fascia del catalogo.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "muscle_group_id": {
+            "title": "Muscle Group Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "priority": {
+            "enum": [
+              "priority",
+              "standard",
+              "none"
+            ],
+            "title": "Priority",
+            "type": "string"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          },
+          "sort_order": {
+            "title": "Sort Order",
+            "type": "integer"
+          },
+          "weekly_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Max"
+          },
+          "weekly_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Min"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "short_name",
+          "muscle_group_id",
+          "priority",
+          "weekly_min",
+          "weekly_max",
+          "notes",
+          "sort_order"
+        ],
+        "title": "MuscleOut",
+        "type": "object"
+      },
+      "RoutineItemOut": {
+        "description": "Voce del mini-allenamento quotidiano.",
+        "properties": {
+          "block": {
+            "enum": [
+              "neck",
+              "pelvis"
+            ],
+            "title": "Block",
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "solid",
+              "limited",
+              "opinion"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          },
+          "dose": {
+            "title": "Dose",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "purpose": {
+            "title": "Purpose",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "block",
+          "position",
+          "name",
+          "dose",
+          "purpose",
+          "confidence"
+        ],
+        "title": "RoutineItemOut",
+        "type": "object"
+      },
+      "SourceOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "reliability": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reliability"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "used_for": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Used For"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "title",
+          "kind",
+          "url",
+          "reliability",
+          "used_for"
+        ],
+        "title": "SourceOut",
+        "type": "object"
+      },
+      "StretchOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "enum": [
+                  "solid",
+                  "limited",
+                  "opinion"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "dose": {
+            "title": "Dose",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "instructions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Instructions"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "targets": {
+            "title": "Targets",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "targets",
+          "instructions",
+          "dose",
+          "confidence",
+          "note"
+        ],
+        "title": "StretchOut",
+        "type": "object"
+      },
+      "TagLinkOut": {
+        "description": "Etichetta assegnata, con la nota dell'assegnazione.",
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tag_id",
+          "note"
+        ],
+        "title": "TagLinkOut",
+        "type": "object"
+      },
+      "TagOut": {
+        "description": "Etichetta con simbolo ed effetto sul punteggio (ADR 0014).",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "color": {
+            "enum": [
+              "neutral",
+              "info",
+              "success",
+              "warning",
+              "danger"
+            ],
+            "title": "Color",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "effect": {
+            "enum": [
+              "none",
+              "bonus",
+              "penalty",
+              "exclude"
+            ],
+            "title": "Effect",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "points": {
+            "title": "Points",
+            "type": "number"
+          },
+          "show_badge": {
+            "title": "Show Badge",
+            "type": "boolean"
+          },
+          "sort_order": {
+            "title": "Sort Order",
+            "type": "integer"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "description",
+          "symbol",
+          "color",
+          "effect",
+          "points",
+          "show_badge",
+          "sort_order"
+        ],
+        "title": "TagOut",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "VariantOut": {
+        "description": "Altro esercizio attivo di una delle famiglie dell'esercizio.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "equipment_id": {
+            "title": "Equipment Id",
+            "type": "integer"
+          },
+          "family_id": {
+            "title": "Family Id",
+            "type": "integer"
+          },
+          "family_rank": {
+            "title": "Family Rank",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/TagLinkOut"
+            },
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "family_id",
+          "equipment_id",
+          "family_rank",
+          "tags"
+        ],
+        "title": "VariantOut",
+        "type": "object"
       }
     }
   },
@@ -41,6 +1041,105 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/catalog": {
+      "get": {
+        "description": "Muscoli, famiglie, etichette, esercizi e il resto del catalogo in una risposta.\n\nL'``ETag`` è calcolato sul contenuto: con ``If-None-Match`` uguale la risposta è\n``304`` senza corpo. ``Cache-Control: no-cache`` fa sì che il browser chieda\nsempre conferma al server, così una modifica al catalogo si vede subito.",
+        "operationId": "read_catalog",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "if-none-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "If-None-Match"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "304": {
+            "description": "Catalogo invariato rispetto all'ETag inviato"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Tutto il catalogo",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/exercises/{exercise_id}": {
+      "get": {
+        "description": "Tutti i campi, muscoli con note, etichette con note, fonti e varianti.",
+        "operationId": "read_exercise",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "exercise_id",
+            "required": true,
+            "schema": {
+              "title": "Exercise Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExerciseDetailOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Esercizio inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Dettaglio di un esercizio",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
     "/api/health": {
       "get": {
         "description": "Usato dal controllo di salute del container: risponde 503 se il database non risponde.",

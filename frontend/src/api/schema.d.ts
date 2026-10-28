@@ -4,6 +4,50 @@
  */
 
 export interface paths {
+  '/api/catalog': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Tutto il catalogo
+     * @description Muscoli, famiglie, etichette, esercizi e il resto del catalogo in una risposta.
+     *
+     *     L'``ETag`` è calcolato sul contenuto: con ``If-None-Match`` uguale la risposta è
+     *     ``304`` senza corpo. ``Cache-Control: no-cache`` fa sì che il browser chieda
+     *     sempre conferma al server, così una modifica al catalogo si vede subito.
+     */
+    get: operations['read_catalog']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/exercises/{exercise_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Dettaglio di un esercizio
+     * @description Tutti i campi, muscoli con note, etichette con note, fonti e varianti.
+     */
+    get: operations['read_exercise']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/health': {
     parameters: {
       query?: never
@@ -49,6 +93,168 @@ export type webhooks = Record<string, never>
 export interface components {
   schemas: {
     /**
+     * CatalogOut
+     * @description Tutto il catalogo in una risposta (API, § 6.2).
+     */
+    CatalogOut: {
+      /** Daily Routine */
+      daily_routine: components['schemas']['RoutineItemOut'][]
+      /** Equipment */
+      equipment: components['schemas']['EquipmentOut'][]
+      /** Exercises */
+      exercises: components['schemas']['ExerciseSummaryOut'][]
+      /** Families */
+      families: components['schemas']['FamilyOut'][]
+      /** Muscle Groups */
+      muscle_groups: components['schemas']['MuscleGroupOut'][]
+      /** Muscles */
+      muscles: components['schemas']['MuscleOut'][]
+      /** Sources */
+      sources: components['schemas']['SourceOut'][]
+      /** Stretches */
+      stretches: components['schemas']['StretchOut'][]
+      /** Tags */
+      tags: components['schemas']['TagOut'][]
+    }
+    /** EquipmentOut */
+    EquipmentOut: {
+      /** Code */
+      code: string
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+      /** Sort Order */
+      sort_order: number
+    }
+    /**
+     * ExerciseDetailOut
+     * @description Dettaglio di un esercizio (US-02).
+     */
+    ExerciseDetailOut: {
+      /** Code */
+      code: string
+      /**
+       * Confidence
+       * @enum {string}
+       */
+      confidence: 'solid' | 'limited' | 'opinion'
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Equipment Detail */
+      equipment_detail: string | null
+      /** Equipment Id */
+      equipment_id: number
+      /** Family Rank */
+      family_rank: number
+      /** Id */
+      id: number
+      /** Is Active */
+      is_active: boolean
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'compound' | 'isolation'
+      /** Muscles */
+      muscles: components['schemas']['MuscleLinkDetailOut'][]
+      /** Name */
+      name: string
+      /** Notes */
+      notes: string | null
+      /** Primary Family Id */
+      primary_family_id: number
+      /** Secondary Family Id */
+      secondary_family_id: number | null
+      /** Sources */
+      sources: components['schemas']['SourceOut'][]
+      /**
+       * Stretch
+       * @enum {string}
+       */
+      stretch: 'high' | 'medium' | 'low'
+      /** Stretch Note */
+      stretch_note: string | null
+      /** Tags */
+      tags: components['schemas']['TagLinkOut'][]
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
+      /** Variants */
+      variants: components['schemas']['VariantOut'][]
+    }
+    /**
+     * ExerciseSummaryOut
+     * @description Riepilogo di un esercizio: basta per la lista e per i filtri (US-01).
+     */
+    ExerciseSummaryOut: {
+      /** Code */
+      code: string
+      /**
+       * Confidence
+       * @enum {string}
+       */
+      confidence: 'solid' | 'limited' | 'opinion'
+      /** Equipment Detail */
+      equipment_detail: string | null
+      /** Equipment Id */
+      equipment_id: number
+      /** Family Rank */
+      family_rank: number
+      /** Id */
+      id: number
+      /** Is Active */
+      is_active: boolean
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'compound' | 'isolation'
+      /** Muscles */
+      muscles: components['schemas']['MuscleLinkOut'][]
+      /** Name */
+      name: string
+      /** Primary Family Id */
+      primary_family_id: number
+      /** Secondary Family Id */
+      secondary_family_id: number | null
+      /**
+       * Stretch
+       * @enum {string}
+       */
+      stretch: 'high' | 'medium' | 'low'
+      /** Tags */
+      tags: components['schemas']['TagLinkOut'][]
+    }
+    /**
+     * FamilyOut
+     * @description Famiglia di movimento.
+     */
+    FamilyOut: {
+      /** Code */
+      code: string
+      /** Description */
+      description: string | null
+      /** Id */
+      id: number
+      /** Muscle Group Id */
+      muscle_group_id: number
+      /** Name */
+      name: string
+      /** Sort Order */
+      sort_order: number
+    }
+    /** HTTPValidationError */
+    HTTPValidationError: {
+      /** Detail */
+      detail?: components['schemas']['ValidationError'][]
+    }
+    /**
      * HealthOut
      * @description Stato dell'applicazione.
      */
@@ -66,6 +272,211 @@ export interface components {
       /** Version */
       version: string
     }
+    /** MuscleGroupOut */
+    MuscleGroupOut: {
+      /** Code */
+      code: string
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+      /** Sort Order */
+      sort_order: number
+    }
+    /**
+     * MuscleLinkDetailOut
+     * @description Muscolo coinvolto, con la nota (es. "solo con i manubri").
+     */
+    MuscleLinkDetailOut: {
+      /**
+       * Level
+       * @enum {string}
+       */
+      level: 'P' | 'S'
+      /** Muscle Id */
+      muscle_id: number
+      /** Note */
+      note: string | null
+    }
+    /**
+     * MuscleLinkOut
+     * @description Muscolo coinvolto, con livello P (primario) o S (secondario).
+     */
+    MuscleLinkOut: {
+      /**
+       * Level
+       * @enum {string}
+       */
+      level: 'P' | 'S'
+      /** Muscle Id */
+      muscle_id: number
+    }
+    /**
+     * MuscleOut
+     * @description Muscolo con priorità e fascia del catalogo.
+     */
+    MuscleOut: {
+      /** Code */
+      code: string
+      /** Id */
+      id: number
+      /** Muscle Group Id */
+      muscle_group_id: number
+      /** Name */
+      name: string
+      /** Notes */
+      notes: string | null
+      /**
+       * Priority
+       * @enum {string}
+       */
+      priority: 'priority' | 'standard' | 'none'
+      /** Short Name */
+      short_name: string
+      /** Sort Order */
+      sort_order: number
+      /** Weekly Max */
+      weekly_max: number | null
+      /** Weekly Min */
+      weekly_min: number | null
+    }
+    /**
+     * RoutineItemOut
+     * @description Voce del mini-allenamento quotidiano.
+     */
+    RoutineItemOut: {
+      /**
+       * Block
+       * @enum {string}
+       */
+      block: 'neck' | 'pelvis'
+      /**
+       * Confidence
+       * @enum {string}
+       */
+      confidence: 'solid' | 'limited' | 'opinion'
+      /** Dose */
+      dose: string
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+      /** Position */
+      position: number
+      /** Purpose */
+      purpose: string
+    }
+    /** SourceOut */
+    SourceOut: {
+      /** Code */
+      code: string
+      /** Id */
+      id: number
+      /** Kind */
+      kind: string
+      /** Reliability */
+      reliability: string | null
+      /** Title */
+      title: string
+      /** Url */
+      url: string | null
+      /** Used For */
+      used_for: string | null
+    }
+    /** StretchOut */
+    StretchOut: {
+      /** Code */
+      code: string
+      /** Confidence */
+      confidence: ('solid' | 'limited' | 'opinion') | null
+      /** Dose */
+      dose: string
+      /** Id */
+      id: number
+      /** Instructions */
+      instructions: string | null
+      /** Name */
+      name: string
+      /** Note */
+      note: string | null
+      /** Targets */
+      targets: string
+    }
+    /**
+     * TagLinkOut
+     * @description Etichetta assegnata, con la nota dell'assegnazione.
+     */
+    TagLinkOut: {
+      /** Note */
+      note: string | null
+      /** Tag Id */
+      tag_id: number
+    }
+    /**
+     * TagOut
+     * @description Etichetta con simbolo ed effetto sul punteggio (ADR 0014).
+     */
+    TagOut: {
+      /** Code */
+      code: string
+      /**
+       * Color
+       * @enum {string}
+       */
+      color: 'neutral' | 'info' | 'success' | 'warning' | 'danger'
+      /** Description */
+      description: string | null
+      /**
+       * Effect
+       * @enum {string}
+       */
+      effect: 'none' | 'bonus' | 'penalty' | 'exclude'
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+      /** Points */
+      points: number
+      /** Show Badge */
+      show_badge: boolean
+      /** Sort Order */
+      sort_order: number
+      /** Symbol */
+      symbol: string
+    }
+    /** ValidationError */
+    ValidationError: {
+      /** Context */
+      ctx?: Record<string, never>
+      /** Input */
+      input?: unknown
+      /** Location */
+      loc: (string | number)[]
+      /** Message */
+      msg: string
+      /** Error Type */
+      type: string
+    }
+    /**
+     * VariantOut
+     * @description Altro esercizio attivo di una delle famiglie dell'esercizio.
+     */
+    VariantOut: {
+      /** Code */
+      code: string
+      /** Equipment Id */
+      equipment_id: number
+      /** Family Id */
+      family_id: number
+      /** Family Rank */
+      family_rank: number
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+      /** Tags */
+      tags: components['schemas']['TagLinkOut'][]
+    }
   }
   responses: never
   parameters: never
@@ -75,6 +486,82 @@ export interface components {
 }
 export type $defs = Record<string, never>
 export interface operations {
+  read_catalog: {
+    parameters: {
+      query?: never
+      header?: {
+        'if-none-match'?: string | null
+      }
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CatalogOut']
+        }
+      }
+      /** @description Catalogo invariato rispetto all'ETag inviato */
+      304: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  read_exercise: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        exercise_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExerciseDetailOut']
+        }
+      }
+      /** @description Esercizio inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   get_health: {
     parameters: {
       query?: never

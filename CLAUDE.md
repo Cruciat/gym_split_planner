@@ -47,6 +47,8 @@ make api-types      # dopo ogni modifica al contratto delle API
 - **Dipendenze:** solo licenze permissive (MIT, ISC, BSD, Apache). Per questo niente PrimeVue (ADR 0015). Controlla la licenza prima di aggiungere un pacchetto.
 - **Dati iniziali:** `backend/src/gym_split_planner/db/seed/data/*.yaml`, caricati solo su database vuoto (`python -m gym_split_planner seed`). Cambiarli non tocca le installazioni esistenti: per quelle serve una migrazione di dati.
 - **Tipi del client:** `frontend/src/api/schema.d.ts` è generato, non si modifica a mano.
+- **Testi dell'interfaccia:** tutti in `frontend/src/texts.ts` (ADR 0013), mai scritti nei componenti.
+- **Test dell'API:** in `backend/tests/api/`, su una copia del database con i dati iniziali (fixture `api`).
 
 ## Rilasci (ADR 0010)
 
