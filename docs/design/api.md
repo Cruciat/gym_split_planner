@@ -92,6 +92,9 @@ Regole del catalogo:
 | `invalid-code`, `code-taken` | `code` fornito alla creazione malformato o già usato |
 | `unknown-reference` | Famiglia, attrezzo, muscolo, etichetta o fonte inesistente |
 | `duplicate-muscle`, `duplicate-tag` | Lo stesso muscolo o la stessa etichetta due volte nello stesso esercizio |
+| `band-required` | Muscolo con un obiettivo (prioritario o non prioritario) senza minimo o massimo della fascia |
+| `band-order`, `band-negative` | Fascia con minimo non inferiore al massimo, o minimo negativo |
+| `points-required` | Etichetta con effetto bonus o penalità e punti non positivi |
 
 ## 4. Concorrenza
 
@@ -188,6 +191,12 @@ Note sui corpi:
 - Nei campi di testo facoltativi una stringa vuota o di soli spazi vale `null`; gli spazi ai bordi si tolgono sempre.
 - `POST /api/exercises` accetta un `code` facoltativo; senza, il server lo genera dal nome e, se è già usato, aggiunge `-2`, `-3`… `PUT` non lo accetta: il `code` non cambia.
 - Le fonti nuove continuano la numerazione dell'Excel (`src-49`, `src-50`…). `url`, se presente, deve iniziare con `http://` o `https://`, perché l'interfaccia lo apre come link.
+- Nei `PATCH` un campo omesso resta com'è; `null` svuota solo i campi facoltativi (note, descrizioni), mentre per quelli obbligatori è un `validation-error`.
+- Famiglie ed etichette nuove ricevono il `code` dal nome come gli esercizi, e vanno in fondo all'ordine (`sort_order`).
+- `PATCH /api/muscles/{id}` con `priority: "none"` svuota la fascia, anche se il corpo contiene minimo e massimo.
+- `symbol` di un'etichetta è uno dei nomi dell'insieme chiuso del wireframe (§ 4.4): `warning`, `ban`, `info`, `star`, `heart`, `zap`, `flag`, `eye-off`.
+- `assign` e `unassign` rispondono con gli utilizzi aggiornati dell'etichetta, nella stessa forma di `GET /api/tags/{id}/usage`. Un esercizio inesistente nell'elenco è un `rule-violation` (`unknown-reference`) e non cambia nulla.
+- Eliminare un'etichetta personalizzata da una scheda modifica le preferenze di quella scheda: la sua `revision` cresce di 1 (§ 4).
 
 **Utilizzi.** Prima di un'eliminazione il client chiede cosa verrebbe toccato, per scrivere la conferma con i numeri giusti:
 

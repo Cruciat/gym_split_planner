@@ -46,7 +46,13 @@ export const texts = {
 
   catalog: {
     title: 'Catalogo',
-    tabs: { exercises: 'Esercizi' },
+    tabs: {
+      exercises: 'Esercizi',
+      families: 'Famiglie',
+      tags: 'Etichette',
+      muscles: 'Muscoli',
+      label: 'Sezioni del catalogo',
+    },
     count: (shown: number, total: number): string =>
       shown === total
         ? plural(total, 'esercizio', 'esercizi')
@@ -61,6 +67,143 @@ export const texts = {
     },
     inactive: 'disattivato',
     newExercise: 'Nuovo esercizio',
+    select: 'Seleziona',
+    endSelect: 'Fine selezione',
+    selected: (n: number): string => (n === 1 ? '1 selezionato' : `${String(n)} selezionati`),
+    assignTag: 'Assegna etichetta…',
+    unassignTag: 'Togli etichetta…',
+    selectExercise: (name: string): string => `Seleziona ${name}`,
+  },
+
+  bulkTags: {
+    assignTitle: (n: number): string =>
+      `Assegna un’etichetta a ${n === 1 ? '1 esercizio' : `${String(n)} esercizi`}`,
+    unassignTitle: (n: number): string =>
+      `Togli un’etichetta da ${n === 1 ? '1 esercizio' : `${String(n)} esercizi`}`,
+    tag: 'Etichetta',
+    tagPlaceholder: 'Scegli l’etichetta',
+    note: 'Nota (facoltativa)',
+    noteHelp: 'Vale per tutti. Chi ha già l’etichetta mantiene la sua nota se la lasci vuota.',
+    assign: 'Assegna',
+    unassign: 'Togli',
+    cancel: 'Annulla',
+    assigned: (tag: string, n: number): string =>
+      `«${tag}» assegnata: ora ce l’hanno ${n === 1 ? '1 esercizio' : `${String(n)} esercizi`}.`,
+    unassigned: (tag: string): string => `«${tag}» tolta dagli esercizi selezionati.`,
+  },
+
+  editing: {
+    edit: 'Modifica',
+    save: 'Salva',
+    cancel: 'Annulla',
+    delete: 'Elimina',
+    saved: 'Modifiche salvate.',
+    created: 'Creato.',
+    deleted: 'Eliminato.',
+    actions: (name: string): string => `Azioni per ${name}`,
+  },
+
+  families: {
+    title: 'Famiglie di movimento',
+    intro:
+      'Esercizi intercambiabili ai fini della scheda: ogni slot chiede una famiglia e propone i suoi esercizi.',
+    add: 'Nuova famiglia',
+    name: 'Nome',
+    group: 'Gruppo',
+    description: 'Descrizione',
+    exercises: 'Esercizi',
+    exerciseCount: (primary: number, secondary: number): string =>
+      secondary > 0
+        ? `${String(primary)} (+${String(secondary)} come secondaria)`
+        : String(primary),
+    namePlaceholder: 'es. Spinta convergente',
+    groupPlaceholder: 'Scegli il gruppo',
+    deleteTitle: 'Eliminare la famiglia?',
+    deleteConfirm: (name: string, secondary: number): string =>
+      secondary > 0
+        ? `«${name}» non è usata come famiglia principale. ${String(secondary)} ${
+            secondary === 1 ? 'esercizio la perderà' : 'esercizi la perderanno'
+          } come famiglia secondaria.`
+        : `«${name}» non è usata da nessun esercizio, split o scheda.`,
+    deleteAction: 'Elimina famiglia',
+    inUseTitle: 'Famiglia in uso',
+    inUse: (name: string, exercises: number, splitSlots: number, plans: string[]): string => {
+      const parts = []
+      if (exercises > 0)
+        parts.push(
+          `${exercises === 1 ? '1 esercizio la ha' : `${String(exercises)} esercizi la hanno`} come famiglia principale`,
+        )
+      if (splitSlots > 0)
+        parts.push(
+          splitSlots === 1
+            ? '1 slot degli split predefiniti la chiede'
+            : `${String(splitSlots)} slot degli split predefiniti la chiedono`,
+        )
+      if (plans.length > 0) parts.push(`è usata nelle schede «${plans.join('», «')}»`)
+      return `«${name}» non si può eliminare: ${parts.join('; ')}.`
+    },
+    close: 'Chiudi',
+  },
+
+  tags: {
+    title: 'Etichette',
+    intro:
+      'Segni sugli esercizi con un effetto sulla scelta automatica: nessuno, bonus, penalità o esclusione.',
+    add: 'Nuova etichetta',
+    symbol: 'Simbolo',
+    name: 'Nome',
+    color: 'Colore',
+    effect: 'Effetto',
+    points: 'Punti',
+    visible: 'Simbolo visibile',
+    exercises: 'Esercizi',
+    description: 'Descrizione',
+    yes: 'sì',
+    no: 'no',
+    namePlaceholder: 'es. Non c’è nella mia palestra',
+    effects: { none: 'Nessun effetto', bonus: 'Bonus', penalty: 'Penalità', exclude: 'Esclusione' },
+    colors: {
+      neutral: 'Neutro',
+      info: 'Informazione',
+      success: 'Positivo',
+      warning: 'Attenzione',
+      danger: 'Pericolo',
+    },
+    pointsHelp: 'Solo per bonus e penalità.',
+    descriptionPlaceholder: 'Quando assegnarla',
+    deleteTitle: 'Eliminare l’etichetta?',
+    deleteConfirm: (name: string, exercises: number, plans: number): string => {
+      const parts = []
+      if (exercises > 0)
+        parts.push(
+          `assegnata a ${exercises === 1 ? '1 esercizio' : `${String(exercises)} esercizi`}`,
+        )
+      if (plans > 0)
+        parts.push(`personalizzata in ${plans === 1 ? '1 scheda' : `${String(plans)} schede`}`)
+      return parts.length === 0
+        ? `«${name}» non è usata da nessun esercizio.`
+        : `«${name}» è ${parts.join(' e ')}. Eliminarla toglie anche queste assegnazioni.`
+    },
+    deleteAction: 'Elimina etichetta',
+  },
+
+  muscles: {
+    title: 'Muscoli',
+    intro:
+      'Priorità e fascia obiettivo del volume settimanale (serie frazionarie). Valgono per tutte le schede che non le personalizzano.',
+    name: 'Nome',
+    shortName: 'Nome breve',
+    priority: 'Priorità',
+    min: 'Min',
+    max: 'Max',
+    notes: 'Note',
+    notesPlaceholder: 'es. lavora già negli esercizi piani',
+    band: (min: number | null, max: number | null): string =>
+      min === null || max === null ? '—' : `${String(min)}–${String(max)}`,
+    invalidBand: (plans: string[]): string =>
+      `Fascia non valida per ${plans.length === 1 ? 'la scheda' : 'le schede'} «${plans.join('», «')}», che ${
+        plans.length === 1 ? 'personalizza' : 'personalizzano'
+      } questo muscolo. Correggi prima le preferenze della scheda.`,
   },
 
   filters: {

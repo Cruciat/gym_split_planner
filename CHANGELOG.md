@@ -13,6 +13,12 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 - Creazione e modifica degli esercizi da una form: famiglie e rango, attrezzo, tipo, allungamento, confidenza, griglia dei muscoli a tre stati (vuoto → S → P), etichette con nota, fonti (anche nuove), note. Errori accanto ai campi; conferma prima di uscire con modifiche non salvate.
 - Dal dettaglio: disattivare e riattivare un esercizio, eliminarlo se non è usato in nessuna scheda (altrimenti l'app spiega dove è usato e propone di disattivarlo).
 - API `POST`, `PUT`, `DELETE /api/exercises`, `GET /api/exercises/{id}/usage` e `POST`, `PATCH`, `DELETE /api/sources`; gli errori `rule-violation` elencano tutte le regole violate con il campo a cui si riferiscono.
+- Catalogo diviso in quattro schede: Esercizi, Famiglie, Etichette, Muscoli.
+- Famiglie di movimento: creazione, modifica in linea, eliminazione solo se non usate (altrimenti l'app dice da cosa sono usate).
+- Etichette: creazione e modifica in linea di nome, simbolo, colore, effetto, punti e visibilità; eliminazione con conferma che riporta a quanti esercizi è assegnata e quante schede la personalizzano.
+- Muscoli: nomi, priorità e fascia modificabili; "nessun obiettivo" svuota la fascia; una fascia che renderebbe invalida la personalizzazione di una scheda è rifiutata con il nome della scheda.
+- Elenco degli esercizi: selezione multipla per assegnare o togliere un'etichetta a più esercizi insieme, anche dal telefono.
+- API per famiglie (`/api/families`), muscoli (`PATCH /api/muscles/{id}`) ed etichette (`/api/tags`, con `assign` e `unassign`).
 
 ## [0.3.0] - 2026-10-28
 

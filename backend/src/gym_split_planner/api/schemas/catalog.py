@@ -10,7 +10,15 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from gym_split_planner.api.schemas.inputs import HttpUrl, Label, LongText, Name, ShortText
+from gym_split_planner.api.schemas.inputs import (
+    HttpUrl,
+    Label,
+    LongText,
+    Name,
+    ShortLabel,
+    ShortText,
+    reject_null,
+)
 
 Priority = Literal["priority", "standard", "none"]
 Level = Literal["P", "S"]
@@ -20,6 +28,8 @@ Confidence = Literal["solid", "limited", "opinion"]
 TagEffect = Literal["none", "bonus", "penalty", "exclude"]
 TagColor = Literal["neutral", "info", "success", "warning", "danger"]
 RoutineBlock = Literal["neck", "pelvis"]
+TagSymbol = Literal["warning", "ban", "info", "star", "heart", "zap", "flag", "eye-off"]
+"""Insieme chiuso dei simboli delle etichette (wireframe, § 4.4): icone di Lucide."""
 
 
 class _Out(BaseModel):
@@ -287,10 +297,114 @@ class SourcePatch(BaseModel):
     reliability: ShortText = None
     used_for: LongText = None
 
-    @field_validator("title", "kind")
-    @classmethod
-    def _not_null(cls, value: str | None) -> str:
-        """Titolo e tipo si possono omettere, non svuotare."""
-        if value is None:
-            raise ValueError("Il campo non può essere vuoto")
-        return value
+    _not_null = field_validator("title", "kind")(reject_null)
+
+
+class PlanRefOut(_Out):
+    """Scheda citata da un utilizzo o da un errore."""
+
+    id: int
+    name: str
+
+
+# --- Famiglie (US-06) ------------------------------------------------------------
+
+
+class FamilyIn(BaseModel):
+    """Nuova famiglia di movimento. Senza ``code``, si genera dal nome."""
+
+    name: Label
+    description: LongText = None
+    muscle_group_id: int
+    code: str | None = None
+
+
+class FamilyPatch(BaseModel):
+    """Modifica parziale di una famiglia; il ``code`` non cambia."""
+
+    name: Label | None = None
+    description: LongText = None
+    muscle_group_id: int | None = None
+    sort_order: int | None = Field(default=None, ge=1)
+
+    _not_null = field_validator("name", "muscle_group_id", "sort_order")(reject_null)
+
+
+class FamilyUsageOut(_Out):
+    """Chi usa una famiglia. Esercizi principali, slot e schede ne impediscono l'eliminazione."""
+
+    exercises: int
+    secondary_exercises: int
+    split_slots: int
+    plans: list[PlanUsageOut]
+
+
+# --- Muscoli (US-07) -------------------------------------------------------------
+
+
+class MusclePatch(BaseModel):
+    """Modifica parziale di un muscolo. Con ``priority: "none"`` la fascia si svuota;
+    altrimenti servono minimo e massimo, con minimo < massimo."""
+
+    name: Label | None = None
+    short_name: ShortLabel | None = None
+    priority: Priority | None = None
+    weekly_min: float | None = Field(default=None, le=100)
+    weekly_max: float | None = Field(default=None, le=100)
+    notes: LongText = None
+
+    _not_null = field_validator("name", "short_name", "priority")(reject_null)
+
+
+# --- Etichette (US-08) -----------------------------------------------------------
+
+
+class TagIn(BaseModel):
+    """Nuova etichetta. Bonus e penalità hanno bisogno di punti maggiori di zero."""
+
+    name: Label
+    description: LongText = None
+    symbol: TagSymbol
+    color: TagColor = "neutral"
+    effect: TagEffect = "none"
+    points: float = Field(default=0, ge=0, le=100)
+    show_badge: bool = True
+    code: str | None = None
+
+
+class TagPatch(BaseModel):
+    """Modifica parziale di un'etichetta."""
+
+    name: Label | None = None
+    description: LongText = None
+    symbol: TagSymbol | None = None
+    color: TagColor | None = None
+    effect: TagEffect | None = None
+    points: float | None = Field(default=None, ge=0, le=100)
+    show_badge: bool | None = None
+    sort_order: int | None = Field(default=None, ge=1)
+
+    _not_null = field_validator(
+        "name", "symbol", "color", "effect", "points", "show_badge", "sort_order"
+    )(reject_null)
+
+
+class TagUsageOut(_Out):
+    """Esercizi con l'etichetta e schede che la personalizzano."""
+
+    exercises: int
+    plans_with_overrides: list[PlanRefOut]
+
+
+class TagAssignIn(BaseModel):
+    """Esercizi a cui assegnare l'etichetta. La nota vale per tutti: a chi ha già
+    l'etichetta si aggiorna solo se il campo ``note`` è presente."""
+
+    exercise_ids: list[int] = Field(min_length=1, max_length=1000)
+    note: ShortText = None
+
+
+class TagUnassignIn(BaseModel):
+    """Esercizi da cui togliere l'etichetta."""
+
+    exercise_ids: list[int] = Field(min_length=1, max_length=1000)

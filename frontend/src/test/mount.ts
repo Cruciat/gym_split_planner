@@ -89,7 +89,11 @@ export async function chooseOption(
   testId: string,
   label: string,
 ): Promise<void> {
-  await wrapper.get(`[data-testid="${testId}"] .n-base-selection`).trigger('click')
+  // Il menu può stare nella pagina o in una finestra, che Naive UI mette nel `body`.
+  const selector = `[data-testid="${testId}"] .n-base-selection`
+  const trigger = wrapper.find(selector).exists() ? wrapper.get(selector) : inBody(selector)[0]
+  if (trigger === undefined) throw new Error(`Nessun menu ${testId}`)
+  await trigger.trigger('click')
   await flushPromises()
   const option = inBody('.n-base-select-option').find((o) => o.text() === label)
   if (option === undefined) throw new Error(`Nessuna opzione «${label}» in ${testId}`)

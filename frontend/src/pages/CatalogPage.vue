@@ -3,15 +3,15 @@ import {
   type DataTableColumns,
   NAlert,
   NButton,
+  NCheckbox,
   NDataTable,
   NDrawer,
   NDrawerContent,
   NEmpty,
-  NH1,
   NSkeleton,
   NTag,
 } from 'naive-ui'
-import { Plus, SlidersHorizontal } from 'lucide-vue-next'
+import { CheckSquare, Plus, SlidersHorizontal } from 'lucide-vue-next'
 import { computed, h, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 
@@ -23,6 +23,8 @@ import {
   filtersFromQuery,
   filtersToQuery,
 } from '@/catalog/filters'
+import BulkTagDialog from '@/components/BulkTagDialog.vue'
+import CatalogHeader from '@/components/CatalogHeader.vue'
 import ExerciseFiltersPanel from '@/components/ExerciseFiltersPanel.vue'
 import TagBadges from '@/components/TagBadges.vue'
 import { useIsMobile } from '@/composables/useIsMobile'
@@ -40,6 +42,12 @@ const t = texts.catalog
 // giro del router a ogni tasto. Avanti e indietro del browser aggiornano la copia.
 const filters = ref<ExerciseFilters>(filtersFromQuery(route.query))
 const showFilters = ref(false)
+
+// Selezione multipla per assegnare o togliere etichette (US-08 CA2).
+const selecting = ref(false)
+const selected = ref<number[]>([])
+const bulkMode = ref<'assign' | 'unassign'>('assign')
+const showBulk = ref(false)
 
 watch(
   () => route.query,
@@ -72,6 +80,42 @@ const total = computed(
 )
 const activeFilters = computed(() => countActiveFilters(filters.value))
 
+// Si agisce solo su ciò che si vede: cambiando i filtri, la selezione segue l'elenco.
+watch(exercises, (visible) => {
+  const ids = new Set(visible.map((e) => e.id))
+  if (selected.value.some((id) => !ids.has(id))) {
+    selected.value = selected.value.filter((id) => ids.has(id))
+  }
+})
+
+function toggleSelecting(): void {
+  selecting.value = !selecting.value
+  selected.value = []
+}
+
+function toggleSelected(id: number): void {
+  selected.value = selected.value.includes(id)
+    ? selected.value.filter((other) => other !== id)
+    : [...selected.value, id]
+}
+
+/** Sul telefono, durante la selezione, toccare una scheda la seleziona invece di aprirla. */
+function onCardClick(event: MouseEvent, id: number): void {
+  if (!selecting.value) return
+  event.preventDefault()
+  if (!(event.target instanceof Element && event.target.closest('.n-checkbox'))) toggleSelected(id)
+}
+
+function openBulk(mode: 'assign' | 'unassign'): void {
+  bulkMode.value = mode
+  showBulk.value = true
+}
+
+function bulkDone(): void {
+  selected.value = []
+  selecting.value = false
+}
+
 const familyName = (id: number) => store.families.get(id)?.name ?? ''
 const groupName = (familyId: number) => {
   const groupId = store.families.get(familyId)?.muscle_group_id
@@ -84,6 +128,7 @@ const byText = (pick: (e: ExerciseSummary) => string) => (a: ExerciseSummary, b:
   pick(a).localeCompare(pick(b), 'it')
 
 const columns = computed<DataTableColumns<ExerciseSummary>>(() => [
+  ...(selecting.value ? [{ type: 'selection' as const }] : []),
   {
     key: 'name',
     title: t.columns.name,
@@ -126,7 +171,13 @@ const columns = computed<DataTableColumns<ExerciseSummary>>(() => [
 
 const rowProps = (row: ExerciseSummary) => ({
   class: 'clickable',
-  onClick: () => {
+  onClick: (event: MouseEvent) => {
+    // Durante la selezione una riga si seleziona; i link restano link.
+    if (selecting.value) {
+      if (!(event.target instanceof Element && event.target.closest('a, .n-checkbox')))
+        toggleSelected(row.id)
+      return
+    }
     void router.push(detailPath(row.id))
   },
 })
@@ -134,21 +185,16 @@ const rowProps = (row: ExerciseSummary) => ({
 
 <template>
   <main class="page catalog">
-    <header class="header">
-      <NH1>{{ t.title }}</NH1>
-      <nav class="tabs">
-        <RouterLink to="/catalogo" class="tab active">{{ t.tabs.exercises }}</RouterLink>
-      </nav>
+    <CatalogHeader>
       <NButton
         type="primary"
-        class="new"
         data-testid="new-exercise"
         @click="router.push('/catalogo/esercizi/nuovo')"
       >
         <template #icon><Plus :size="16" /></template>
         {{ t.newExercise }}
       </NButton>
-    </header>
+    </CatalogHeader>
 
     <NAlert v-if="store.failed" type="error" data-testid="catalog-error">
       {{ texts.common.loadFailed }}
@@ -166,17 +212,58 @@ const rowProps = (row: ExerciseSummary) => ({
 
       <section class="results">
         <div class="toolbar">
-          <span data-testid="catalog-count">{{ t.count(exercises.length, total) }}</span>
-          <NButton v-if="isMobile" secondary data-testid="open-filters" @click="showFilters = true">
-            <template #icon><SlidersHorizontal :size="16" /></template>
-            {{ texts.filters.open(activeFilters) }}
-          </NButton>
+          <span v-if="selecting" data-testid="selected-count">{{
+            t.selected(selected.length)
+          }}</span>
+          <span v-else data-testid="catalog-count">{{ t.count(exercises.length, total) }}</span>
+          <div class="toolbar-actions">
+            <template v-if="selecting && selected.length > 0">
+              <NButton size="small" data-testid="bulk-assign" @click="openBulk('assign')">
+                {{ t.assignTag }}
+              </NButton>
+              <NButton size="small" data-testid="bulk-unassign" @click="openBulk('unassign')">
+                {{ t.unassignTag }}
+              </NButton>
+            </template>
+            <NButton
+              size="small"
+              :secondary="!selecting"
+              :type="selecting ? 'primary' : 'default'"
+              data-testid="toggle-select"
+              @click="toggleSelecting"
+            >
+              <template #icon><CheckSquare :size="16" /></template>
+              {{ selecting ? t.endSelect : t.select }}
+            </NButton>
+            <NButton
+              v-if="isMobile"
+              size="small"
+              secondary
+              data-testid="open-filters"
+              @click="showFilters = true"
+            >
+              <template #icon><SlidersHorizontal :size="16" /></template>
+              {{ texts.filters.open(activeFilters) }}
+            </NButton>
+          </div>
         </div>
 
         <NEmpty v-if="exercises.length === 0" :description="t.empty" />
 
         <ul v-else-if="isMobile" class="cards" data-testid="exercise-cards">
-          <li v-for="exercise in exercises" :key="exercise.id">
+          <li
+            v-for="exercise in exercises"
+            :key="exercise.id"
+            class="card-item"
+            @click.capture="onCardClick($event, exercise.id)"
+          >
+            <NCheckbox
+              v-if="selecting"
+              class="card-check"
+              :checked="selected.includes(exercise.id)"
+              :aria-label="t.selectExercise(exercise.name)"
+              @update:checked="toggleSelected(exercise.id)"
+            />
             <RouterLink :to="detailPath(exercise.id)" class="card">
               <span class="card-title">
                 {{ exercise.name }}
@@ -199,12 +286,21 @@ const rowProps = (row: ExerciseSummary) => ({
           :data="exercises"
           :row-key="(row: ExerciseSummary) => row.id"
           :row-props="rowProps"
+          :checked-row-keys="selected"
           :bordered="false"
           size="small"
           data-testid="exercise-table"
+          @update:checked-row-keys="(keys) => (selected = keys.map(Number))"
         />
       </section>
     </div>
+
+    <BulkTagDialog
+      v-model:show="showBulk"
+      :mode="bulkMode"
+      :exercise-ids="selected"
+      @done="bulkDone"
+    />
 
     <NDrawer v-model:show="showFilters" placement="bottom" height="85%">
       <NDrawerContent :title="texts.filters.title" closable>
@@ -220,40 +316,6 @@ const rowProps = (row: ExerciseSummary) => ({
 </template>
 
 <style scoped>
-.header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.5rem 1.5rem;
-}
-
-.header :deep(h1) {
-  margin: 0;
-}
-
-.new {
-  margin-left: auto;
-  align-self: center;
-}
-
-.tabs {
-  display: flex;
-  gap: 0.25rem;
-}
-
-.tab {
-  padding: 0.3rem 0.7rem;
-  border-radius: 6px;
-  color: var(--muted-color);
-  text-decoration: none;
-}
-
-.tab.active {
-  color: var(--primary-color);
-  background: var(--hover-color);
-  font-weight: 600;
-}
-
 .loading {
   margin-top: 1.5rem;
 }
@@ -273,6 +335,8 @@ const rowProps = (row: ExerciseSummary) => ({
 
 .toolbar {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   align-items: center;
   justify-content: space-between;
   min-height: 2.25rem;
@@ -296,6 +360,23 @@ const rowProps = (row: ExerciseSummary) => ({
 
 .inactive {
   margin-left: 0.4rem;
+}
+
+.toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.card-item {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.card-item .card {
+  flex: 1;
+  min-width: 0;
 }
 
 .cards {
