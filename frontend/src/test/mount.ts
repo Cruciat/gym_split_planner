@@ -1,6 +1,7 @@
-/** Montaggio di una pagina con router in memoria, Pinia e `fetch` sostituito. */
+/** Montaggio di una pagina con router in memoria, Pinia, provider di Naive UI e `fetch` finto. */
 
-import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
+import { DOMWrapper, flushPromises, mount, type VueWrapper } from '@vue/test-utils'
+import { NDialogProvider, NMessageProvider } from 'naive-ui'
 import { createPinia } from 'pinia'
 import { vi } from 'vitest'
 import { defineComponent, h } from 'vue'
@@ -10,21 +11,36 @@ import { makeRouter } from '@/router'
 
 import { jsonResponse } from './fixtures'
 
-/** Risposte per percorso (`/api/catalog`); gli altri percorsi rispondono 404. */
-export type Routes = Record<string, () => Response>
+type Handler = (request: Request) => Response | Promise<Response>
+
+/**
+ * Risposte per percorso: la chiave è `/api/catalog` (qualunque metodo) oppure
+ * `PUT /api/exercises/4`. I percorsi senza risposta danno 404.
+ */
+export type Routes = Record<string, Handler>
 
 export function stubFetch(routes: Routes) {
-  const fetchMock = vi.fn((request: Request) => {
+  const fetchMock = vi.fn(async (request: Request) => {
     const path = new URL(request.url).pathname
-    const handler = routes[path]
-    return Promise.resolve(
-      handler === undefined
-        ? jsonResponse({ status: 404, code: 'not-found', title: 'Risorsa non trovata' }, 404)
-        : handler(),
-    )
+    const handler = routes[`${request.method} ${path}`] ?? routes[path]
+    return handler === undefined
+      ? jsonResponse({ status: 404, code: 'not-found', title: 'Risorsa non trovata' }, 404)
+      : handler(request.clone())
   })
   vi.stubGlobal('fetch', fetchMock)
   return fetchMock
+}
+
+/** Corpi JSON delle chiamate fatte con un metodo a un percorso. */
+export async function requestBodies(
+  fetchMock: ReturnType<typeof stubFetch>,
+  method: string,
+  path: string,
+): Promise<unknown[]> {
+  const requests = fetchMock.mock.calls
+    .map(([request]) => request)
+    .filter((r) => r.method === method && new URL(r.url).pathname === path)
+  return Promise.all(requests.map((r) => r.clone().json() as Promise<unknown>))
 }
 
 /** Simula la larghezza del telefono (sotto 768 px) o del desktop. */
@@ -44,11 +60,39 @@ export async function mountAt(path: string): Promise<{ wrapper: VueWrapper; rout
   const router = makeRouter(createMemoryHistory())
   await router.push(path)
   await router.isReady()
-  const Root = defineComponent({ render: () => h(RouterView) })
+  const Root = defineComponent({
+    render: () => h(NDialogProvider, () => h(NMessageProvider, () => h(RouterView))),
+  })
   const wrapper = mount(Root, {
     global: { plugins: [createPinia(), router] },
     attachTo: document.body,
   })
   await flushPromises()
   return { wrapper, router }
+}
+
+/** Elementi fuori dalla pagina (finestre, menu a tendina): sono nel `body`. */
+export function inBody(selector: string): DOMWrapper<Element>[] {
+  return [...document.body.querySelectorAll(selector)].map((el) => new DOMWrapper(el))
+}
+
+/** Pulsante di una finestra di dialogo aperta, per testo. */
+export function dialogButton(text: string): DOMWrapper<Element> {
+  const button = inBody('.n-dialog button').find((b) => b.text() === text)
+  if (button === undefined) throw new Error(`Nessun pulsante «${text}» in una finestra aperta`)
+  return button
+}
+
+/** Sceglie un'opzione in un `NSelect` con il `data-testid` indicato. */
+export async function chooseOption(
+  wrapper: VueWrapper,
+  testId: string,
+  label: string,
+): Promise<void> {
+  await wrapper.get(`[data-testid="${testId}"] .n-base-selection`).trigger('click')
+  await flushPromises()
+  const option = inBody('.n-base-select-option').find((o) => o.text() === label)
+  if (option === undefined) throw new Error(`Nessuna opzione «${label}» in ${testId}`)
+  await option.trigger('click')
+  await flushPromises()
 }

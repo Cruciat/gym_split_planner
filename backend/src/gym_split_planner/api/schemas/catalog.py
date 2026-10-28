@@ -8,7 +8,9 @@ OpenAPI li elenca e il client li riceve come tipi unione.
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
+from gym_split_planner.api.schemas.inputs import HttpUrl, Label, LongText, Name, ShortText
 
 Priority = Literal["priority", "standard", "none"]
 Level = Literal["P", "S"]
@@ -202,3 +204,93 @@ class ExerciseDetailOut(_Out):
     tags: list[TagLinkOut]
     sources: list[SourceOut]
     variants: list[VariantOut]
+
+
+# --- Scrittura (API, § 6.3) -------------------------------------------------------
+
+
+class MuscleLinkIn(BaseModel):
+    """Muscolo coinvolto nell'esercizio."""
+
+    muscle_id: int
+    level: Level
+    note: ShortText = None
+
+
+class TagLinkIn(BaseModel):
+    """Etichetta assegnata, con nota facoltativa."""
+
+    tag_id: int
+    note: ShortText = None
+
+
+class ExerciseIn(BaseModel):
+    """Esercizio completo: la form invia sempre tutti i campi (US-03).
+
+    Almeno un muscolo P, famiglia secondaria diversa dalla principale, nome libero:
+    altrimenti ``422 rule-violation`` con l'elenco ``violations``.
+    """
+
+    name: Name
+    primary_family_id: int
+    secondary_family_id: int | None = None
+    family_rank: int = Field(default=1, ge=1, le=999)
+    equipment_id: int
+    equipment_detail: ShortText = None
+    kind: Kind
+    stretch: Stretch
+    stretch_note: ShortText = None
+    confidence: Confidence
+    notes: LongText = None
+    is_active: bool = True
+    muscles: list[MuscleLinkIn] = Field(max_length=100)
+    tags: list[TagLinkIn] = Field(default_factory=list, max_length=50)
+    source_ids: list[int] = Field(default_factory=list, max_length=100)
+
+
+class ExerciseCreateIn(ExerciseIn):
+    """Come ``ExerciseIn``, con il ``code`` facoltativo: senza, si genera dal nome."""
+
+    code: str | None = None
+
+
+class PlanUsageOut(_Out):
+    """Scheda che usa una risorsa, con quanti slot."""
+
+    id: int
+    name: str
+    slots: int
+
+
+class ExerciseUsageOut(_Out):
+    """Dove è usato un esercizio: serve alla conferma di eliminazione."""
+
+    plans: list[PlanUsageOut]
+
+
+class SourceIn(BaseModel):
+    """Nuova fonte. Il codice è il successivo della serie ``src-NN``."""
+
+    title: Name
+    kind: Label
+    url: HttpUrl = None
+    reliability: ShortText = None
+    used_for: LongText = None
+
+
+class SourcePatch(BaseModel):
+    """Modifica parziale di una fonte: cambiano solo i campi inviati."""
+
+    title: Name | None = None
+    kind: Label | None = None
+    url: HttpUrl = None
+    reliability: ShortText = None
+    used_for: LongText = None
+
+    @field_validator("title", "kind")
+    @classmethod
+    def _not_null(cls, value: str | None) -> str:
+        """Titolo e tipo si possono omettere, non svuotare."""
+        if value is None:
+            raise ValueError("Il campo non può essere vuoto")
+        return value

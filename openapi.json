@@ -110,6 +110,156 @@
         "title": "EquipmentOut",
         "type": "object"
       },
+      "ExerciseCreateIn": {
+        "description": "Come ``ExerciseIn``, con il ``code`` facoltativo: senza, si genera dal nome.",
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "confidence": {
+            "enum": [
+              "solid",
+              "limited",
+              "opinion"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          },
+          "equipment_detail": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equipment Detail"
+          },
+          "equipment_id": {
+            "title": "Equipment Id",
+            "type": "integer"
+          },
+          "family_rank": {
+            "default": 1,
+            "maximum": 999.0,
+            "minimum": 1.0,
+            "title": "Family Rank",
+            "type": "integer"
+          },
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "kind": {
+            "enum": [
+              "compound",
+              "isolation"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "muscles": {
+            "items": {
+              "$ref": "#/components/schemas/MuscleLinkIn"
+            },
+            "maxItems": 100,
+            "title": "Muscles",
+            "type": "array"
+          },
+          "name": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "primary_family_id": {
+            "title": "Primary Family Id",
+            "type": "integer"
+          },
+          "secondary_family_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secondary Family Id"
+          },
+          "source_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 100,
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "stretch": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Stretch",
+            "type": "string"
+          },
+          "stretch_note": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stretch Note"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/TagLinkIn"
+            },
+            "maxItems": 50,
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "primary_family_id",
+          "equipment_id",
+          "kind",
+          "stretch",
+          "confidence",
+          "muscles"
+        ],
+        "title": "ExerciseCreateIn",
+        "type": "object"
+      },
       "ExerciseDetailOut": {
         "description": "Dettaglio di un esercizio (US-02).",
         "properties": {
@@ -275,6 +425,145 @@
         "title": "ExerciseDetailOut",
         "type": "object"
       },
+      "ExerciseIn": {
+        "description": "Esercizio completo: la form invia sempre tutti i campi (US-03).\n\nAlmeno un muscolo P, famiglia secondaria diversa dalla principale, nome libero:\naltrimenti ``422 rule-violation`` con l'elenco ``violations``.",
+        "properties": {
+          "confidence": {
+            "enum": [
+              "solid",
+              "limited",
+              "opinion"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          },
+          "equipment_detail": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Equipment Detail"
+          },
+          "equipment_id": {
+            "title": "Equipment Id",
+            "type": "integer"
+          },
+          "family_rank": {
+            "default": 1,
+            "maximum": 999.0,
+            "minimum": 1.0,
+            "title": "Family Rank",
+            "type": "integer"
+          },
+          "is_active": {
+            "default": true,
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "kind": {
+            "enum": [
+              "compound",
+              "isolation"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "muscles": {
+            "items": {
+              "$ref": "#/components/schemas/MuscleLinkIn"
+            },
+            "maxItems": 100,
+            "title": "Muscles",
+            "type": "array"
+          },
+          "name": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "primary_family_id": {
+            "title": "Primary Family Id",
+            "type": "integer"
+          },
+          "secondary_family_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Secondary Family Id"
+          },
+          "source_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 100,
+            "title": "Source Ids",
+            "type": "array"
+          },
+          "stretch": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Stretch",
+            "type": "string"
+          },
+          "stretch_note": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stretch Note"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/TagLinkIn"
+            },
+            "maxItems": 50,
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "name",
+          "primary_family_id",
+          "equipment_id",
+          "kind",
+          "stretch",
+          "confidence",
+          "muscles"
+        ],
+        "title": "ExerciseIn",
+        "type": "object"
+      },
       "ExerciseSummaryOut": {
         "description": "Riepilogo di un esercizio: basta per la lista e per i filtri (US-01).",
         "properties": {
@@ -386,6 +675,23 @@
           "tags"
         ],
         "title": "ExerciseSummaryOut",
+        "type": "object"
+      },
+      "ExerciseUsageOut": {
+        "description": "Dove è usato un esercizio: serve alla conferma di eliminazione.",
+        "properties": {
+          "plans": {
+            "items": {
+              "$ref": "#/components/schemas/PlanUsageOut"
+            },
+            "title": "Plans",
+            "type": "array"
+          }
+        },
+        "required": [
+          "plans"
+        ],
+        "title": "ExerciseUsageOut",
         "type": "object"
       },
       "FamilyOut": {
@@ -542,6 +848,41 @@
         "title": "MuscleLinkDetailOut",
         "type": "object"
       },
+      "MuscleLinkIn": {
+        "description": "Muscolo coinvolto nell'esercizio.",
+        "properties": {
+          "level": {
+            "enum": [
+              "P",
+              "S"
+            ],
+            "title": "Level",
+            "type": "string"
+          },
+          "muscle_id": {
+            "title": "Muscle Id",
+            "type": "integer"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "required": [
+          "muscle_id",
+          "level"
+        ],
+        "title": "MuscleLinkIn",
+        "type": "object"
+      },
       "MuscleLinkOut": {
         "description": "Muscolo coinvolto, con livello P (primario) o S (secondario).",
         "properties": {
@@ -650,6 +991,30 @@
         "title": "MuscleOut",
         "type": "object"
       },
+      "PlanUsageOut": {
+        "description": "Scheda che usa una risorsa, con quanti slot.",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slots": {
+            "title": "Slots",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slots"
+        ],
+        "title": "PlanUsageOut",
+        "type": "object"
+      },
       "RoutineItemOut": {
         "description": "Voce del mini-allenamento quotidiano.",
         "properties": {
@@ -701,6 +1066,65 @@
           "confidence"
         ],
         "title": "RoutineItemOut",
+        "type": "object"
+      },
+      "SourceIn": {
+        "description": "Nuova fonte. Il codice è il successivo della serie ``src-NN``.",
+        "properties": {
+          "kind": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Kind",
+            "type": "string"
+          },
+          "reliability": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reliability"
+          },
+          "title": {
+            "maxLength": 160,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "used_for": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Used For"
+          }
+        },
+        "required": [
+          "title",
+          "kind"
+        ],
+        "title": "SourceIn",
         "type": "object"
       },
       "SourceOut": {
@@ -765,6 +1189,75 @@
           "used_for"
         ],
         "title": "SourceOut",
+        "type": "object"
+      },
+      "SourcePatch": {
+        "description": "Modifica parziale di una fonte: cambiano solo i campi inviati.",
+        "properties": {
+          "kind": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kind"
+          },
+          "reliability": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reliability"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 160,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Url"
+          },
+          "used_for": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Used For"
+          }
+        },
+        "title": "SourcePatch",
         "type": "object"
       },
       "StretchOut": {
@@ -839,6 +1332,32 @@
           "note"
         ],
         "title": "StretchOut",
+        "type": "object"
+      },
+      "TagLinkIn": {
+        "description": "Etichetta assegnata, con nota facoltativa.",
+        "properties": {
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tag_id"
+        ],
+        "title": "TagLinkIn",
         "type": "object"
       },
       "TagLinkOut": {
@@ -1094,7 +1613,82 @@
         ]
       }
     },
+    "/api/exercises": {
+      "post": {
+        "description": "Crea l'esercizio e restituisce il dettaglio, con ``Location``.",
+        "operationId": "post_exercise",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExerciseCreateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExerciseDetailOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Dati non validi (`validation-error`) o regola violata (`rule-violation`)"
+          }
+        },
+        "summary": "Crea un esercizio",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
     "/api/exercises/{exercise_id}": {
+      "delete": {
+        "description": "Se l'esercizio è in una scheda: ``409 in-use`` con ``usage``; va disattivato.",
+        "operationId": "remove_exercise",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "exercise_id",
+            "required": true,
+            "schema": {
+              "title": "Exercise Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Esercizio inesistente"
+          },
+          "409": {
+            "description": "Usato in una scheda (`in-use`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Elimina un esercizio mai usato",
+        "tags": [
+          "catalogo"
+        ]
+      },
       "get": {
         "description": "Tutti i campi, muscoli con note, etichette con note, fonti e varianti.",
         "operationId": "read_exercise",
@@ -1135,6 +1729,99 @@
           }
         },
         "summary": "Dettaglio di un esercizio",
+        "tags": [
+          "catalogo"
+        ]
+      },
+      "put": {
+        "description": "Tutti i campi, compresi muscoli, etichette, fonti e ``is_active`` (disattivazione).",
+        "operationId": "put_exercise",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "exercise_id",
+            "required": true,
+            "schema": {
+              "title": "Exercise Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExerciseIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExerciseDetailOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Esercizio inesistente"
+          },
+          "422": {
+            "description": "Dati non validi (`validation-error`) o regola violata (`rule-violation`)"
+          }
+        },
+        "summary": "Sostituisce un esercizio",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/exercises/{exercise_id}/usage": {
+      "get": {
+        "description": "Schede che lo usano, per scrivere la conferma di eliminazione.",
+        "operationId": "read_exercise_usage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "exercise_id",
+            "required": true,
+            "schema": {
+              "title": "Exercise Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExerciseUsageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Esercizio inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Dove è usato un esercizio",
         "tags": [
           "catalogo"
         ]
@@ -1187,6 +1874,141 @@
         "summary": "PDF di prova",
         "tags": [
           "sistema"
+        ]
+      }
+    },
+    "/api/sources": {
+      "post": {
+        "description": "Il codice è il successivo della serie ``src-NN``.",
+        "operationId": "post_source",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SourceIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SourceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Crea una fonte",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/sources/{source_id}": {
+      "delete": {
+        "description": "Toglie anche i collegamenti agli esercizi che la citano.",
+        "operationId": "remove_source",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "source_id",
+            "required": true,
+            "schema": {
+              "title": "Source Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Fonte inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Elimina una fonte",
+        "tags": [
+          "catalogo"
+        ]
+      },
+      "patch": {
+        "description": "Cambiano solo i campi inviati; ``null`` svuota i campi facoltativi.",
+        "operationId": "patch_source",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "source_id",
+            "required": true,
+            "schema": {
+              "title": "Source Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SourcePatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SourceOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Fonte inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Modifica una fonte",
+        "tags": [
+          "catalogo"
         ]
       }
     }

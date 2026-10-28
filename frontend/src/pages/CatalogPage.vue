@@ -11,7 +11,7 @@ import {
   NSkeleton,
   NTag,
 } from 'naive-ui'
-import { SlidersHorizontal } from 'lucide-vue-next'
+import { Plus, SlidersHorizontal } from 'lucide-vue-next'
 import { computed, h, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 
@@ -139,6 +139,15 @@ const rowProps = (row: ExerciseSummary) => ({
       <nav class="tabs">
         <RouterLink to="/catalogo" class="tab active">{{ t.tabs.exercises }}</RouterLink>
       </nav>
+      <NButton
+        type="primary"
+        class="new"
+        data-testid="new-exercise"
+        @click="router.push('/catalogo/esercizi/nuovo')"
+      >
+        <template #icon><Plus :size="16" /></template>
+        {{ t.newExercise }}
+      </NButton>
     </header>
 
     <NAlert v-if="store.failed" type="error" data-testid="catalog-error">
@@ -220,6 +229,11 @@ const rowProps = (row: ExerciseSummary) => ({
 
 .header :deep(h1) {
   margin: 0;
+}
+
+.new {
+  margin-left: auto;
+  align-self: center;
 }
 
 .tabs {

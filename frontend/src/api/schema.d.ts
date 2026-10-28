@@ -28,6 +28,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/exercises': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Crea un esercizio
+     * @description Crea l'esercizio e restituisce il dettaglio, con ``Location``.
+     */
+    post: operations['post_exercise']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/exercises/{exercise_id}': {
     parameters: {
       query?: never
@@ -40,6 +60,34 @@ export interface paths {
      * @description Tutti i campi, muscoli con note, etichette con note, fonti e varianti.
      */
     get: operations['read_exercise']
+    /**
+     * Sostituisce un esercizio
+     * @description Tutti i campi, compresi muscoli, etichette, fonti e ``is_active`` (disattivazione).
+     */
+    put: operations['put_exercise']
+    post?: never
+    /**
+     * Elimina un esercizio mai usato
+     * @description Se l'esercizio è in una scheda: ``409 in-use`` con ``usage``; va disattivato.
+     */
+    delete: operations['remove_exercise']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/exercises/{exercise_id}/usage': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Dove è usato un esercizio
+     * @description Schede che lo usano, per scrivere la conferma di eliminazione.
+     */
+    get: operations['read_exercise_usage']
     put?: never
     post?: never
     delete?: never
@@ -88,6 +136,50 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/sources': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Crea una fonte
+     * @description Il codice è il successivo della serie ``src-NN``.
+     */
+    post: operations['post_source']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/sources/{source_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /**
+     * Elimina una fonte
+     * @description Toglie anche i collegamenti agli esercizi che la citano.
+     */
+    delete: operations['remove_source']
+    options?: never
+    head?: never
+    /**
+     * Modifica una fonte
+     * @description Cambiano solo i campi inviati; ``null`` svuota i campi facoltativi.
+     */
+    patch: operations['patch_source']
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
@@ -126,6 +218,59 @@ export interface components {
       name: string
       /** Sort Order */
       sort_order: number
+    }
+    /**
+     * ExerciseCreateIn
+     * @description Come ``ExerciseIn``, con il ``code`` facoltativo: senza, si genera dal nome.
+     */
+    ExerciseCreateIn: {
+      /** Code */
+      code?: string | null
+      /**
+       * Confidence
+       * @enum {string}
+       */
+      confidence: 'solid' | 'limited' | 'opinion'
+      /** Equipment Detail */
+      equipment_detail?: string | null
+      /** Equipment Id */
+      equipment_id: number
+      /**
+       * Family Rank
+       * @default 1
+       */
+      family_rank: number
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'compound' | 'isolation'
+      /** Muscles */
+      muscles: components['schemas']['MuscleLinkIn'][]
+      /** Name */
+      name: string
+      /** Notes */
+      notes?: string | null
+      /** Primary Family Id */
+      primary_family_id: number
+      /** Secondary Family Id */
+      secondary_family_id?: number | null
+      /** Source Ids */
+      source_ids?: number[]
+      /**
+       * Stretch
+       * @enum {string}
+       */
+      stretch: 'high' | 'medium' | 'low'
+      /** Stretch Note */
+      stretch_note?: string | null
+      /** Tags */
+      tags?: components['schemas']['TagLinkIn'][]
     }
     /**
      * ExerciseDetailOut
@@ -189,6 +334,60 @@ export interface components {
       variants: components['schemas']['VariantOut'][]
     }
     /**
+     * ExerciseIn
+     * @description Esercizio completo: la form invia sempre tutti i campi (US-03).
+     *
+     *     Almeno un muscolo P, famiglia secondaria diversa dalla principale, nome libero:
+     *     altrimenti ``422 rule-violation`` con l'elenco ``violations``.
+     */
+    ExerciseIn: {
+      /**
+       * Confidence
+       * @enum {string}
+       */
+      confidence: 'solid' | 'limited' | 'opinion'
+      /** Equipment Detail */
+      equipment_detail?: string | null
+      /** Equipment Id */
+      equipment_id: number
+      /**
+       * Family Rank
+       * @default 1
+       */
+      family_rank: number
+      /**
+       * Is Active
+       * @default true
+       */
+      is_active: boolean
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'compound' | 'isolation'
+      /** Muscles */
+      muscles: components['schemas']['MuscleLinkIn'][]
+      /** Name */
+      name: string
+      /** Notes */
+      notes?: string | null
+      /** Primary Family Id */
+      primary_family_id: number
+      /** Secondary Family Id */
+      secondary_family_id?: number | null
+      /** Source Ids */
+      source_ids?: number[]
+      /**
+       * Stretch
+       * @enum {string}
+       */
+      stretch: 'high' | 'medium' | 'low'
+      /** Stretch Note */
+      stretch_note?: string | null
+      /** Tags */
+      tags?: components['schemas']['TagLinkIn'][]
+    }
+    /**
      * ExerciseSummaryOut
      * @description Riepilogo di un esercizio: basta per la lista e per i filtri (US-01).
      */
@@ -230,6 +429,14 @@ export interface components {
       stretch: 'high' | 'medium' | 'low'
       /** Tags */
       tags: components['schemas']['TagLinkOut'][]
+    }
+    /**
+     * ExerciseUsageOut
+     * @description Dove è usato un esercizio: serve alla conferma di eliminazione.
+     */
+    ExerciseUsageOut: {
+      /** Plans */
+      plans: components['schemas']['PlanUsageOut'][]
     }
     /**
      * FamilyOut
@@ -299,6 +506,21 @@ export interface components {
       note: string | null
     }
     /**
+     * MuscleLinkIn
+     * @description Muscolo coinvolto nell'esercizio.
+     */
+    MuscleLinkIn: {
+      /**
+       * Level
+       * @enum {string}
+       */
+      level: 'P' | 'S'
+      /** Muscle Id */
+      muscle_id: number
+      /** Note */
+      note?: string | null
+    }
+    /**
      * MuscleLinkOut
      * @description Muscolo coinvolto, con livello P (primario) o S (secondario).
      */
@@ -341,6 +563,18 @@ export interface components {
       weekly_min: number | null
     }
     /**
+     * PlanUsageOut
+     * @description Scheda che usa una risorsa, con quanti slot.
+     */
+    PlanUsageOut: {
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+      /** Slots */
+      slots: number
+    }
+    /**
      * RoutineItemOut
      * @description Voce del mini-allenamento quotidiano.
      */
@@ -366,6 +600,22 @@ export interface components {
       /** Purpose */
       purpose: string
     }
+    /**
+     * SourceIn
+     * @description Nuova fonte. Il codice è il successivo della serie ``src-NN``.
+     */
+    SourceIn: {
+      /** Kind */
+      kind: string
+      /** Reliability */
+      reliability?: string | null
+      /** Title */
+      title: string
+      /** Url */
+      url?: string | null
+      /** Used For */
+      used_for?: string | null
+    }
     /** SourceOut */
     SourceOut: {
       /** Code */
@@ -382,6 +632,22 @@ export interface components {
       url: string | null
       /** Used For */
       used_for: string | null
+    }
+    /**
+     * SourcePatch
+     * @description Modifica parziale di una fonte: cambiano solo i campi inviati.
+     */
+    SourcePatch: {
+      /** Kind */
+      kind?: string | null
+      /** Reliability */
+      reliability?: string | null
+      /** Title */
+      title?: string | null
+      /** Url */
+      url?: string | null
+      /** Used For */
+      used_for?: string | null
     }
     /** StretchOut */
     StretchOut: {
@@ -401,6 +667,16 @@ export interface components {
       note: string | null
       /** Targets */
       targets: string
+    }
+    /**
+     * TagLinkIn
+     * @description Etichetta assegnata, con nota facoltativa.
+     */
+    TagLinkIn: {
+      /** Note */
+      note?: string | null
+      /** Tag Id */
+      tag_id: number
     }
     /**
      * TagLinkOut
@@ -524,6 +800,37 @@ export interface operations {
       }
     }
   }
+  post_exercise: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ExerciseCreateIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExerciseDetailOut']
+        }
+      }
+      /** @description Dati non validi (`validation-error`) o regola violata (`rule-violation`) */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   read_exercise: {
     parameters: {
       query?: never
@@ -542,6 +849,127 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ExerciseDetailOut']
+        }
+      }
+      /** @description Esercizio inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  put_exercise: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        exercise_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['ExerciseIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExerciseDetailOut']
+        }
+      }
+      /** @description Esercizio inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Dati non validi (`validation-error`) o regola violata (`rule-violation`) */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  remove_exercise: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        exercise_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Esercizio inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Usato in una scheda (`in-use`) */
+      409: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  read_exercise_usage: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        exercise_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ExerciseUsageOut']
         }
       }
       /** @description Esercizio inesistente */
@@ -607,6 +1035,117 @@ export interface operations {
         }
         content: {
           'application/pdf': unknown
+        }
+      }
+    }
+  }
+  post_source: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SourceIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SourceOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  remove_source: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        source_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Fonte inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  patch_source: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        source_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SourcePatch']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SourceOut']
+        }
+      }
+      /** @description Fonte inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
         }
       }
     }

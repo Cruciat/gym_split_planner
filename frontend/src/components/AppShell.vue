@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NMessageProvider, useThemeVars } from 'naive-ui'
+import { NDialogProvider, NMessageProvider, useThemeVars } from 'naive-ui'
 import { computed } from 'vue'
 import { RouterView } from 'vue-router'
 
@@ -17,15 +17,20 @@ const style = computed(() => ({
   '--surface-color': vars.value.cardColor,
   '--hover-color': vars.value.hoverColor,
   '--muted-color': vars.value.textColor3,
+  '--error-color': vars.value.errorColor,
+  '--on-primary-color': vars.value.baseColor,
+  '--page-color': vars.value.bodyColor,
 }))
 </script>
 
 <template>
   <div class="shell" :style="style">
     <AppNav />
-    <NMessageProvider>
-      <RouterView />
-    </NMessageProvider>
+    <NDialogProvider>
+      <NMessageProvider>
+        <RouterView />
+      </NMessageProvider>
+    </NDialogProvider>
   </div>
 </template>
 
