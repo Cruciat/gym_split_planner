@@ -44,7 +44,7 @@ M0 può partire appena sono accettati gli ADR 0002, 0004, 0009-0012.
 | M2 Motore | Volume, punteggio, generazione, stima della durata nel modulo di dominio | Generando i preset dal database si ottengono i volumi dell'Excel (test di riferimento); copertura ≥ 90% |
 | M3 Catalogo | API e schermate di consultazione e modifica | US-01 → US-08 soddisfatte |
 | M4 Editor | Procedura guidata, scheda vuota, giorni, varianti, lucchetto, serie, rigenerazione, salvataggio | US-10 → US-21 soddisfatte; primi test Playwright |
-| M5 PDF | Template e download | US-30 soddisfatta |
+| M5 PDF | Template e download; schermata delle impostazioni globali (le API sono di M4) | US-30 soddisfatta; impostazioni modificabili dall'app (wireframe § 5) |
 | M6 Chiusura | Esportazione e importazione, rifiniture, rilascio | US-31, US-40, US-41; rilascio v1.0.0 |
 
 ## 5. Ciclo di lavoro
