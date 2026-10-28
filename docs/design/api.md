@@ -57,11 +57,41 @@ Tutti gli errori usano il formato *Problem Details* (RFC 9457), con `Content-Typ
 | 409 | `invalid-band` | Una modifica al catalogo renderebbe invalida la fascia effettiva di un muscolo in qualche scheda | `plans`: elenco di `id` e nomi |
 | 412 | `revision-mismatch` | `If-Match` diverso dalla revisione attuale della scheda (§ 4) | `current_revision` |
 | 422 | `validation-error` | Corpo o parametri non validi | `errors`: elenco di `{loc, msg, type}` come in Pydantic |
-| 422 | `rule-violation` | Dati ben formati che violano una regola del dominio (es. esercizio di un'altra famiglia nello slot, variante della seconda seduta in un giorno fatto una volta sola) | `rule`: nome della regola |
+| 422 | `rule-violation` | Dati ben formati che violano una regola del dominio (es. esercizio di un'altra famiglia nello slot, variante della seconda seduta in un giorno fatto una volta sola) | `rule`: nome della prima regola violata; `violations`: tutte le regole violate, ciascuna `{rule, field, message}` (§ 3.1) |
 | 428 | `revision-required` | Modifica a una scheda senza `If-Match` | |
 | 500 | `internal-error` | Errore imprevisto; il dettaglio va nei log, non nella risposta | |
 
 Il gestore degli errori di validazione di FastAPI viene sostituito, così anche i 422 automatici hanno questa forma.
+
+### 3.1 Regole violate
+
+Un `rule-violation` elenca **tutte** le regole violate dalla richiesta, così la form le mostra in una volta. `field` è il nome del campo del corpo a cui la regola si riferisce (`null` se riguarda l'insieme); `message` è in italiano e si mostra accanto al campo. `detail` riunisce i messaggi.
+
+```json
+{
+  "type": "about:blank",
+  "title": "Dati non accettati",
+  "status": 422,
+  "code": "rule-violation",
+  "detail": "Serve almeno un muscolo P. Esiste già un esercizio chiamato «Dip».",
+  "rule": "primary-muscle-required",
+  "violations": [
+    {"rule": "primary-muscle-required", "field": "muscles", "message": "Serve almeno un muscolo P."},
+    {"rule": "name-taken", "field": "name", "message": "Esiste già un esercizio chiamato «Dip»."}
+  ]
+}
+```
+
+Regole del catalogo:
+
+| `rule` | Quando |
+| --- | --- |
+| `primary-muscle-required` | Esercizio senza muscoli con livello P |
+| `secondary-family-distinct` | Famiglia secondaria uguale alla principale |
+| `name-taken` | Nome già usato da un altro esercizio (senza distinguere maiuscole) |
+| `invalid-code`, `code-taken` | `code` fornito alla creazione malformato o già usato |
+| `unknown-reference` | Famiglia, attrezzo, muscolo, etichetta o fonte inesistente |
+| `duplicate-muscle`, `duplicate-tag` | Lo stesso muscolo o la stessa etichetta due volte nello stesso esercizio |
 
 ## 4. Concorrenza
 
@@ -152,6 +182,12 @@ I riepiloghi contengono già la mappa muscolare e le etichette: bastano per tutt
 | `POST /api/sources`, `PATCH /api/sources/{id}`, `DELETE /api/sources/{id}` | Gestione delle fonti, per la form dell'esercizio | US-03 |
 
 Gruppi muscolari, muscoli e attrezzi non si creano né si eliminano dall'interfaccia in fase 1: arrivano dal seed o dall'importazione.
+
+Note sui corpi:
+
+- Nei campi di testo facoltativi una stringa vuota o di soli spazi vale `null`; gli spazi ai bordi si tolgono sempre.
+- `POST /api/exercises` accetta un `code` facoltativo; senza, il server lo genera dal nome e, se è già usato, aggiunge `-2`, `-3`… `PUT` non lo accetta: il `code` non cambia.
+- Le fonti nuove continuano la numerazione dell'Excel (`src-49`, `src-50`…). `url`, se presente, deve iniziare con `http://` o `https://`, perché l'interfaccia lo apre come link.
 
 **Utilizzi.** Prima di un'eliminazione il client chiede cosa verrebbe toccato, per scrivere la conferma con i numeri giusti:
 

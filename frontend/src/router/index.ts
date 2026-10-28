@@ -4,6 +4,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw, type Router } from
 const PlansPage = () => import('@/pages/PlansPage.vue')
 const CatalogPage = () => import('@/pages/CatalogPage.vue')
 const ExerciseDetailPage = () => import('@/pages/ExerciseDetailPage.vue')
+const ExerciseFormPage = () => import('@/pages/ExerciseFormPage.vue')
 const SettingsPage = () => import('@/pages/SettingsPage.vue')
 const NotFoundPage = () => import('@/pages/NotFoundPage.vue')
 
@@ -15,6 +16,13 @@ export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: PlansPage },
   { path: '/schede', name: 'plans', component: PlansPage },
   { path: '/catalogo', name: 'catalog', component: CatalogPage },
+  { path: '/catalogo/esercizi/nuovo', name: 'exercise-new', component: ExerciseFormPage },
+  {
+    path: '/catalogo/esercizi/:id(\\d+)/modifica',
+    name: 'exercise-edit',
+    component: ExerciseFormPage,
+    props: (route) => ({ id: Number(route.params.id) }),
+  },
   {
     path: '/catalogo/esercizi/:id(\\d+)',
     name: 'exercise',

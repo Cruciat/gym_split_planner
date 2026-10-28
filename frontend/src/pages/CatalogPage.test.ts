@@ -118,6 +118,16 @@ describe('CatalogPage', () => {
     expect(wrapper.get('[data-testid="open-filters"]').text()).toBe('Filtri (2)')
   })
 
+  it('Nuovo esercizio apre la form vuota (US-04)', async () => {
+    const { wrapper, router } = await mountAt('/catalogo')
+
+    await wrapper.get('[data-testid="new-exercise"]').trigger('click')
+
+    await vi.waitFor(() => {
+      expect(router.currentRoute.value.path).toBe('/catalogo/esercizi/nuovo')
+    })
+  })
+
   it('segnala un catalogo che non si carica', async () => {
     stubFetch({ '/api/catalog': () => jsonResponse({ code: 'internal-error', title: 'x' }, 500) })
 

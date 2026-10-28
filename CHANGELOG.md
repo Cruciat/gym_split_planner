@@ -10,6 +10,9 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 - Dettaglio dell'esercizio: muscoli P e S, etichette con le note, famiglie, varianti cliccabili, fonti.
 - Navigazione tra Schede, Catalogo e Impostazioni (in alto su computer, in basso su telefono); Schede e Impostazioni sono ancora segnaposto.
 - API `GET /api/catalog` (tutto il catalogo, con `ETag`) e `GET /api/exercises/{id}`.
+- Creazione e modifica degli esercizi da una form: famiglie e rango, attrezzo, tipo, allungamento, confidenza, griglia dei muscoli a tre stati (vuoto → S → P), etichette con nota, fonti (anche nuove), note. Errori accanto ai campi; conferma prima di uscire con modifiche non salvate.
+- Dal dettaglio: disattivare e riattivare un esercizio, eliminarlo se non è usato in nessuna scheda (altrimenti l'app spiega dove è usato e propone di disattivarlo).
+- API `POST`, `PUT`, `DELETE /api/exercises`, `GET /api/exercises/{id}/usage` e `POST`, `PATCH`, `DELETE /api/sources`; gli errori `rule-violation` elencano tutte le regole violate con il campo a cui si riferiscono.
 
 ## [0.3.0] - 2026-10-28
 

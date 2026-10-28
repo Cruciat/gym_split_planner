@@ -8,6 +8,13 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from gym_split_planner.services.errors import (
+    InUseError,
+    NotFoundError,
+    RuleViolationError,
+    ServiceError,
+)
+
 logger = logging.getLogger(__name__)
 
 PROBLEM_JSON = "application/problem+json"
@@ -63,6 +70,29 @@ async def _handle_api_problem(_request: Request, exc: Exception) -> JSONResponse
     return problem_response(exc.status, exc.code, exc.title, exc.detail, **exc.extra)
 
 
+async def _handle_service_error(_request: Request, exc: Exception) -> JSONResponse:
+    """Errori previsti dei casi d'uso → Problem Details con il ``code`` del contratto."""
+    assert isinstance(exc, ServiceError)
+    if isinstance(exc, NotFoundError):
+        return problem_response(404, "not-found", exc.title, exc.detail)
+    if isinstance(exc, InUseError):
+        return problem_response(409, "in-use", exc.title, exc.detail, usage=dict(exc.usage))
+    if isinstance(exc, RuleViolationError):
+        first = exc.errors[0]
+        return problem_response(
+            422,
+            "rule-violation",
+            exc.title,
+            exc.detail,
+            rule=first.rule,
+            violations=[
+                {"rule": e.rule, "field": e.field, "message": e.message} for e in exc.errors
+            ],
+        )
+    logger.error("Errore di servizio senza traduzione: %s", type(exc).__name__)
+    return problem_response(500, "internal-error", "Errore interno", exc.title)
+
+
 async def _handle_http_exception(_request: Request, exc: Exception) -> JSONResponse:
     assert isinstance(exc, StarletteHTTPException)
     known = _DEFAULT_PROBLEMS.get(exc.status_code)
@@ -105,6 +135,7 @@ async def _handle_unexpected(_request: Request, exc: Exception) -> JSONResponse:
 def install_error_handlers(app: FastAPI) -> None:
     """Registra i gestori che trasformano ogni errore in Problem Details."""
     app.add_exception_handler(ApiProblem, _handle_api_problem)
+    app.add_exception_handler(ServiceError, _handle_service_error)
     app.add_exception_handler(StarletteHTTPException, _handle_http_exception)
     app.add_exception_handler(RequestValidationError, _handle_validation_error)
     app.add_exception_handler(Exception, _handle_unexpected)

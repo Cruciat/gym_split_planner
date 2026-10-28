@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { NAlert, NButton, NH1, NSkeleton, NTag } from 'naive-ui'
-import { ChevronLeft, ExternalLink } from 'lucide-vue-next'
+import { NAlert, NButton, NH1, NSkeleton, NTag, useDialog, useMessage } from 'naive-ui'
+import { ChevronLeft, ExternalLink, Pencil } from 'lucide-vue-next'
 import { computed, onMounted, ref, watch } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 
-import { api, type ExerciseDetail, type Variant } from '@/api/client'
+import { api, asProblem, type ExerciseDetail, type Variant } from '@/api/client'
+import { formFromDetail, toExerciseInput } from '@/catalog/exerciseForm'
 import TagBadges from '@/components/TagBadges.vue'
 import { useCatalogStore } from '@/stores/catalog'
 import { texts } from '@/texts'
@@ -13,6 +14,9 @@ import { texts } from '@/texts'
 const props = defineProps<{ id: number }>()
 
 const store = useCatalogStore()
+const router = useRouter()
+const dialog = useDialog()
+const message = useMessage()
 const t = texts.exercise
 const labels = texts.labels
 
@@ -38,6 +42,94 @@ async function load(): Promise<void> {
 }
 
 onMounted(load)
+
+// --- Azioni (US-05) --------------------------------------------------------------
+
+const busy = ref(false)
+
+function showProblem(error: unknown, status: number): void {
+  const problem = asProblem(error, status)
+  message.error(problem.detail ?? problem.title)
+}
+
+/** Disattiva o riattiva: un `PUT` con tutti i campi, come la form. */
+async function setActive(active: boolean): Promise<void> {
+  if (detail.value === null) return
+  busy.value = true
+  try {
+    const { data, error, response } = await api.PUT('/api/exercises/{exercise_id}', {
+      params: { path: { exercise_id: props.id } },
+      body: toExerciseInput({ ...formFromDetail(detail.value), is_active: active }),
+    })
+    if (data === undefined) {
+      showProblem(error, response.status)
+      return
+    }
+    detail.value = data
+    await store.load(true)
+    message.success(active ? t.reactivated : t.deactivated)
+  } finally {
+    busy.value = false
+  }
+}
+
+/**
+ * Elimina solo un esercizio mai usato. Se è in una scheda lo dice, con i nomi delle
+ * schede, e propone di disattivarlo (US-05 CA1, CA2; wireframe § 4.2).
+ */
+async function askDelete(): Promise<void> {
+  if (detail.value === null) return
+  const current = detail.value
+  busy.value = true
+  try {
+    const {
+      data: usage,
+      error,
+      response,
+    } = await api.GET('/api/exercises/{exercise_id}/usage', {
+      params: { path: { exercise_id: props.id } },
+    })
+    if (usage === undefined) {
+      showProblem(error, response.status)
+      return
+    }
+    if (usage.plans.length > 0) {
+      const text = t.inUse(usage.plans.map((plan) => plan.name))
+      dialog.info({
+        title: t.inUseTitle,
+        content: current.is_active ? text : `${text} ${t.inUseInactive}`,
+        positiveText: current.is_active ? t.deactivate : t.close,
+        negativeText: current.is_active ? t.cancel : undefined,
+        onPositiveClick: () => {
+          if (current.is_active) void setActive(false)
+        },
+      })
+      return
+    }
+    dialog.warning({
+      title: t.deleteTitle,
+      content: t.deleteConfirm(current.name),
+      positiveText: t.deleteAction,
+      negativeText: t.cancel,
+      onPositiveClick: () => remove(current.name),
+    })
+  } finally {
+    busy.value = false
+  }
+}
+
+async function remove(name: string): Promise<void> {
+  const { error, response } = await api.DELETE('/api/exercises/{exercise_id}', {
+    params: { path: { exercise_id: props.id } },
+  })
+  if (!response.ok) {
+    showProblem(error, response.status)
+    return
+  }
+  await store.load(true)
+  message.success(t.deleted(name))
+  await router.push('/catalogo')
+}
 // Dalle varianti si passa a un altro esercizio con la stessa pagina (US-02 CA2).
 watch(() => props.id, load)
 
@@ -88,10 +180,39 @@ const tagRows = computed(() =>
 
     <article v-else-if="detail" data-testid="exercise-detail">
       <header>
-        <NH1 class="title">
-          {{ detail.name }}
-          <TagBadges :links="detail.tags" />
-        </NH1>
+        <div class="heading">
+          <NH1 class="title">
+            {{ detail.name }}
+            <TagBadges :links="detail.tags" />
+          </NH1>
+          <div class="actions">
+            <NButton
+              type="primary"
+              data-testid="edit-exercise"
+              @click="router.push(`/catalogo/esercizi/${String(id)}/modifica`)"
+            >
+              <template #icon><Pencil :size="16" /></template>
+              {{ t.edit }}
+            </NButton>
+            <NButton
+              secondary
+              :disabled="busy"
+              data-testid="toggle-active"
+              @click="setActive(!detail.is_active)"
+            >
+              {{ detail.is_active ? t.deactivate : t.reactivate }}
+            </NButton>
+            <NButton
+              secondary
+              type="error"
+              :disabled="busy"
+              data-testid="delete-exercise"
+              @click="askDelete"
+            >
+              {{ t.delete }}
+            </NButton>
+          </div>
+        </div>
         <p class="summary">
           {{ familyName(detail.primary_family_id) }} · {{ equipmentName(detail.equipment_id) }} ·
           {{ labels.kind[detail.kind] }} ·
@@ -231,8 +352,22 @@ const tagRows = computed(() =>
   color: inherit;
 }
 
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+}
+
 .title {
   margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .summary {

@@ -1,7 +1,16 @@
+import { flushPromises } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { jsonResponse, makeCatalog, makeDetail } from '@/test/fixtures'
-import { mountAt, setMobile, stubFetch } from '@/test/mount'
+import {
+  dialogButton,
+  inBody,
+  mountAt,
+  requestBodies,
+  type Routes,
+  setMobile,
+  stubFetch,
+} from '@/test/mount'
 
 describe('ExerciseDetailPage', () => {
   beforeEach(() => {
@@ -69,5 +78,88 @@ describe('ExerciseDetailPage', () => {
     const { wrapper } = await mountAt('/catalogo/esercizi/abc')
 
     expect(wrapper.text()).toContain('Pagina non trovata')
+  })
+
+  describe('azioni (US-05)', () => {
+    const routes = (extra: Routes = {}): Routes => ({
+      '/api/catalog': () => jsonResponse(makeCatalog()),
+      'GET /api/exercises/4': () => jsonResponse(makeDetail()),
+      'PUT /api/exercises/4': async (request) =>
+        jsonResponse({ ...makeDetail(), ...((await request.json()) as object) }),
+      'GET /api/exercises/4/usage': () => jsonResponse({ plans: [] }),
+      'DELETE /api/exercises/4': () => new Response(null, { status: 204 }),
+      ...extra,
+    })
+
+    it('Modifica apre la form', async () => {
+      stubFetch(routes())
+      const { wrapper, router } = await mountAt('/catalogo/esercizi/4')
+
+      await wrapper.get('[data-testid="edit-exercise"]').trigger('click')
+
+      await vi.waitFor(() => {
+        expect(router.currentRoute.value.path).toBe('/catalogo/esercizi/4/modifica')
+      })
+    })
+
+    it('disattiva e riattiva con un PUT di tutti i campi', async () => {
+      const fetchMock = stubFetch(routes())
+      const { wrapper } = await mountAt('/catalogo/esercizi/4')
+
+      await wrapper.get('[data-testid="toggle-active"]').trigger('click')
+      await vi.waitFor(() => {
+        expect(wrapper.get('[data-testid="detail-status"]').text()).toBe('Disattivato')
+      })
+      expect(wrapper.get('[data-testid="toggle-active"]').text()).toBe('Riattiva')
+
+      const [body] = await requestBodies(fetchMock, 'PUT', '/api/exercises/4')
+      expect(body).toMatchObject({
+        name: 'Estensione sopra la testa ai cavi',
+        is_active: false,
+        muscles: [{ muscle_id: 3, level: 'P', note: 'in allungamento' }],
+        source_ids: [1],
+      })
+    })
+
+    it('elimina un esercizio mai usato dopo la conferma (US-05 CA2)', async () => {
+      const fetchMock = stubFetch(routes())
+      const { wrapper, router } = await mountAt('/catalogo/esercizi/4')
+
+      await wrapper.get('[data-testid="delete-exercise"]').trigger('click')
+      await flushPromises()
+      expect(inBody('.n-dialog')[0]?.text()).toContain('non è usato in nessuna scheda')
+
+      await dialogButton('Elimina esercizio').trigger('click')
+
+      await vi.waitFor(() => {
+        expect(router.currentRoute.value.path).toBe('/catalogo')
+      })
+      const deletes = fetchMock.mock.calls.filter(([r]) => r.method === 'DELETE')
+      expect(deletes).toHaveLength(1)
+    })
+
+    it('un esercizio usato si può solo disattivare (US-05 CA1)', async () => {
+      const fetchMock = stubFetch(
+        routes({
+          'GET /api/exercises/4/usage': () =>
+            jsonResponse({ plans: [{ id: 1, name: 'PPL autunno', slots: 2 }] }),
+        }),
+      )
+      const { wrapper, router } = await mountAt('/catalogo/esercizi/4')
+
+      await wrapper.get('[data-testid="delete-exercise"]').trigger('click')
+      await flushPromises()
+      expect(inBody('.n-dialog')[0]?.text()).toContain('«PPL autunno» lo usa')
+
+      await dialogButton('Disattiva').trigger('click')
+
+      await vi.waitFor(async () => {
+        expect(await requestBodies(fetchMock, 'PUT', '/api/exercises/4')).toEqual([
+          expect.objectContaining({ is_active: false }),
+        ])
+      })
+      expect(fetchMock.mock.calls.some(([r]) => r.method === 'DELETE')).toBe(false)
+      expect(router.currentRoute.value.path).toBe('/catalogo/esercizi/4')
+    })
   })
 })
