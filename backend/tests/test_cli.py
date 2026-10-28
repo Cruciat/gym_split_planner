@@ -21,6 +21,27 @@ def test_migrate_command(capsys: pytest.CaptureFixture[str]) -> None:
     assert "Database alla revisione 0002" in capsys.readouterr().out
 
 
+def test_seed_command_loads_once(capsys: pytest.CaptureFixture[str]) -> None:
+    main(["migrate"])
+    main(["seed"])
+    main(["seed"])
+
+    out = capsys.readouterr().out
+    assert "Dati iniziali caricati: 81 esercizi, 40 famiglie, 6 split" in out
+    assert "Database già popolato" in out
+
+
+def test_seed_command_can_be_skipped(
+    capsys: pytest.CaptureFixture[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("GSP_SKIP_SEED", "1")
+    get_settings.cache_clear()
+    main(["migrate"])
+    main(["seed"])
+
+    assert "Dati iniziali saltati" in capsys.readouterr().out
+
+
 def test_openapi_command_prints_schema(capsys: pytest.CaptureFixture[str]) -> None:
     main(["openapi"])
 

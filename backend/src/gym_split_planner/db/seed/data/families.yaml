@@ -1,0 +1,169 @@
+# Dati iniziali di Gym Split Planner (docs/design/dati-iniziali.md).
+# Caricati una sola volta, su database vuoto, al primo avvio. Riferimenti per `code`.
+# Origine: banca_dati_esercizi.xlsx (ricerca), più famiglie, etichette e split nuovi
+# decisi nel documento sui dati iniziali. Dopo il primo avvio il catalogo si modifica
+# dall'app: questi file non vengono riletti.
+#
+# Famiglie di movimento (dati iniziali, § 3), nell'ordine del catalogo.
+
+families:
+- code: press-horizontal
+  name: Spinta orizzontale
+  group: chest
+  description: 'Spinte a busto orizzontale: petto medio, con petto alto e tricipiti'
+- code: press-incline
+  name: Spinta inclinata
+  group: chest
+  description: 'Spinte su panca o seduta inclinata: petto alto'
+- code: fly-horizontal
+  name: Croce orizzontale
+  group: chest
+  description: 'Croci con braccia all''altezza del petto: petto medio in allungamento'
+- code: fly-low-high
+  name: Croce dal basso
+  group: chest
+  description: 'Croci dal basso verso l''alto o su panca inclinata: petto alto'
+- code: fly-high-low
+  name: Croce dall'alto
+  group: chest
+  description: 'Croci dall''alto verso il basso: petto basso in isolamento'
+- code: dip-decline
+  name: Dip e declinata
+  group: chest
+  description: 'Spinte verso il basso: petto basso e tricipiti'
+- code: press-vertical
+  name: Spinta verticale
+  group: shoulders
+  description: 'Spinte sopra la testa: deltoide anteriore'
+- code: raise-lateral
+  name: Alzata laterale
+  group: shoulders
+  description: 'Abduzione della spalla: deltoide laterale'
+- code: rear-delt
+  name: Deltoide posteriore
+  group: shoulders
+  description: 'Abduzione orizzontale: deltoide posteriore e trapezio medio'
+- code: raise-front
+  name: Alzata frontale
+  group: shoulders
+  description: Flessione della spalla; in genere superflua
+- code: external-rotation
+  name: Extrarotazione
+  group: shoulders
+  description: Salute della cuffia dei rotatori
+- code: triceps-overhead
+  name: Estensione sopra la testa
+  group: triceps
+  description: 'Gomito sopra la testa: capo lungo in allungamento'
+- code: triceps-pushdown
+  name: Estensione a braccio lungo il corpo
+  group: triceps
+  description: 'Pushdown e kickback: capi laterale e mediale'
+- code: triceps-press
+  name: Spinta a presa stretta
+  group: triceps
+  description: Multiarticolari con enfasi sui tricipiti
+- code: pull-vertical
+  name: Tirata verticale
+  group: back
+  description: 'Lat machine e trazioni: gran dorsale'
+- code: pull-horizontal
+  name: Tirata orizzontale
+  group: back
+  description: 'Rematori: dorsale e trapezio medio'
+- code: straight-arm
+  name: Braccia tese
+  group: back
+  description: 'Estensione della spalla a gomito fermo: dorsale isolato'
+- code: shrug
+  name: Scrollata
+  group: back
+  description: 'Elevazione delle scapole: trapezio superiore'
+- code: y-raise
+  name: Y-raise
+  group: back
+  description: 'Depressione e rotazione verso l''alto delle scapole: trapezio inferiore'
+- code: lower-back
+  name: Estensione della schiena
+  group: back
+  description: Erettori spinali
+- code: curl-front
+  name: Curl con braccio davanti
+  group: biceps
+  description: Curl su panca Scott e in piedi
+- code: curl-behind
+  name: Curl con braccio dietro
+  group: biceps
+  description: 'Braccio dietro il corpo: bicipite in allungamento'
+- code: curl-hammer
+  name: Curl a martello
+  group: biceps
+  description: 'Presa neutra: brachiale e brachioradiale'
+- code: wrist-flexion
+  name: Flessione del polso
+  group: forearms
+  description: Flessori del polso e delle dita
+- code: wrist-extension
+  name: Estensione del polso
+  group: forearms
+  description: Estensori e brachioradiale
+- code: grip
+  name: Presa statica
+  group: forearms
+  description: 'Tenute: presa e trapezio'
+- code: forearm-rotation
+  name: Prono-supinazione
+  group: forearms
+  description: Pronatori e supinatori
+- code: squat-guided
+  name: Squat guidato e pressa
+  group: legs
+  description: 'Multiarticolari a ginocchio dominante: quadricipiti'
+- code: knee-extension
+  name: Estensione del ginocchio
+  group: legs
+  description: Quadricipiti e retto femorale
+- code: knee-flexion
+  name: Flessione del ginocchio
+  group: legs
+  description: Femorali
+- code: hip-hinge
+  name: Cerniera dell'anca
+  group: legs
+  description: Femorali e glutei in allungamento
+- code: hip-thrust
+  name: Spinta dell'anca
+  group: legs
+  description: Grande gluteo; aiuta il controllo del bacino
+- code: abduction
+  name: Abduzione
+  group: legs
+  description: Medio e piccolo gluteo
+- code: adduction
+  name: Adduzione
+  group: legs
+  description: Adduttori
+- code: calf-straight
+  name: Polpacci a gamba tesa
+  group: legs
+  description: Gastrocnemio e soleo
+- code: calf-bent
+  name: Polpacci a ginocchio flesso
+  group: legs
+  description: Soleo
+- code: crunch
+  name: Crunch
+  group: core
+  description: 'Flessione del busto: retto dell''addome'
+- code: reverse-crunch
+  name: Reverse crunch
+  group: core
+  description: 'Bacino che si arrotola: retto dell''addome, parte bassa'
+- code: anti-rotation
+  name: Anti-rotazione
+  group: core
+  description: Obliqui e stabilizzatori
+- code: core-stability
+  name: Controllo del tronco
+  group: core
+  description: Stabilità e controllo del bacino

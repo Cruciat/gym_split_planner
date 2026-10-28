@@ -1,0 +1,232 @@
+# Dati iniziali di Gym Split Planner (docs/design/dati-iniziali.md).
+# Caricati una sola volta, su database vuoto, al primo avvio. Riferimenti per `code`.
+# Origine: banca_dati_esercizi.xlsx (ricerca), più famiglie, etichette e split nuovi
+# decisi nel documento sui dati iniziali. Dopo il primo avvio il catalogo si modifica
+# dall'app: questi file non vengono riletti.
+#
+# Gruppi muscolari, muscoli (priorità e fasce del catalogo) e attrezzi.
+
+muscle_groups:
+- code: chest
+  name: Petto
+- code: shoulders
+  name: Spalle
+- code: triceps
+  name: Tricipiti
+- code: back
+  name: Schiena
+- code: biceps
+  name: Bicipiti e flessori del gomito
+- code: forearms
+  name: Avambracci
+- code: legs
+  name: Gambe
+- code: core
+  name: Core
+muscles:
+- code: chest-upper
+  name: Petto alto (fascio clavicolare)
+  short_name: Petto alto
+  group: chest
+  priority: priority
+  weekly_min: 10
+  weekly_max: 18
+- code: chest-mid
+  name: Petto medio (fascio sternocostale)
+  short_name: Petto medio
+  group: chest
+  priority: priority
+  weekly_min: 10
+  weekly_max: 18
+- code: chest-lower
+  name: Petto basso (fascio addominale)
+  short_name: Petto basso
+  group: chest
+  priority: none
+  notes: Lavora già negli esercizi piani
+- code: delt-front
+  name: Deltoide anteriore
+  short_name: Deltoide anteriore
+  group: shoulders
+  priority: none
+  notes: Coperto dalle spinte di petto
+- code: delt-lateral
+  name: Deltoide laterale
+  short_name: Deltoide laterale
+  group: shoulders
+  priority: priority
+  weekly_min: 10
+  weekly_max: 18
+- code: delt-rear
+  name: Deltoide posteriore
+  short_name: Deltoide posteriore
+  group: shoulders
+  priority: priority
+  weekly_min: 10
+  weekly_max: 18
+- code: rotator-cuff
+  name: 'Cuffia dei rotatori (extrarotatori: sottospinato e piccolo rotondo)'
+  short_name: Cuffia dei rotatori
+  group: shoulders
+  priority: none
+  notes: Aggiunto ai dati iniziali per l'extrarotazione; non presente nell'Excel
+- code: triceps-long
+  name: Tricipite, capo lungo
+  short_name: Tricipite lungo
+  group: triceps
+  priority: priority
+  weekly_min: 10
+  weekly_max: 18
+- code: triceps-lateral
+  name: Tricipite, capo laterale
+  short_name: Tricipite laterale
+  group: triceps
+  priority: priority
+  weekly_min: 10
+  weekly_max: 18
+- code: triceps-medial
+  name: Tricipite, capo mediale
+  short_name: Tricipite mediale
+  group: triceps
+  priority: priority
+  weekly_min: 10
+  weekly_max: 18
+- code: lats
+  name: Gran dorsale e grande rotondo
+  short_name: Gran dorsale
+  group: back
+  priority: priority
+  weekly_min: 10
+  weekly_max: 18
+- code: traps-mid
+  name: Trapezio medio e romboidi
+  short_name: Trapezio medio
+  group: back
+  priority: priority
+  weekly_min: 10
+  weekly_max: 18
+- code: traps-lower
+  name: Trapezio inferiore
+  short_name: Trapezio inferiore
+  group: back
+  priority: none
+  notes: Rilevante per il collo
+- code: traps-upper
+  name: Trapezio superiore
+  short_name: Trapezio superiore
+  group: back
+  priority: none
+  notes: Rilevante per il collo
+- code: erectors
+  name: Erettori spinali
+  short_name: Erettori spinali
+  group: back
+  priority: none
+- code: biceps
+  name: Bicipite brachiale
+  short_name: Bicipite
+  group: biceps
+  priority: priority
+  weekly_min: 10
+  weekly_max: 18
+- code: brachialis
+  name: Brachiale
+  short_name: Brachiale
+  group: biceps
+  priority: none
+- code: brachioradialis
+  name: Brachioradiale
+  short_name: Brachioradiale
+  group: biceps
+  priority: none
+- code: forearm-flexors
+  name: Flessori del polso e delle dita
+  short_name: Flessori avambraccio
+  group: forearms
+  priority: none
+- code: forearm-extensors
+  name: Estensori del polso e delle dita
+  short_name: Estensori avambraccio
+  group: forearms
+  priority: none
+- code: pronators-supinators
+  name: Pronatori e supinatori
+  short_name: Pronatori e supinatori
+  group: forearms
+  priority: none
+- code: quads
+  name: Quadricipiti (vasti)
+  short_name: Quadricipiti
+  group: legs
+  priority: standard
+  weekly_min: 6
+  weekly_max: 10
+  notes: Gambe a volume ridotto
+- code: rectus-femoris
+  name: Retto femorale
+  short_name: Retto femorale
+  group: legs
+  priority: none
+- code: hamstrings
+  name: Femorali
+  short_name: Femorali
+  group: legs
+  priority: standard
+  weekly_min: 6
+  weekly_max: 10
+  notes: Gambe a volume ridotto
+- code: glute-max
+  name: Grande gluteo
+  short_name: Grande gluteo
+  group: legs
+  priority: none
+- code: glute-med
+  name: Medio e piccolo gluteo
+  short_name: Medio gluteo
+  group: legs
+  priority: none
+- code: adductors
+  name: Adduttori
+  short_name: Adduttori
+  group: legs
+  priority: none
+- code: gastrocnemius
+  name: Gastrocnemio
+  short_name: Gastrocnemio
+  group: legs
+  priority: none
+- code: soleus
+  name: Soleo
+  short_name: Soleo
+  group: legs
+  priority: none
+- code: hip-flexors
+  name: Flessori dell'anca
+  short_name: Flessori dell'anca
+  group: legs
+  priority: none
+  notes: Vedi modulo anterior pelvic tilt
+- code: rectus-abdominis
+  name: Retto dell'addome
+  short_name: Retto dell'addome
+  group: core
+  priority: none
+- code: obliques
+  name: Obliqui
+  short_name: Obliqui
+  group: core
+  priority: none
+- code: stabilizers
+  name: Stabilizzatori (trasverso, quadrato dei lombi)
+  short_name: Stabilizzatori
+  group: core
+  priority: none
+equipment:
+- code: machine
+  name: Macchina
+- code: cable
+  name: Cavi
+- code: free-weight
+  name: Pesi liberi
+- code: bodyweight
+  name: Corpo libero

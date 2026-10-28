@@ -1,0 +1,655 @@
+# Dati iniziali di Gym Split Planner (docs/design/dati-iniziali.md).
+# Caricati una sola volta, su database vuoto, al primo avvio. Riferimenti per `code`.
+# Origine: banca_dati_esercizi.xlsx (ricerca), più famiglie, etichette e split nuovi
+# decisi nel documento sui dati iniziali. Dopo il primo avvio il catalogo si modifica
+# dall'app: questi file non vengono riletti.
+#
+# Split predefiniti (dati iniziali, § 6). reps: [minimo, massimo].
+#
+# optional: non entra nel volume. weekly_weight 0.5: a settimane alterne.
+
+splits:
+- code: ppl-3
+  name: Push/Pull/Legs, 3 giorni
+  description: Push, Pull e Legs una volta a settimana.
+  days:
+  - code: push
+    name: Push
+    times_per_week: 1
+    stretches: [pec-doorway, cross-body, triceps-overhead]
+    slots:
+    - family: press-incline
+      sets: 3
+      reps: [6, 12]
+    - family: press-horizontal
+      sets: 3
+      reps: [6, 12]
+      note: 'Variante: dip alla macchina per più fascio basso'
+    - family: fly-horizontal
+      sets: 3
+      reps: [10, 20]
+      note: 'Variante: dal basso verso l''alto per più fascio alto'
+    - family: raise-lateral
+      sets: 4
+      reps: [10, 20]
+    - family: triceps-overhead
+      sets: 3
+      reps: [10, 15]
+      note: Da seduti; in alternativa alla macchina
+    - family: triceps-pushdown
+      sets: 2
+      reps: [10, 15]
+    - family: press-vertical
+      sets: 2
+      reps: [8, 12]
+      optional: true
+      note: 'Facoltativo: solo se il collo lo tollera'
+  - code: pull
+    name: Pull
+    times_per_week: 1
+    stretches: [lat-kneeling, biceps-wall, upper-trap, forearm-flexors]
+    slots:
+    - family: pull-vertical
+      sets: 3
+      reps: [6, 12]
+      note: Presa prona media o neutra
+    - family: pull-horizontal
+      sets: 3
+      reps: [6, 12]
+      note: Variante se manca la macchina
+    - family: rear-delt
+      sets: 3
+      reps: [10, 20]
+    - family: curl-front
+      sets: 3
+      reps: [8, 15]
+    - family: curl-behind
+      sets: 2
+      reps: [10, 15]
+      note: In alternativa Bayesian curl
+    - family: shrug
+      sets: 2
+      reps: [10, 15]
+      weekly_weight: 0.5
+      note: Settimane alterne con Y-raise (peso 0,5)
+    - family: y-raise
+      sets: 2
+      reps: [10, 15]
+      weekly_weight: 0.5
+      note: Settimane alterne con scrollate (peso 0,5)
+    - family: wrist-extension
+      sets: 2
+      reps: [12, 20]
+      optional: true
+      note: Facoltativo
+    - family: straight-arm
+      sets: 2
+      reps: [10, 15]
+      optional: true
+      note: 'Facoltativo: per più dorsale'
+  - code: legs
+    name: Legs
+    times_per_week: 1
+    stretches: [hamstrings, hip-flexors-kneeling, quads-standing, calf-wall]
+    slots:
+    - family: squat-guided
+      sets: 3
+      reps: [6, 12]
+      note: In alternativa pressa a 45°
+    - family: knee-flexion
+      sets: 3
+      reps: [8, 15]
+      note: Sdraiato se manca quello da seduti
+    - family: knee-extension
+      sets: 2
+      reps: [10, 15]
+    - family: hip-thrust
+      sets: 2
+      reps: [8, 12]
+      note: Bacino in retroversione in cima al movimento
+    - family: calf-straight
+      sets: 3
+      reps: [10, 15]
+      note: Alla pressa
+    - family: crunch
+      sets: 3
+      reps: [10, 15]
+    - family: reverse-crunch
+      sets: 2
+      reps: [10, 15]
+      note: Oppure Pallof press
+    - family: abduction
+      sets: 2
+      reps: [12, 20]
+      optional: true
+      note: Facoltativo
+- code: ppl-6
+  name: Push/Pull/Legs, 6 giorni
+  description: Push, Pull e Legs due volte a settimana.
+  days:
+  - code: push
+    name: Push
+    times_per_week: 2
+    stretches: [pec-doorway, cross-body, triceps-overhead]
+    slots:
+    - family: press-incline
+      sets: 3
+      reps: [6, 12]
+    - family: press-horizontal
+      sets: 3
+      reps: [6, 12]
+      note: 'Variante: dip alla macchina per più fascio basso'
+    - family: fly-horizontal
+      sets: 3
+      reps: [10, 20]
+      note: 'Variante: dal basso verso l''alto per più fascio alto'
+    - family: raise-lateral
+      sets: 4
+      reps: [10, 20]
+    - family: triceps-overhead
+      sets: 3
+      reps: [10, 15]
+      note: Da seduti; in alternativa alla macchina
+    - family: triceps-pushdown
+      sets: 2
+      reps: [10, 15]
+    - family: press-vertical
+      sets: 2
+      reps: [8, 12]
+      optional: true
+      note: 'Facoltativo: solo se il collo lo tollera'
+  - code: pull
+    name: Pull
+    times_per_week: 2
+    stretches: [lat-kneeling, biceps-wall, upper-trap, forearm-flexors]
+    slots:
+    - family: pull-vertical
+      sets: 3
+      reps: [6, 12]
+      note: Presa prona media o neutra
+    - family: pull-horizontal
+      sets: 3
+      reps: [6, 12]
+      note: Variante se manca la macchina
+    - family: rear-delt
+      sets: 3
+      reps: [10, 20]
+    - family: curl-front
+      sets: 3
+      reps: [8, 15]
+    - family: curl-behind
+      sets: 2
+      reps: [10, 15]
+      note: In alternativa Bayesian curl
+    - family: shrug
+      sets: 2
+      reps: [10, 15]
+      weekly_weight: 0.5
+      note: Settimane alterne con Y-raise (peso 0,5)
+    - family: y-raise
+      sets: 2
+      reps: [10, 15]
+      weekly_weight: 0.5
+      note: Settimane alterne con scrollate (peso 0,5)
+    - family: wrist-extension
+      sets: 2
+      reps: [12, 20]
+      optional: true
+      note: Facoltativo
+    - family: straight-arm
+      sets: 2
+      reps: [10, 15]
+      optional: true
+      note: 'Facoltativo: per più dorsale'
+  - code: legs
+    name: Legs
+    times_per_week: 2
+    stretches: [hamstrings, hip-flexors-kneeling, quads-standing, calf-wall]
+    slots:
+    - family: squat-guided
+      sets: 3
+      reps: [6, 12]
+      note: In alternativa pressa a 45°
+    - family: knee-flexion
+      sets: 3
+      reps: [8, 15]
+      note: Sdraiato se manca quello da seduti
+    - family: knee-extension
+      sets: 2
+      reps: [10, 15]
+    - family: hip-thrust
+      sets: 2
+      reps: [8, 12]
+      note: Bacino in retroversione in cima al movimento
+    - family: calf-straight
+      sets: 3
+      reps: [10, 15]
+      note: Alla pressa
+    - family: crunch
+      sets: 3
+      reps: [10, 15]
+    - family: reverse-crunch
+      sets: 2
+      reps: [10, 15]
+      note: Oppure Pallof press
+    - family: abduction
+      sets: 2
+      reps: [12, 20]
+      optional: true
+      note: Facoltativo
+- code: ul-4
+  name: Upper/Lower, 4 giorni
+  description: Upper e Lower due volte a settimana.
+  days:
+  - code: upper
+    name: Upper
+    times_per_week: 2
+    stretches: [pec-doorway, lat-kneeling, cross-body, upper-trap]
+    slots:
+    - family: press-incline
+      sets: 3
+      reps: [6, 12]
+    - family: pull-vertical
+      sets: 3
+      reps: [6, 12]
+    - family: press-horizontal
+      sets: 3
+      reps: [6, 12]
+      note: 'Seconda seduta: croci ai cavi (10-20 ripetizioni)'
+    - family: pull-horizontal
+      sets: 3
+      reps: [6, 12]
+    - family: raise-lateral
+      sets: 3
+      reps: [10, 20]
+    - family: rear-delt
+      sets: 2
+      reps: [10, 20]
+      note: Se la seduta è troppo lunga, togli questo
+    - family: curl-front
+      sets: 2
+      reps: [8, 15]
+    - family: triceps-overhead
+      sets: 3
+      reps: [10, 15]
+  - code: lower
+    name: Lower
+    times_per_week: 2
+    stretches: [hamstrings, hip-flexors-kneeling, quads-standing, calf-wall]
+    slots:
+    - family: squat-guided
+      sets: 3
+      reps: [6, 12]
+    - family: knee-flexion
+      sets: 3
+      reps: [8, 15]
+    - family: knee-extension
+      sets: 2
+      reps: [10, 15]
+    - family: hip-thrust
+      sets: 2
+      reps: [8, 12]
+      note: Bacino in retroversione in cima al movimento
+    - family: calf-straight
+      sets: 2
+      reps: [10, 15]
+      note: Alla pressa
+    - family: crunch
+      sets: 3
+      reps: [10, 15]
+    - family: reverse-crunch
+      sets: 2
+      reps: [10, 15]
+    - family: abduction
+      sets: 2
+      reps: [10, 20]
+      optional: true
+      note: Facoltativo
+- code: pplul-5
+  name: Push/Pull/Legs/Upper/Lower, 5 giorni
+  description: Push, Pull, Legs, Upper e Lower una volta a settimana.
+  days:
+  - code: push
+    name: Push
+    times_per_week: 1
+    stretches: [pec-doorway, cross-body, triceps-overhead]
+    slots:
+    - family: press-incline
+      sets: 3
+      reps: [6, 12]
+    - family: press-horizontal
+      sets: 3
+      reps: [6, 12]
+      note: 'Variante: dip alla macchina per più fascio basso'
+    - family: fly-horizontal
+      sets: 3
+      reps: [10, 20]
+      note: 'Variante: dal basso verso l''alto per più fascio alto'
+    - family: raise-lateral
+      sets: 4
+      reps: [10, 20]
+    - family: triceps-overhead
+      sets: 3
+      reps: [10, 15]
+      note: Da seduti; in alternativa alla macchina
+    - family: triceps-pushdown
+      sets: 2
+      reps: [10, 15]
+    - family: press-vertical
+      sets: 2
+      reps: [8, 12]
+      optional: true
+      note: 'Facoltativo: solo se il collo lo tollera'
+  - code: pull
+    name: Pull
+    times_per_week: 1
+    stretches: [lat-kneeling, biceps-wall, upper-trap, forearm-flexors]
+    slots:
+    - family: pull-vertical
+      sets: 3
+      reps: [6, 12]
+      note: Presa prona media o neutra
+    - family: pull-horizontal
+      sets: 3
+      reps: [6, 12]
+      note: Variante se manca la macchina
+    - family: rear-delt
+      sets: 3
+      reps: [10, 20]
+    - family: curl-front
+      sets: 3
+      reps: [8, 15]
+    - family: curl-behind
+      sets: 2
+      reps: [10, 15]
+      note: In alternativa Bayesian curl
+    - family: shrug
+      sets: 2
+      reps: [10, 15]
+      weekly_weight: 0.5
+      note: Settimane alterne con Y-raise (peso 0,5)
+    - family: y-raise
+      sets: 2
+      reps: [10, 15]
+      weekly_weight: 0.5
+      note: Settimane alterne con scrollate (peso 0,5)
+    - family: wrist-extension
+      sets: 2
+      reps: [12, 20]
+      optional: true
+      note: Facoltativo
+    - family: straight-arm
+      sets: 2
+      reps: [10, 15]
+      optional: true
+      note: 'Facoltativo: per più dorsale'
+  - code: legs
+    name: Legs
+    times_per_week: 1
+    stretches: [hamstrings, hip-flexors-kneeling, quads-standing, calf-wall]
+    slots:
+    - family: squat-guided
+      sets: 3
+      reps: [6, 12]
+      note: In alternativa pressa a 45°
+    - family: knee-flexion
+      sets: 3
+      reps: [8, 15]
+      note: Sdraiato se manca quello da seduti
+    - family: knee-extension
+      sets: 2
+      reps: [10, 15]
+    - family: hip-thrust
+      sets: 2
+      reps: [8, 12]
+      note: Bacino in retroversione in cima al movimento
+    - family: calf-straight
+      sets: 3
+      reps: [10, 15]
+      note: Alla pressa
+    - family: crunch
+      sets: 3
+      reps: [10, 15]
+    - family: reverse-crunch
+      sets: 2
+      reps: [10, 15]
+      note: Oppure Pallof press
+    - family: abduction
+      sets: 2
+      reps: [12, 20]
+      optional: true
+      note: Facoltativo
+  - code: upper
+    name: Upper
+    times_per_week: 1
+    stretches: [pec-doorway, lat-kneeling, cross-body, upper-trap]
+    slots:
+    - family: press-incline
+      sets: 3
+      reps: [6, 12]
+    - family: pull-vertical
+      sets: 3
+      reps: [6, 12]
+    - family: press-horizontal
+      sets: 3
+      reps: [6, 12]
+      note: 'Seconda seduta: croci ai cavi (10-20 ripetizioni)'
+    - family: pull-horizontal
+      sets: 3
+      reps: [6, 12]
+    - family: raise-lateral
+      sets: 3
+      reps: [10, 20]
+    - family: rear-delt
+      sets: 2
+      reps: [10, 20]
+      note: Se la seduta è troppo lunga, togli questo
+    - family: curl-front
+      sets: 2
+      reps: [8, 15]
+    - family: triceps-overhead
+      sets: 3
+      reps: [10, 15]
+  - code: lower
+    name: Lower
+    times_per_week: 1
+    stretches: [hamstrings, hip-flexors-kneeling, quads-standing, calf-wall]
+    slots:
+    - family: squat-guided
+      sets: 3
+      reps: [6, 12]
+    - family: knee-flexion
+      sets: 3
+      reps: [8, 15]
+    - family: knee-extension
+      sets: 2
+      reps: [10, 15]
+    - family: hip-thrust
+      sets: 2
+      reps: [8, 12]
+      note: Bacino in retroversione in cima al movimento
+    - family: calf-straight
+      sets: 2
+      reps: [10, 15]
+      note: Alla pressa
+    - family: crunch
+      sets: 3
+      reps: [10, 15]
+    - family: reverse-crunch
+      sets: 2
+      reps: [10, 15]
+    - family: abduction
+      sets: 2
+      reps: [10, 20]
+      optional: true
+      note: Facoltativo
+- code: pp-4
+  name: Push/Pull, 4 giorni
+  description: Push con quadricipiti e Pull con femorali e glutei, due volte a settimana.
+  days:
+  - code: push-quads
+    name: Push con quadricipiti
+    times_per_week: 2
+    stretches: [pec-doorway, triceps-overhead, quads-standing, hip-flexors-kneeling]
+    slots:
+    - family: press-incline
+      sets: 3
+      reps: [6, 12]
+    - family: press-horizontal
+      sets: 3
+      reps: [6, 12]
+    - family: fly-horizontal
+      sets: 2
+      reps: [10, 20]
+    - family: raise-lateral
+      sets: 4
+      reps: [10, 20]
+    - family: triceps-overhead
+      sets: 3
+      reps: [10, 15]
+    - family: squat-guided
+      sets: 2
+      reps: [6, 12]
+    - family: knee-extension
+      sets: 2
+      reps: [10, 15]
+    - family: crunch
+      sets: 2
+      reps: [10, 15]
+  - code: pull-hamstrings
+    name: Pull con femorali e glutei
+    times_per_week: 2
+    stretches: [lat-kneeling, biceps-wall, upper-trap, hamstrings]
+    slots:
+    - family: pull-vertical
+      sets: 3
+      reps: [6, 12]
+    - family: pull-horizontal
+      sets: 3
+      reps: [6, 12]
+    - family: rear-delt
+      sets: 3
+      reps: [10, 20]
+    - family: curl-front
+      sets: 3
+      reps: [8, 15]
+    - family: curl-behind
+      sets: 2
+      reps: [10, 15]
+    - family: knee-flexion
+      sets: 3
+      reps: [8, 15]
+    - family: hip-thrust
+      sets: 2
+      reps: [8, 12]
+      note: Bacino in retroversione in cima al movimento
+    - family: calf-straight
+      sets: 2
+      reps: [10, 15]
+      note: Alla pressa
+- code: fb-3
+  name: Full body, 3 giorni
+  description: Tre giorni full body diversi, una volta ciascuno.
+  days:
+  - code: full-a
+    name: Full body A
+    times_per_week: 1
+    stretches: [pec-doorway, lat-kneeling, hamstrings, hip-flexors-kneeling]
+    slots:
+    - family: squat-guided
+      sets: 3
+      reps: [6, 12]
+    - family: press-incline
+      sets: 3
+      reps: [6, 12]
+    - family: pull-vertical
+      sets: 3
+      reps: [6, 12]
+    - family: fly-horizontal
+      sets: 2
+      reps: [10, 20]
+    - family: raise-lateral
+      sets: 3
+      reps: [10, 20]
+    - family: knee-flexion
+      sets: 3
+      reps: [8, 15]
+    - family: curl-front
+      sets: 2
+      reps: [8, 15]
+    - family: triceps-overhead
+      sets: 2
+      reps: [10, 15]
+    - family: crunch
+      sets: 2
+      reps: [10, 15]
+      optional: true
+      note: Facoltativo
+  - code: full-b
+    name: Full body B
+    times_per_week: 1
+    stretches: [cross-body, upper-trap, quads-standing, calf-wall]
+    slots:
+    - family: hip-thrust
+      sets: 2
+      reps: [8, 12]
+      note: Bacino in retroversione in cima al movimento
+    - family: press-horizontal
+      sets: 3
+      reps: [6, 12]
+    - family: pull-horizontal
+      sets: 3
+      reps: [6, 12]
+    - family: fly-low-high
+      sets: 2
+      reps: [10, 20]
+    - family: raise-lateral
+      sets: 3
+      reps: [10, 20]
+    - family: rear-delt
+      sets: 3
+      reps: [10, 20]
+    - family: knee-extension
+      sets: 2
+      reps: [10, 15]
+    - family: curl-behind
+      sets: 2
+      reps: [10, 15]
+    - family: triceps-pushdown
+      sets: 2
+      reps: [10, 15]
+  - code: full-c
+    name: Full body C
+    times_per_week: 1
+    stretches: [pec-doorway, triceps-overhead, biceps-wall, hip-flexors-kneeling]
+    slots:
+    - family: press-incline
+      sets: 3
+      reps: [6, 12]
+    - family: pull-vertical
+      sets: 2
+      reps: [6, 12]
+    - family: pull-horizontal
+      sets: 2
+      reps: [6, 12]
+    - family: fly-horizontal
+      sets: 2
+      reps: [10, 20]
+    - family: raise-lateral
+      sets: 3
+      reps: [10, 20]
+    - family: rear-delt
+      sets: 2
+      reps: [10, 20]
+    - family: knee-flexion
+      sets: 3
+      reps: [8, 15]
+    - family: curl-front
+      sets: 2
+      reps: [8, 15]
+    - family: triceps-overhead
+      sets: 2
+      reps: [10, 15]
+    - family: reverse-crunch
+      sets: 2
+      reps: [10, 15]
