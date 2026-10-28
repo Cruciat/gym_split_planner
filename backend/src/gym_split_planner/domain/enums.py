@@ -72,3 +72,11 @@ class RoutineBlock(StrEnum):
 
     NECK = "neck"
     PELVIS = "pelvis"
+
+
+class BandStatus(StrEnum):
+    """Volume rispetto alla fascia obiettivo (algoritmo, § 2.2)."""
+
+    BELOW = "below"
+    WITHIN = "within"
+    ABOVE = "above"
