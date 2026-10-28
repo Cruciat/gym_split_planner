@@ -118,7 +118,13 @@ def test_d4_and_warnings(catalog: Catalog) -> None:
     analysis = analyze(plan, catalog, DEFAULT, settings)
 
     assert PlanWarning("session-too-long", day="push", session=1, minutes=60.5) in analysis.warnings
-    assert PlanWarning("empty-slot", day="extra", position=1, family="crunch") in analysis.warnings
+    # L'unico crunch del catalogo di prova ha "Collo: evitare": lo slot resta vuoto per quello.
+    assert (
+        PlanWarning(
+            "empty-slot", day="extra", position=1, family="crunch", excluded_by=("neck-avoid",)
+        )
+        in analysis.warnings
+    )
     assert PlanWarning("volume-below", muscle="chest-upper", volume=6) in analysis.warnings
     push = analysis.sessions[0]
     assert (push.day, push.session, push.max_muscle, push.max_volume) == (

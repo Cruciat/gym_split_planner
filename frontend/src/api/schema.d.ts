@@ -214,6 +214,95 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/plans': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Elenco delle schede
+     * @description Dalla modificata più di recente (US-19 CA1).
+     */
+    get: operations['read_plans']
+    put?: never
+    /**
+     * Crea una scheda
+     * @description Da uno split (copiato e generato, US-12) o vuota; restituisce la scheda completa.
+     */
+    post: operations['post_plan']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/plans/{plan_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Scheda completa
+     * @description Giorni, slot e analisi: volumi, sedute, avvisi (§ 7).
+     */
+    get: operations['read_plan']
+    put?: never
+    post?: never
+    /**
+     * Elimina una scheda
+     * @description Con giorni e slot. Non richiede ``If-Match``: la conferma è dell'interfaccia.
+     */
+    delete: operations['remove_plan']
+    options?: never
+    head?: never
+    /** Rinomina una scheda */
+    patch: operations['patch_plan']
+    trace?: never
+  }
+  '/api/plans/{plan_id}/activate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Rende attiva una scheda
+     * @description L'unica attiva; non cambia la revisione e non richiede ``If-Match``.
+     */
+    post: operations['post_plan_activate']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/plans/{plan_id}/duplicate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Duplica una scheda
+     * @description Copia completa con nome "… (copia)", non attiva.
+     */
+    post: operations['post_plan_duplicate']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/sources': {
     parameters: {
       query?: never
@@ -256,6 +345,26 @@ export interface paths {
      * @description Cambiano solo i campi inviati; ``null`` svuota i campi facoltativi.
      */
     patch: operations['patch_source']
+    trace?: never
+  }
+  '/api/splits': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Split predefiniti
+     * @description Preset con giorni e slot, per la procedura guidata (US-10 CA1).
+     */
+    get: operations['read_splits']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
     trace?: never
   }
   '/api/tags': {
@@ -355,6 +464,36 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
+    /** AnalysisOut */
+    AnalysisOut: {
+      /** Sessions */
+      sessions: components['schemas']['SessionOut'][]
+      /** Volumes */
+      volumes: components['schemas']['VolumeOut'][]
+      /** Warnings */
+      warnings: components['schemas']['WarningOut'][]
+    }
+    /**
+     * BadgeOut
+     * @description Etichetta con simbolo visibile, con la nota dell'assegnazione.
+     */
+    BadgeOut: {
+      /** Code */
+      code: string
+      /**
+       * Color
+       * @enum {string}
+       */
+      color: 'neutral' | 'info' | 'success' | 'warning' | 'danger'
+      /** Name */
+      name: string
+      /** Note */
+      note: string | null
+      /** Symbol */
+      symbol: string
+      /** Tag Id */
+      tag_id: number
+    }
     /**
      * CatalogOut
      * @description Tutto il catalogo in una risposta (API, § 6.2).
@@ -378,6 +517,32 @@ export interface components {
       stretches: components['schemas']['StretchOut'][]
       /** Tags */
       tags: components['schemas']['TagOut'][]
+    }
+    /** DayOut */
+    DayOut: {
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+      /** Position */
+      position: number
+      /** Slots */
+      slots: components['schemas']['SlotOut'][]
+      /** Stretches */
+      stretches: components['schemas']['DayStretchOut'][]
+      /** Times Per Week */
+      times_per_week: number
+    }
+    /** DayStretchOut */
+    DayStretchOut: {
+      /** Code */
+      code: string
+      /** Dose */
+      dose: string
+      /** Id */
+      id: number
+      /** Name */
+      name: string
     }
     /** EquipmentOut */
     EquipmentOut: {
@@ -655,6 +820,15 @@ export interface components {
       /** Sort Order */
       sort_order?: number | null
     }
+    /** FamilyRefOut */
+    FamilyRefOut: {
+      /** Code */
+      code: string
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+    }
     /**
      * FamilyUsageOut
      * @description Chi usa una famiglia. Esercizi principali, slot e schede ne impediscono l'eliminazione.
@@ -776,6 +950,27 @@ export interface components {
       weekly_min: number | null
     }
     /**
+     * MuscleOverrideIn
+     * @description Personalizzazione di un muscolo: solo i campi diversi dal catalogo contano.
+     */
+    MuscleOverrideIn: {
+      /** Priority */
+      priority?: ('priority' | 'standard' | 'none') | null
+      /** Weekly Max */
+      weekly_max?: number | null
+      /** Weekly Min */
+      weekly_min?: number | null
+    }
+    /** MuscleOverrideOut */
+    MuscleOverrideOut: {
+      /** Priority */
+      priority?: ('priority' | 'standard' | 'none') | null
+      /** Weekly Max */
+      weekly_max?: number | null
+      /** Weekly Min */
+      weekly_min?: number | null
+    }
+    /**
      * MusclePatch
      * @description Modifica parziale di un muscolo. Con ``priority: "none"`` la fascia si svuota;
      *     altrimenti servono minimo e massimo, con minimo < massimo.
@@ -794,6 +989,78 @@ export interface components {
       /** Weekly Min */
       weekly_min?: number | null
     }
+    /** MuscleVolumeRefOut */
+    MuscleVolumeRefOut: {
+      /** Muscle Id */
+      muscle_id: number
+      /** Volume */
+      volume: number
+    }
+    /**
+     * OverridesIn
+     * @description Personalizzazioni per ``code`` di muscolo ed etichetta.
+     */
+    OverridesIn: {
+      /** Muscles */
+      muscles?: {
+        [key: string]: components['schemas']['MuscleOverrideIn']
+      }
+      /** Tags */
+      tags?: {
+        [key: string]: components['schemas']['TagOverrideIn']
+      }
+    }
+    /** OverridesOut */
+    OverridesOut: {
+      /** Muscles */
+      muscles: {
+        [key: string]: components['schemas']['MuscleOverrideOut']
+      }
+      /** Tags */
+      tags: {
+        [key: string]: components['schemas']['TagOverrideOut']
+      }
+    }
+    /**
+     * PlanCreateIn
+     * @description Con ``split_id``: copia lo split e genera. Con ``null``: scheda vuota.
+     */
+    PlanCreateIn: {
+      /** Name */
+      name?: string | null
+      preferences?: components['schemas']['PreferencesIn'] | null
+      /** Split Id */
+      split_id: number | null
+    }
+    /**
+     * PlanOut
+     * @description La scheda completa: tutte le risposte che contengono una scheda hanno questa forma.
+     */
+    PlanOut: {
+      analysis: components['schemas']['AnalysisOut']
+      /**
+       * Created At
+       * Format: date-time
+       */
+      created_at: string
+      /** Days */
+      days: components['schemas']['DayOut'][]
+      /** Id */
+      id: number
+      /** Is Active */
+      is_active: boolean
+      /** Name */
+      name: string
+      preferences: components['schemas']['PreferencesOut']
+      /** Revision */
+      revision: number
+      split: components['schemas']['SplitRefOut'] | null
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
+    }
     /**
      * PlanRefOut
      * @description Scheda citata da un utilizzo o da un errore.
@@ -803,6 +1070,32 @@ export interface components {
       id: number
       /** Name */
       name: string
+    }
+    /** PlanRenameIn */
+    PlanRenameIn: {
+      /** Name */
+      name: string
+    }
+    /**
+     * PlanSummaryOut
+     * @description Riga dell'elenco delle schede (US-19 CA1).
+     */
+    PlanSummaryOut: {
+      /** Days Per Week */
+      days_per_week: number
+      /** Id */
+      id: number
+      /** Is Active */
+      is_active: boolean
+      /** Name */
+      name: string
+      /** Split Name */
+      split_name: string | null
+      /**
+       * Updated At
+       * Format: date-time
+       */
+      updated_at: string
     }
     /**
      * PlanUsageOut
@@ -815,6 +1108,36 @@ export interface components {
       name: string
       /** Slots */
       slots: number
+    }
+    /**
+     * PreferencesIn
+     * @description Preferenze della scheda. Il server toglie ciò che coincide con il catalogo e i
+     *     codici che non esistono più, poi valida i valori effettivi (``rule-violation``).
+     */
+    PreferencesIn: {
+      /** Equipment Order */
+      equipment_order: string[]
+      /**
+       * Max Session Minutes
+       * @default 75
+       */
+      max_session_minutes: number | null
+      overrides?: components['schemas']['OverridesIn']
+      /**
+       * Version
+       * @default 2
+       */
+      version: number
+    }
+    /** PreferencesOut */
+    PreferencesOut: {
+      /** Equipment Order */
+      equipment_order: string[]
+      /** Max Session Minutes */
+      max_session_minutes: number | null
+      overrides: components['schemas']['OverridesOut']
+      /** Version */
+      version: number
     }
     /**
      * RoutineItemOut
@@ -841,6 +1164,72 @@ export interface components {
       position: number
       /** Purpose */
       purpose: string
+    }
+    /**
+     * SessionOut
+     * @description Seduta concreta: due per i giorni con una variante della seconda seduta.
+     */
+    SessionOut: {
+      /** Day Id */
+      day_id: number
+      max_muscle_volume: components['schemas']['MuscleVolumeRefOut'] | null
+      /** Minutes */
+      minutes: number
+      /** Session */
+      session: number
+    }
+    /** SlotExerciseOut */
+    SlotExerciseOut: {
+      /** Badges */
+      badges: components['schemas']['BadgeOut'][]
+      /** Code */
+      code: string
+      /** Equipment */
+      equipment: string
+      /** Id */
+      id: number
+      /** Is Active */
+      is_active: boolean
+      /**
+       * Kind
+       * @enum {string}
+       */
+      kind: 'compound' | 'isolation'
+      /** Name */
+      name: string
+    }
+    /**
+     * SlotOut
+     * @description Slot con esercizio, variante della seconda seduta e valori derivati.
+     */
+    SlotOut: {
+      exercise: components['schemas']['SlotExerciseOut'] | null
+      family: components['schemas']['FamilyRefOut']
+      /** Id */
+      id: number
+      /** Is Optional */
+      is_optional: boolean
+      /** Last Set To Failure */
+      last_set_to_failure: boolean | null
+      /** Locked */
+      locked: boolean
+      /** Note */
+      note: string | null
+      /** Position */
+      position: number
+      /** Rep Max */
+      rep_max: number
+      /** Rep Min */
+      rep_min: number
+      /** Rest Seconds */
+      rest_seconds: number | null
+      /** Rir */
+      rir: string | null
+      second_exercise: components['schemas']['SlotExerciseOut'] | null
+      /** Sets */
+      sets: number
+      /** Weekly Weight */
+      weekly_weight: number
     }
     /**
      * SourceIn
@@ -890,6 +1279,67 @@ export interface components {
       url?: string | null
       /** Used For */
       used_for?: string | null
+    }
+    /** SplitDayOut */
+    SplitDayOut: {
+      /** Name */
+      name: string
+      /** Slots */
+      slots: components['schemas']['SplitSlotOut'][]
+      /** Times Per Week */
+      times_per_week: number
+    }
+    /** SplitFamilyOut */
+    SplitFamilyOut: {
+      /** Code */
+      code: string
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+    }
+    /**
+     * SplitOut
+     * @description Preset per la procedura guidata (US-10 CA1).
+     */
+    SplitOut: {
+      /** Code */
+      code: string
+      /** Days */
+      days: components['schemas']['SplitDayOut'][]
+      /** Days Per Week */
+      days_per_week: number
+      /** Description */
+      description: string | null
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+    }
+    /** SplitRefOut */
+    SplitRefOut: {
+      /** Code */
+      code: string
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+    }
+    /** SplitSlotOut */
+    SplitSlotOut: {
+      family: components['schemas']['SplitFamilyOut']
+      /** Is Optional */
+      is_optional: boolean
+      /** Note */
+      note: string | null
+      /** Rep Max */
+      rep_max: number
+      /** Rep Min */
+      rep_min: number
+      /** Sets */
+      sets: number
+      /** Weekly Weight */
+      weekly_weight: number
     }
     /** StretchOut */
     StretchOut: {
@@ -1013,6 +1463,23 @@ export interface components {
       symbol: string
     }
     /**
+     * TagOverrideIn
+     * @description Personalizzazione di un'etichetta.
+     */
+    TagOverrideIn: {
+      /** Effect */
+      effect?: ('none' | 'bonus' | 'penalty' | 'exclude') | null
+      /** Points */
+      points?: number | null
+    }
+    /** TagOverrideOut */
+    TagOverrideOut: {
+      /** Effect */
+      effect?: ('none' | 'bonus' | 'penalty' | 'exclude') | null
+      /** Points */
+      points?: number | null
+    }
+    /**
      * TagPatch
      * @description Modifica parziale di un'etichetta.
      */
@@ -1084,6 +1551,67 @@ export interface components {
       name: string
       /** Tags */
       tags: components['schemas']['TagLinkOut'][]
+    }
+    /**
+     * VolumeOut
+     * @description Volume settimanale di un muscolo con priorità e fascia effettive.
+     */
+    VolumeOut: {
+      /** Code */
+      code: string
+      /** Group Code */
+      group_code: string
+      /** Muscle Id */
+      muscle_id: number
+      /** Name */
+      name: string
+      /** Overridden */
+      overridden: boolean
+      /**
+       * Priority
+       * @enum {string}
+       */
+      priority: 'priority' | 'standard' | 'none'
+      /** Short Name */
+      short_name: string
+      /** Status */
+      status: string | null
+      /** Volume */
+      volume: number
+      /** Weekly Max */
+      weekly_max: number | null
+      /** Weekly Min */
+      weekly_min: number | null
+    }
+    /**
+     * WarningOut
+     * @description Avviso (algoritmo, § 8); i campi valorizzati dipendono dal ``code``.
+     */
+    WarningOut: {
+      /** Code */
+      code: string
+      /** Day Id */
+      day_id: number | null
+      /** Excluded By */
+      excluded_by: string[]
+      /** Family Id */
+      family_id: number | null
+      /** Minutes */
+      minutes: number | null
+      /** Muscle Id */
+      muscle_id: number | null
+      /** Position */
+      position: number | null
+      /** Session */
+      session: number | null
+      /** Slot Id */
+      slot_id: number | null
+      /** Volume */
+      volume: number | null
+      /** Weekly Max */
+      weekly_max: number | null
+      /** Weekly Min */
+      weekly_min: number | null
     }
   }
   responses: never
@@ -1576,6 +2104,266 @@ export interface operations {
       }
     }
   }
+  read_plans: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanSummaryOut'][]
+        }
+      }
+    }
+  }
+  post_plan: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PlanCreateIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Dati non validi o preferenze non valide */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  read_plan: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  remove_plan: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Scheda inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  patch_plan: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Revisione della scheda, es. `"17"` */
+        'if-match'?: string | null
+      }
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PlanRenameIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente (`not-found`) */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Revisione non aggiornata (`revision-mismatch`, con `current_revision`) */
+      412: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Manca `If-Match` (`revision-required`) */
+      428: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  post_plan_activate: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  post_plan_duplicate: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   post_source: {
     parameters: {
       query?: never
@@ -1683,6 +2471,26 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  read_splits: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SplitOut'][]
         }
       }
     }

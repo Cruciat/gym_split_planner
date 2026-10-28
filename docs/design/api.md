@@ -105,6 +105,8 @@ Il servizio ha un solo utente, ma più dispositivi: puoi avere la scheda aperta 
 3. Ogni richiesta che modifica una scheda deve avere `If-Match: "<revision>"`. Senza: `428 revision-required`. Con un valore vecchio: `412 revision-mismatch`, e niente viene modificato.
 4. Alla risposta `412`, il client ricarica la scheda, mostra un avviso ("modificata da un altro dispositivo, ricaricata") e lascia ripetere l'ultima azione.
 
+`If-Match` accetta la revisione tra virgolette (`"17"`, come l'`ETag`), con il prefisso `W/` o senza virgolette (`17`). Un valore che non è un numero vale come revisione sbagliata: `412` con `current_revision`.
+
 Nel client le modifiche alla stessa scheda vanno in una **coda**: una alla volta, ognuna con la revisione restituita dalla precedente. Così modifiche rapide dallo stesso dispositivo non si scontrano tra loro.
 
 Il catalogo non usa revisioni: le modifiche al catalogo sono rare e fatte da form esplicite, e l'ultima scrittura vince. È un compromesso dichiarato; se diventasse un problema, lo stesso meccanismo si estende agli esercizi.
@@ -218,8 +220,8 @@ La stessa struttura è il campo `usage` dell'errore `409 in-use`.
 
 | Metodo e percorso | Descrizione | Storie |
 | --- | --- | --- |
-| `GET /api/plans` | Elenco: `id`, nome, nome dello split d'origine, giorni a settimana, `is_active`, `updated_at` | US-19 CA1 |
-| `POST /api/plans` | `{"split_id": 3 \| null, "name": "…"?, "preferences": {…}?}`. Con `split_id`: copia lo split e genera (US-12). Con `null`: scheda vuota. `201` con la scheda completa | US-10, US-11, US-12 |
+| `GET /api/plans` | Elenco dalla modificata più di recente: `id`, `name`, `split_name`, `days_per_week`, `is_active`, `updated_at` | US-19 CA1 |
+| `POST /api/plans` | `{"split_id": 3 \| null, "name": "…"?, "preferences": {…}?}`. Con `split_id`: copia lo split e genera (US-12). Con `null`: scheda vuota. Senza nome: "<nome dello split> — gg/mm/aaaa" o "Scheda vuota — gg/mm/aaaa". Le preferenze si normalizzano e validano come in § 6.6 e guidano già la generazione. Uno `split_id` inesistente è un `rule-violation` (`unknown-reference`). `201` con la scheda completa | US-10, US-11, US-12 |
 | `GET /api/plans/{id}` | Scheda completa con analisi (§ 7) | US-13 |
 | `PATCH /api/plans/{id}` | Rinomina. Richiede `If-Match` | US-19 CA2 |
 | `DELETE /api/plans/{id}` | Elimina con giorni e slot. Non richiede `If-Match`: l'eliminazione è comunque confermata nell'interfaccia | US-19 CA2 |
@@ -404,7 +406,9 @@ Note sui campi:
 - `rest_seconds`, `rir` e `last_set_to_failure` sono **derivati** (tipo di esercizio, attrezzo, impostazioni `duration_params` ed `effort`): servono a schermata e PDF, non si salvano.
 - `analysis.volumes` ha una riga per ogni muscolo, anche quelli a volume zero, con priorità e fascia **effettive**; `overridden` dice se la scheda li personalizza.
 - `analysis.sessions` ha una riga per ogni seduta concreta (algoritmo, § 2.3): due per i giorni con almeno una variante della seconda seduta, una altrimenti.
-- `analysis.warnings` usa i codici dell'algoritmo, § 8. È anche ciò che alimenta gli avvisi in pagina.
+- `analysis.warnings` usa i codici dell'algoritmo, § 8. È anche ciò che alimenta gli avvisi in pagina. Ogni avviso ha gli stessi campi, valorizzati secondo il codice: `day_id`, `session`, `slot_id` e `position` (slot vuoto), `family_id`, `muscle_id`, `volume`, `weekly_min` e `weekly_max` (fascia effettiva), `minutes`, `excluded_by` (per `empty-slot`: codici delle etichette che escludono i candidati della famiglia; vuoto se la famiglia non ha esercizi attivi).
+- `analysis.volumes` riporta anche `short_name`, per tabelle strette e telefono.
+- In `preferences.overrides` i campi non personalizzati valgono `null`: seguono il catalogo.
 
 ## 8. Altre forme
 

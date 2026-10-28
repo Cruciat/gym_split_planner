@@ -1,6 +1,91 @@
 {
   "components": {
     "schemas": {
+      "AnalysisOut": {
+        "properties": {
+          "sessions": {
+            "items": {
+              "$ref": "#/components/schemas/SessionOut"
+            },
+            "title": "Sessions",
+            "type": "array"
+          },
+          "volumes": {
+            "items": {
+              "$ref": "#/components/schemas/VolumeOut"
+            },
+            "title": "Volumes",
+            "type": "array"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/WarningOut"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "volumes",
+          "sessions",
+          "warnings"
+        ],
+        "title": "AnalysisOut",
+        "type": "object"
+      },
+      "BadgeOut": {
+        "description": "Etichetta con simbolo visibile, con la nota dell'assegnazione.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "color": {
+            "enum": [
+              "neutral",
+              "info",
+              "success",
+              "warning",
+              "danger"
+            ],
+            "title": "Color",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tag_id",
+          "code",
+          "name",
+          "symbol",
+          "color",
+          "note"
+        ],
+        "title": "BadgeOut",
+        "type": "object"
+      },
       "CatalogOut": {
         "description": "Tutto il catalogo in una risposta (API, § 6.2).",
         "properties": {
@@ -80,6 +165,78 @@
           "daily_routine"
         ],
         "title": "CatalogOut",
+        "type": "object"
+      },
+      "DayOut": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/SlotOut"
+            },
+            "title": "Slots",
+            "type": "array"
+          },
+          "stretches": {
+            "items": {
+              "$ref": "#/components/schemas/DayStretchOut"
+            },
+            "title": "Stretches",
+            "type": "array"
+          },
+          "times_per_week": {
+            "title": "Times Per Week",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "position",
+          "times_per_week",
+          "stretches",
+          "slots"
+        ],
+        "title": "DayOut",
+        "type": "object"
+      },
+      "DayStretchOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "dose": {
+            "title": "Dose",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "dose"
+        ],
+        "title": "DayStretchOut",
         "type": "object"
       },
       "EquipmentOut": {
@@ -839,6 +996,29 @@
         "title": "FamilyPatch",
         "type": "object"
       },
+      "FamilyRefOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name"
+        ],
+        "title": "FamilyRefOut",
+        "type": "object"
+      },
       "FamilyUsageOut": {
         "description": "Chi usa una famiglia. Esercizi principali, slot e schede ne impediscono l'eliminazione.",
         "properties": {
@@ -1122,6 +1302,100 @@
         "title": "MuscleOut",
         "type": "object"
       },
+      "MuscleOverrideIn": {
+        "additionalProperties": false,
+        "description": "Personalizzazione di un muscolo: solo i campi diversi dal catalogo contano.",
+        "properties": {
+          "priority": {
+            "anyOf": [
+              {
+                "enum": [
+                  "priority",
+                  "standard",
+                  "none"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "weekly_max": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Max"
+          },
+          "weekly_min": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Min"
+          }
+        },
+        "title": "MuscleOverrideIn",
+        "type": "object"
+      },
+      "MuscleOverrideOut": {
+        "properties": {
+          "priority": {
+            "anyOf": [
+              {
+                "enum": [
+                  "priority",
+                  "standard",
+                  "none"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "weekly_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Max"
+          },
+          "weekly_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Min"
+          }
+        },
+        "title": "MuscleOverrideOut",
+        "type": "object"
+      },
       "MusclePatch": {
         "description": "Modifica parziale di un muscolo. Con ``priority: \"none\"`` la fascia si svuota;\naltrimenti servono minimo e massimo, con minimo < massimo.",
         "properties": {
@@ -1207,6 +1481,182 @@
         "title": "MusclePatch",
         "type": "object"
       },
+      "MuscleVolumeRefOut": {
+        "properties": {
+          "muscle_id": {
+            "title": "Muscle Id",
+            "type": "integer"
+          },
+          "volume": {
+            "title": "Volume",
+            "type": "number"
+          }
+        },
+        "required": [
+          "muscle_id",
+          "volume"
+        ],
+        "title": "MuscleVolumeRefOut",
+        "type": "object"
+      },
+      "OverridesIn": {
+        "additionalProperties": false,
+        "description": "Personalizzazioni per ``code`` di muscolo ed etichetta.",
+        "properties": {
+          "muscles": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/MuscleOverrideIn"
+            },
+            "title": "Muscles",
+            "type": "object"
+          },
+          "tags": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TagOverrideIn"
+            },
+            "title": "Tags",
+            "type": "object"
+          }
+        },
+        "title": "OverridesIn",
+        "type": "object"
+      },
+      "OverridesOut": {
+        "properties": {
+          "muscles": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/MuscleOverrideOut"
+            },
+            "title": "Muscles",
+            "type": "object"
+          },
+          "tags": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TagOverrideOut"
+            },
+            "title": "Tags",
+            "type": "object"
+          }
+        },
+        "required": [
+          "muscles",
+          "tags"
+        ],
+        "title": "OverridesOut",
+        "type": "object"
+      },
+      "PlanCreateIn": {
+        "description": "Con ``split_id``: copia lo split e genera. Con ``null``: scheda vuota.",
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "preferences": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PreferencesIn"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "split_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Split Id"
+          }
+        },
+        "required": [
+          "split_id"
+        ],
+        "title": "PlanCreateIn",
+        "type": "object"
+      },
+      "PlanOut": {
+        "description": "La scheda completa: tutte le risposte che contengono una scheda hanno questa forma.",
+        "properties": {
+          "analysis": {
+            "$ref": "#/components/schemas/AnalysisOut"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/DayOut"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "preferences": {
+            "$ref": "#/components/schemas/PreferencesOut"
+          },
+          "revision": {
+            "title": "Revision",
+            "type": "integer"
+          },
+          "split": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SplitRefOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "revision",
+          "is_active",
+          "split",
+          "created_at",
+          "updated_at",
+          "preferences",
+          "days",
+          "analysis"
+        ],
+        "title": "PlanOut",
+        "type": "object"
+      },
       "PlanRefOut": {
         "description": "Scheda citata da un utilizzo o da un errore.",
         "properties": {
@@ -1224,6 +1674,68 @@
           "name"
         ],
         "title": "PlanRefOut",
+        "type": "object"
+      },
+      "PlanRenameIn": {
+        "properties": {
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "PlanRenameIn",
+        "type": "object"
+      },
+      "PlanSummaryOut": {
+        "description": "Riga dell'elenco delle schede (US-19 CA1).",
+        "properties": {
+          "days_per_week": {
+            "title": "Days Per Week",
+            "type": "integer"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "split_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Split Name"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "split_name",
+          "days_per_week",
+          "is_active",
+          "updated_at"
+        ],
+        "title": "PlanSummaryOut",
         "type": "object"
       },
       "PlanUsageOut": {
@@ -1248,6 +1760,85 @@
           "slots"
         ],
         "title": "PlanUsageOut",
+        "type": "object"
+      },
+      "PreferencesIn": {
+        "additionalProperties": false,
+        "description": "Preferenze della scheda. Il server toglie ciò che coincide con il catalogo e i\ncodici che non esistono più, poi valida i valori effettivi (``rule-violation``).",
+        "properties": {
+          "equipment_order": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Equipment Order",
+            "type": "array"
+          },
+          "max_session_minutes": {
+            "anyOf": [
+              {
+                "maximum": 300.0,
+                "minimum": 15.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": 75,
+            "title": "Max Session Minutes"
+          },
+          "overrides": {
+            "$ref": "#/components/schemas/OverridesIn"
+          },
+          "version": {
+            "default": 2,
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "equipment_order"
+        ],
+        "title": "PreferencesIn",
+        "type": "object"
+      },
+      "PreferencesOut": {
+        "properties": {
+          "equipment_order": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Equipment Order",
+            "type": "array"
+          },
+          "max_session_minutes": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Session Minutes"
+          },
+          "overrides": {
+            "$ref": "#/components/schemas/OverridesOut"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "version",
+          "equipment_order",
+          "max_session_minutes",
+          "overrides"
+        ],
+        "title": "PreferencesOut",
         "type": "object"
       },
       "RoutineItemOut": {
@@ -1301,6 +1892,214 @@
           "confidence"
         ],
         "title": "RoutineItemOut",
+        "type": "object"
+      },
+      "SessionOut": {
+        "description": "Seduta concreta: due per i giorni con una variante della seconda seduta.",
+        "properties": {
+          "day_id": {
+            "title": "Day Id",
+            "type": "integer"
+          },
+          "max_muscle_volume": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MuscleVolumeRefOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "minutes": {
+            "title": "Minutes",
+            "type": "number"
+          },
+          "session": {
+            "title": "Session",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "day_id",
+          "session",
+          "minutes",
+          "max_muscle_volume"
+        ],
+        "title": "SessionOut",
+        "type": "object"
+      },
+      "SlotExerciseOut": {
+        "properties": {
+          "badges": {
+            "items": {
+              "$ref": "#/components/schemas/BadgeOut"
+            },
+            "title": "Badges",
+            "type": "array"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "equipment": {
+            "title": "Equipment",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "is_active": {
+            "title": "Is Active",
+            "type": "boolean"
+          },
+          "kind": {
+            "enum": [
+              "compound",
+              "isolation"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "equipment",
+          "kind",
+          "is_active",
+          "badges"
+        ],
+        "title": "SlotExerciseOut",
+        "type": "object"
+      },
+      "SlotOut": {
+        "description": "Slot con esercizio, variante della seconda seduta e valori derivati.",
+        "properties": {
+          "exercise": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SlotExerciseOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "family": {
+            "$ref": "#/components/schemas/FamilyRefOut"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "is_optional": {
+            "title": "Is Optional",
+            "type": "boolean"
+          },
+          "last_set_to_failure": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Set To Failure"
+          },
+          "locked": {
+            "title": "Locked",
+            "type": "boolean"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "rep_max": {
+            "title": "Rep Max",
+            "type": "integer"
+          },
+          "rep_min": {
+            "title": "Rep Min",
+            "type": "integer"
+          },
+          "rest_seconds": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rest Seconds"
+          },
+          "rir": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rir"
+          },
+          "second_exercise": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SlotExerciseOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sets": {
+            "title": "Sets",
+            "type": "integer"
+          },
+          "weekly_weight": {
+            "title": "Weekly Weight",
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "position",
+          "family",
+          "exercise",
+          "second_exercise",
+          "sets",
+          "rep_min",
+          "rep_max",
+          "is_optional",
+          "weekly_weight",
+          "locked",
+          "note",
+          "rest_seconds",
+          "rir",
+          "last_set_to_failure"
+        ],
+        "title": "SlotOut",
         "type": "object"
       },
       "SourceIn": {
@@ -1493,6 +2292,176 @@
           }
         },
         "title": "SourcePatch",
+        "type": "object"
+      },
+      "SplitDayOut": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/SplitSlotOut"
+            },
+            "title": "Slots",
+            "type": "array"
+          },
+          "times_per_week": {
+            "title": "Times Per Week",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "times_per_week",
+          "slots"
+        ],
+        "title": "SplitDayOut",
+        "type": "object"
+      },
+      "SplitFamilyOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name"
+        ],
+        "title": "SplitFamilyOut",
+        "type": "object"
+      },
+      "SplitOut": {
+        "description": "Preset per la procedura guidata (US-10 CA1).",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/SplitDayOut"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "days_per_week": {
+            "title": "Days Per Week",
+            "type": "integer"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "description",
+          "days_per_week",
+          "days"
+        ],
+        "title": "SplitOut",
+        "type": "object"
+      },
+      "SplitRefOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name"
+        ],
+        "title": "SplitRefOut",
+        "type": "object"
+      },
+      "SplitSlotOut": {
+        "properties": {
+          "family": {
+            "$ref": "#/components/schemas/SplitFamilyOut"
+          },
+          "is_optional": {
+            "title": "Is Optional",
+            "type": "boolean"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "rep_max": {
+            "title": "Rep Max",
+            "type": "integer"
+          },
+          "rep_min": {
+            "title": "Rep Min",
+            "type": "integer"
+          },
+          "sets": {
+            "title": "Sets",
+            "type": "integer"
+          },
+          "weekly_weight": {
+            "title": "Weekly Weight",
+            "type": "number"
+          }
+        },
+        "required": [
+          "family",
+          "sets",
+          "rep_min",
+          "rep_max",
+          "is_optional",
+          "weekly_weight",
+          "note"
+        ],
+        "title": "SplitSlotOut",
         "type": "object"
       },
       "StretchOut": {
@@ -1820,6 +2789,78 @@
         "title": "TagOut",
         "type": "object"
       },
+      "TagOverrideIn": {
+        "additionalProperties": false,
+        "description": "Personalizzazione di un'etichetta.",
+        "properties": {
+          "effect": {
+            "anyOf": [
+              {
+                "enum": [
+                  "none",
+                  "bonus",
+                  "penalty",
+                  "exclude"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effect"
+          },
+          "points": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Points"
+          }
+        },
+        "title": "TagOverrideIn",
+        "type": "object"
+      },
+      "TagOverrideOut": {
+        "properties": {
+          "effect": {
+            "anyOf": [
+              {
+                "enum": [
+                  "none",
+                  "bonus",
+                  "penalty",
+                  "exclude"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effect"
+          },
+          "points": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Points"
+          }
+        },
+        "title": "TagOverrideOut",
+        "type": "object"
+      },
       "TagPatch": {
         "description": "Modifica parziale di un'etichetta.",
         "properties": {
@@ -2070,6 +3111,238 @@
           "tags"
         ],
         "title": "VariantOut",
+        "type": "object"
+      },
+      "VolumeOut": {
+        "description": "Volume settimanale di un muscolo con priorità e fascia effettive.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "group_code": {
+            "title": "Group Code",
+            "type": "string"
+          },
+          "muscle_id": {
+            "title": "Muscle Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "overridden": {
+            "title": "Overridden",
+            "type": "boolean"
+          },
+          "priority": {
+            "enum": [
+              "priority",
+              "standard",
+              "none"
+            ],
+            "title": "Priority",
+            "type": "string"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "volume": {
+            "title": "Volume",
+            "type": "number"
+          },
+          "weekly_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Max"
+          },
+          "weekly_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Min"
+          }
+        },
+        "required": [
+          "muscle_id",
+          "code",
+          "name",
+          "short_name",
+          "group_code",
+          "volume",
+          "priority",
+          "weekly_min",
+          "weekly_max",
+          "status",
+          "overridden"
+        ],
+        "title": "VolumeOut",
+        "type": "object"
+      },
+      "WarningOut": {
+        "description": "Avviso (algoritmo, § 8); i campi valorizzati dipendono dal ``code``.",
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "day_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Day Id"
+          },
+          "excluded_by": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded By",
+            "type": "array"
+          },
+          "family_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Family Id"
+          },
+          "minutes": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minutes"
+          },
+          "muscle_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Muscle Id"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "session": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session"
+          },
+          "slot_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slot Id"
+          },
+          "volume": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Volume"
+          },
+          "weekly_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Max"
+          },
+          "weekly_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Min"
+          }
+        },
+        "required": [
+          "code",
+          "day_id",
+          "session",
+          "slot_id",
+          "position",
+          "family_id",
+          "muscle_id",
+          "volume",
+          "weekly_min",
+          "weekly_max",
+          "minutes",
+          "excluded_by"
+        ],
+        "title": "WarningOut",
         "type": "object"
       }
     }
@@ -2638,6 +3911,317 @@
         ]
       }
     },
+    "/api/plans": {
+      "get": {
+        "description": "Dalla modificata più di recente (US-19 CA1).",
+        "operationId": "read_plans",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PlanSummaryOut"
+                  },
+                  "title": "Response Read Plans",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Elenco delle schede",
+        "tags": [
+          "schede"
+        ]
+      },
+      "post": {
+        "description": "Da uno split (copiato e generato, US-12) o vuota; restituisce la scheda completa.",
+        "operationId": "post_plan",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanCreateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Dati non validi o preferenze non valide"
+          }
+        },
+        "summary": "Crea una scheda",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}": {
+      "delete": {
+        "description": "Con giorni e slot. Non richiede ``If-Match``: la conferma è dell'interfaccia.",
+        "operationId": "remove_plan",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Elimina una scheda",
+        "tags": [
+          "schede"
+        ]
+      },
+      "get": {
+        "description": "Giorni, slot e analisi: volumi, sedute, avvisi (§ 7).",
+        "operationId": "read_plan",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Scheda completa",
+        "tags": [
+          "schede"
+        ]
+      },
+      "patch": {
+        "operationId": "patch_plan",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Revisione della scheda, es. `\"17\"`",
+            "in": "header",
+            "name": "if-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Revisione della scheda, es. `\"17\"`",
+              "title": "If-Match"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanRenameIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente (`not-found`)"
+          },
+          "412": {
+            "description": "Revisione non aggiornata (`revision-mismatch`, con `current_revision`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "428": {
+            "description": "Manca `If-Match` (`revision-required`)"
+          }
+        },
+        "summary": "Rinomina una scheda",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/activate": {
+      "post": {
+        "description": "L'unica attiva; non cambia la revisione e non richiede ``If-Match``.",
+        "operationId": "post_plan_activate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Rende attiva una scheda",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/duplicate": {
+      "post": {
+        "description": "Copia completa con nome \"… (copia)\", non attiva.",
+        "operationId": "post_plan_duplicate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Duplica una scheda",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
     "/api/sources": {
       "post": {
         "description": "Il codice è il successivo della serie ``src-NN``.",
@@ -2770,6 +4354,32 @@
         "summary": "Modifica una fonte",
         "tags": [
           "catalogo"
+        ]
+      }
+    },
+    "/api/splits": {
+      "get": {
+        "description": "Preset con giorni e slot, per la procedura guidata (US-10 CA1).",
+        "operationId": "read_splits",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SplitOut"
+                  },
+                  "title": "Response Read Splits",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Split predefiniti",
+        "tags": [
+          "schede"
         ]
       }
     },
