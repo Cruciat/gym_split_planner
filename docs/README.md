@@ -17,7 +17,7 @@
 | --- | --- | --- |
 | [processo.md](processo.md) | Bozza | Come si sviluppa: fasi, tappe, ciclo di lavoro, definizione di fatto |
 | [spec/fase-1.md](spec/fase-1.md) | Bozza v0.2 | Specifica funzionale della fase 1: obiettivi, esclusioni, glossario, storie utente, requisiti |
-| [adr/](adr/) | Accettati | Decisioni architetturali 0001-0015 |
+| [adr/](adr/) | Accettati | Decisioni architetturali 0001-0016 |
 | [design/modello-dati.md](design/modello-dati.md) | Bozza v0.2 | Tabelle, relazioni, vincoli, regole di cancellazione, punti di estensione |
 | [design/algoritmo.md](design/algoritmo.md) | Bozza v0.2 | Volume frazionario, punteggio, generazione, anteprima delle varianti, stima della durata, casi di test |
 | [design/dati-iniziali.md](design/dati-iniziali.md) | Bozza v0.2 | Famiglie di movimento, assegnazione degli esercizi, etichette iniziali, composizione degli split, test di riferimento |
@@ -43,3 +43,4 @@
 | [0013](adr/0013-lingua-e-nomenclatura.md) | Italiano per interfaccia e documenti, inglese per il codice |
 | [0014](adr/0014-etichette-e-personalizzazioni.md) | Etichette sugli esercizi e personalizzazioni per scheda |
 | [0015](adr/0015-naive-ui-al-posto-di-primevue.md) | Naive UI al posto di PrimeVue come libreria di componenti |
+| [0016](adr/0016-accesso-dalla-rete-di-casa-e-subnet-router.md) | Accesso per indirizzo e porta, tramite la rete di casa e il subnet router Tailscale |
