@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Message from 'primevue/message'
+import { NAlert, NH1, NP } from 'naive-ui'
 import { onMounted } from 'vue'
 
 import { useHealthStore } from '@/stores/health'
@@ -13,20 +13,20 @@ onMounted(() => {
 
 <template>
   <main class="home">
-    <h1>Gym Split Planner</h1>
-    <p>Banca dati degli esercizi e creazione delle schede. In costruzione.</p>
+    <NH1>Gym Split Planner</NH1>
+    <NP>Banca dati degli esercizi e creazione delle schede. In costruzione.</NP>
 
-    <Message v-if="store.failed" severity="error" data-testid="health-error">
+    <NAlert v-if="store.failed" type="error" data-testid="health-error">
       Il server non risponde.
-    </Message>
-    <Message
+    </NAlert>
+    <NAlert
       v-else-if="store.health"
-      :severity="store.health.status === 'ok' ? 'success' : 'warn'"
+      :type="store.health.status === 'ok' ? 'success' : 'warning'"
       data-testid="health-ok"
     >
       Server {{ store.health.status === 'ok' ? 'attivo' : 'con problemi' }} · versione
       {{ store.health.version }} · database {{ store.health.database }}
-    </Message>
+    </NAlert>
   </main>
 </template>
 

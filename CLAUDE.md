@@ -13,7 +13,7 @@ Servizio web personale per consultare una banca dati di esercizi e creare schede
 | Cartella | Contenuto |
 | --- | --- |
 | `backend/` | Python 3.12, uv, FastAPI, SQLAlchemy 2, Alembic, SQLite. Pacchetto `gym_split_planner` in `src/` |
-| `frontend/` | Vue 3, TypeScript stretto, Vite, Pinia, Vue Router, PrimeVue 4 |
+| `frontend/` | Vue 3, TypeScript stretto, Vite, Pinia, Vue Router, Naive UI, icone Lucide |
 | `docs/` | Documentazione di progetto, in italiano |
 | `openapi.json` | Schema dell'API generato dal backend; da qui i tipi del frontend |
 
@@ -43,5 +43,5 @@ make api-types      # dopo ogni modifica al contratto delle API
 - **Errori dell'API:** sempre Problem Details con `code` stabile (`api/errors.py`, contratto § 3).
 - **Test:** il dominio si scrive con i test prima del codice; copertura del dominio ≥ 90%. I test di riferimento (volumi dell'Excel) non si cambiano senza motivarlo nella PR.
 - **Migrazioni:** ogni modifica allo schema ha la sua migrazione Alembic (`uv run alembic revision --autogenerate -m "…"` in `backend/`), con `render_as_batch` per SQLite.
-- **Dipendenze del frontend:** PrimeVue fissato alla 4.5.x, con `@primeuix/themes` 2.x e `primeicons` 7: sono le ultime versioni con licenza MIT. Dalla 5 PrimeVue richiede una chiave di licenza (vedi issue #2).
+- **Dipendenze:** solo licenze permissive (MIT, ISC, BSD, Apache). Per questo niente PrimeVue (ADR 0015). Controlla la licenza prima di aggiungere un pacchetto.
 - **Tipi del client:** `frontend/src/api/schema.d.ts` è generato, non si modifica a mano.

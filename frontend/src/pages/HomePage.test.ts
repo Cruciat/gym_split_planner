@@ -1,12 +1,11 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
-import PrimeVue from 'primevue/config'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import HomePage from './HomePage.vue'
 
 function mountPage() {
-  return mount(HomePage, { global: { plugins: [PrimeVue] } })
+  return mount(HomePage)
 }
 
 describe('HomePage', () => {
