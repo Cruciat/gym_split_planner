@@ -283,6 +283,95 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/plans/{plan_id}/days': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Aggiunge un giorno */
+    post: operations['post_day']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/plans/{plan_id}/days/order': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Riordina i giorni */
+    put: operations['put_day_order']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/plans/{plan_id}/days/{day_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /**
+     * Elimina un giorno
+     * @description Con i suoi slot; restituisce la scheda completa.
+     */
+    delete: operations['remove_day']
+    options?: never
+    head?: never
+    /** Modifica un giorno */
+    patch: operations['patch_day']
+    trace?: never
+  }
+  '/api/plans/{plan_id}/days/{day_id}/slots': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Aggiunge uno slot */
+    post: operations['post_slot']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/plans/{plan_id}/days/{day_id}/slots/order': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** Riordina gli slot di un giorno */
+    put: operations['put_slot_order']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/plans/{plan_id}/duplicate': {
     parameters: {
       query?: never
@@ -297,6 +386,88 @@ export interface paths {
      * @description Copia completa con nome "… (copia)", non attiva.
      */
     post: operations['post_plan_duplicate']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/plans/{plan_id}/preferences': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Sostituisce le preferenze
+     * @description Normalizza e valida sui valori effettivi; non rigenera, aggiorna solo l'analisi.
+     */
+    put: operations['put_plan_preferences']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/plans/{plan_id}/settings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Preferenze e personalizzazioni
+     * @description Per ogni muscolo ed etichetta: valore del catalogo, personalizzazione, effettivo.
+     */
+    get: operations['read_plan_settings']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/plans/{plan_id}/slots/{slot_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /** Elimina uno slot */
+    delete: operations['remove_slot']
+    options?: never
+    head?: never
+    /**
+     * Modifica uno slot
+     * @description Esercizio, variante della seconda seduta, famiglia, serie, ripetizioni, facoltativo,
+     *     settimane alterne, lucchetto, nota: tutto o niente.
+     */
+    patch: operations['patch_slot']
+    trace?: never
+  }
+  '/api/plans/{plan_id}/slots/{slot_id}/candidates': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Candidati di uno slot
+     * @description Con punteggio, voci del punteggio, esclusioni ed effetto sul volume. Non modifica nulla.
+     */
+    get: operations['read_slot_candidates']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -495,6 +666,45 @@ export interface components {
       tag_id: number
     }
     /**
+     * CandidateOut
+     * @description Candidato con punteggio, motivi di esclusione ed effetto sul volume settimanale.
+     */
+    CandidateOut: {
+      /** Badges */
+      badges: components['schemas']['BadgeOut'][]
+      /** Code */
+      code: string
+      /** Equipment */
+      equipment: string
+      /** Excluded By */
+      excluded_by: string[]
+      /** Exercise Id */
+      exercise_id: number
+      /**
+       * Family Match
+       * @enum {string}
+       */
+      family_match: 'primary' | 'secondary' | 'other'
+      /** Name */
+      name: string
+      /** Score */
+      score: number
+      score_breakdown: components['schemas']['ScoreBreakdownOut']
+      /** Volume Delta */
+      volume_delta: components['schemas']['VolumeDeltaOut'][]
+    }
+    /** CandidatesOut */
+    CandidatesOut: {
+      /** Candidates */
+      candidates: components['schemas']['CandidateOut'][]
+      /** Current Exercise Id */
+      current_exercise_id: number | null
+      /** Session */
+      session: number
+      /** Slot Id */
+      slot_id: number
+    }
+    /**
      * CatalogOut
      * @description Tutto il catalogo in una risposta (API, § 6.2).
      */
@@ -518,6 +728,26 @@ export interface components {
       /** Tags */
       tags: components['schemas']['TagOut'][]
     }
+    /**
+     * DayIn
+     * @description Giorno nuovo; senza ``position`` va in fondo.
+     */
+    DayIn: {
+      /** Name */
+      name: string
+      /** Position */
+      position?: number | null
+      /** Times Per Week */
+      times_per_week: number
+    }
+    /**
+     * DayOrderIn
+     * @description Tutti gli ``id`` dei giorni della scheda, nel nuovo ordine.
+     */
+    DayOrderIn: {
+      /** Day Ids */
+      day_ids: number[]
+    }
     /** DayOut */
     DayOut: {
       /** Id */
@@ -532,6 +762,16 @@ export interface components {
       stretches: components['schemas']['DayStretchOut'][]
       /** Times Per Week */
       times_per_week: number
+    }
+    /**
+     * DayPatch
+     * @description Nome e volte a settimana. Scendendo a 1, le varianti della seconda seduta si tolgono.
+     */
+    DayPatch: {
+      /** Name */
+      name?: string | null
+      /** Times Per Week */
+      times_per_week?: number | null
     }
     /** DayStretchOut */
     DayStretchOut: {
@@ -989,6 +1229,34 @@ export interface components {
       /** Weekly Min */
       weekly_min?: number | null
     }
+    /**
+     * MuscleSettingOut
+     * @description Un muscolo con i tre livelli: catalogo, personalizzazione, effettivo.
+     */
+    MuscleSettingOut: {
+      catalog: components['schemas']['MuscleValuesOut']
+      /** Code */
+      code: string
+      effective: components['schemas']['MuscleValuesOut']
+      /** Group Code */
+      group_code: string
+      /** Muscle Id */
+      muscle_id: number
+      /** Name */
+      name: string
+      override: components['schemas']['MuscleValuesOut']
+      /** Short Name */
+      short_name: string
+    }
+    /** MuscleValuesOut */
+    MuscleValuesOut: {
+      /** Priority */
+      priority: ('priority' | 'standard' | 'none') | null
+      /** Weekly Max */
+      weekly_max: number | null
+      /** Weekly Min */
+      weekly_min: number | null
+    }
     /** MuscleVolumeRefOut */
     MuscleVolumeRefOut: {
       /** Muscle Id */
@@ -1075,6 +1343,22 @@ export interface components {
     PlanRenameIn: {
       /** Name */
       name: string
+    }
+    /**
+     * PlanSettingsOut
+     * @description Vista della schermata delle preferenze (US-11).
+     */
+    PlanSettingsOut: {
+      /** Equipment Order */
+      equipment_order: string[]
+      /** Max Session Minutes */
+      max_session_minutes: number | null
+      /** Muscles */
+      muscles: components['schemas']['MuscleSettingOut'][]
+      /** Revision */
+      revision: number
+      /** Tags */
+      tags: components['schemas']['TagSettingOut'][]
     }
     /**
      * PlanSummaryOut
@@ -1165,6 +1449,21 @@ export interface components {
       /** Purpose */
       purpose: string
     }
+    /** ScoreBreakdownOut */
+    ScoreBreakdownOut: {
+      /** Confidence */
+      confidence: number
+      /** Equipment */
+      equipment: number
+      /** Family */
+      family: number
+      /** Rank */
+      rank: number
+      /** Stretch */
+      stretch: number
+      /** Tags */
+      tags: number
+    }
     /**
      * SessionOut
      * @description Seduta concreta: due per i giorni con una variante della seconda seduta.
@@ -1199,6 +1498,33 @@ export interface components {
       name: string
     }
     /**
+     * SlotIn
+     * @description Slot nuovo. Senza esercizio: il miglior candidato della famiglia. Senza serie e
+     *     ripetizioni: 3 × 6-12 per i multiarticolari, 3 × 10-15 per l'isolamento.
+     */
+    SlotIn: {
+      /** Exercise Id */
+      exercise_id?: number | null
+      /** Family Id */
+      family_id: number
+      /** Position */
+      position?: number | null
+      /** Rep Max */
+      rep_max?: number | null
+      /** Rep Min */
+      rep_min?: number | null
+      /** Sets */
+      sets?: number | null
+    }
+    /**
+     * SlotOrderIn
+     * @description Tutti gli ``id`` degli slot del giorno, nel nuovo ordine.
+     */
+    SlotOrderIn: {
+      /** Slot Ids */
+      slot_ids: number[]
+    }
+    /**
      * SlotOut
      * @description Slot con esercizio, variante della seconda seduta e valori derivati.
      */
@@ -1230,6 +1556,32 @@ export interface components {
       sets: number
       /** Weekly Weight */
       weekly_weight: number
+    }
+    /**
+     * SlotPatch
+     * @description Modifica parziale di uno slot, tutta o niente (regole nel § 6.8).
+     */
+    SlotPatch: {
+      /** Exercise Id */
+      exercise_id?: number | null
+      /** Family Id */
+      family_id?: number | null
+      /** Is Optional */
+      is_optional?: boolean | null
+      /** Locked */
+      locked?: boolean | null
+      /** Note */
+      note?: string | null
+      /** Rep Max */
+      rep_max?: number | null
+      /** Rep Min */
+      rep_min?: number | null
+      /** Second Exercise Id */
+      second_exercise_id?: number | null
+      /** Sets */
+      sets?: number | null
+      /** Weekly Weight */
+      weekly_weight?: number | null
     }
     /**
      * SourceIn
@@ -1501,6 +1853,25 @@ export interface components {
       /** Symbol */
       symbol?: ('warning' | 'ban' | 'info' | 'star' | 'heart' | 'zap' | 'flag' | 'eye-off') | null
     }
+    /** TagSettingOut */
+    TagSettingOut: {
+      catalog: components['schemas']['TagValuesOut']
+      /** Code */
+      code: string
+      /**
+       * Color
+       * @enum {string}
+       */
+      color: 'neutral' | 'info' | 'success' | 'warning' | 'danger'
+      effective: components['schemas']['TagValuesOut']
+      /** Name */
+      name: string
+      override: components['schemas']['TagValuesOut']
+      /** Symbol */
+      symbol: string
+      /** Tag Id */
+      tag_id: number
+    }
     /**
      * TagUnassignIn
      * @description Esercizi da cui togliere l'etichetta.
@@ -1518,6 +1889,13 @@ export interface components {
       exercises: number
       /** Plans With Overrides */
       plans_with_overrides: components['schemas']['PlanRefOut'][]
+    }
+    /** TagValuesOut */
+    TagValuesOut: {
+      /** Effect */
+      effect: ('none' | 'bonus' | 'penalty' | 'exclude') | null
+      /** Points */
+      points: number | null
     }
     /** ValidationError */
     ValidationError: {
@@ -1551,6 +1929,15 @@ export interface components {
       name: string
       /** Tags */
       tags: components['schemas']['TagLinkOut'][]
+    }
+    /** VolumeDeltaOut */
+    VolumeDeltaOut: {
+      /** Code */
+      code: string
+      /** Delta */
+      delta: number
+      /** Muscle Id */
+      muscle_id: number
     }
     /**
      * VolumeOut
@@ -2326,6 +2713,360 @@ export interface operations {
       }
     }
   }
+  post_day: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Revisione della scheda, es. `"17"` */
+        'if-match'?: string | null
+      }
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DayIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente (`not-found`) */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Revisione non aggiornata (`revision-mismatch`, con `current_revision`) */
+      412: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Manca `If-Match` (`revision-required`) */
+      428: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  put_day_order: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Revisione della scheda, es. `"17"` */
+        'if-match'?: string | null
+      }
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DayOrderIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente (`not-found`) */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Revisione non aggiornata (`revision-mismatch`, con `current_revision`) */
+      412: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Manca `If-Match` (`revision-required`) */
+      428: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  remove_day: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Revisione della scheda, es. `"17"` */
+        'if-match'?: string | null
+      }
+      path: {
+        plan_id: number
+        day_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente (`not-found`) */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Revisione non aggiornata (`revision-mismatch`, con `current_revision`) */
+      412: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Manca `If-Match` (`revision-required`) */
+      428: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  patch_day: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Revisione della scheda, es. `"17"` */
+        'if-match'?: string | null
+      }
+      path: {
+        plan_id: number
+        day_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DayPatch']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente (`not-found`) */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Revisione non aggiornata (`revision-mismatch`, con `current_revision`) */
+      412: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Manca `If-Match` (`revision-required`) */
+      428: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  post_slot: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Revisione della scheda, es. `"17"` */
+        'if-match'?: string | null
+      }
+      path: {
+        plan_id: number
+        day_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SlotIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente (`not-found`) */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Revisione non aggiornata (`revision-mismatch`, con `current_revision`) */
+      412: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Manca `If-Match` (`revision-required`) */
+      428: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  put_slot_order: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Revisione della scheda, es. `"17"` */
+        'if-match'?: string | null
+      }
+      path: {
+        plan_id: number
+        day_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SlotOrderIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente (`not-found`) */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Revisione non aggiornata (`revision-mismatch`, con `current_revision`) */
+      412: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Manca `If-Match` (`revision-required`) */
+      428: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   post_plan_duplicate: {
     parameters: {
       query?: never
@@ -2347,6 +3088,261 @@ export interface operations {
         }
       }
       /** @description Scheda inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  put_plan_preferences: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Revisione della scheda, es. `"17"` */
+        'if-match'?: string | null
+      }
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PreferencesIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente (`not-found`) */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Revisione non aggiornata (`revision-mismatch`, con `current_revision`) */
+      412: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Manca `If-Match` (`revision-required`) */
+      428: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  read_plan_settings: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanSettingsOut']
+        }
+      }
+      /** @description Scheda o slot inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  remove_slot: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Revisione della scheda, es. `"17"` */
+        'if-match'?: string | null
+      }
+      path: {
+        plan_id: number
+        slot_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente (`not-found`) */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Revisione non aggiornata (`revision-mismatch`, con `current_revision`) */
+      412: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Manca `If-Match` (`revision-required`) */
+      428: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  patch_slot: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Revisione della scheda, es. `"17"` */
+        'if-match'?: string | null
+      }
+      path: {
+        plan_id: number
+        slot_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SlotPatch']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente (`not-found`) */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Revisione non aggiornata (`revision-mismatch`, con `current_revision`) */
+      412: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Manca `If-Match` (`revision-required`) */
+      428: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  read_slot_candidates: {
+    parameters: {
+      query?: {
+        /** @description 1 principale, 2 seconda seduta */
+        session?: number
+      }
+      header?: never
+      path: {
+        plan_id: number
+        slot_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CandidatesOut']
+        }
+      }
+      /** @description Scheda o slot inesistente */
       404: {
         headers: {
           [name: string]: unknown

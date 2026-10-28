@@ -296,8 +296,8 @@ def _day(day: PlanDay, duration: DurationParams, rir: str, failure_last_set: boo
                 id=slot.id,
                 position=slot.position,
                 family=FamilyRefData(slot.family.id, slot.family.code, slot.family.name),
-                exercise=_exercise(slot.exercise),
-                second_exercise=_exercise(slot.second_exercise),
+                exercise=slot_exercise(slot.exercise),
+                second_exercise=slot_exercise(slot.second_exercise),
                 sets=slot.sets,
                 rep_min=slot.rep_min,
                 rep_max=slot.rep_max,
@@ -326,7 +326,7 @@ def _day(day: PlanDay, duration: DurationParams, rir: str, failure_last_set: boo
     )
 
 
-def _exercise(exercise: Exercise | None) -> SlotExerciseData | None:
+def slot_exercise(exercise: Exercise | None) -> SlotExerciseData | None:
     if exercise is None:
         return None
     links = sorted(
