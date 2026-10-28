@@ -1,6 +1,6 @@
 [project]
 name = "gym-split-planner"
-version = "0.1.0"
+version = "0.2.0"
 description = "Servizio web personale per creare schede di allenamento a partire da una banca dati di esercizi"
 requires-python = ">=3.12,<3.13"
 dependencies = [
