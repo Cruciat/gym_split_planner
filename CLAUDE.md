@@ -45,3 +45,16 @@ make api-types      # dopo ogni modifica al contratto delle API
 - **Migrazioni:** ogni modifica allo schema ha la sua migrazione Alembic (`uv run alembic revision --autogenerate -m "…"` in `backend/`), con `render_as_batch` per SQLite.
 - **Dipendenze:** solo licenze permissive (MIT, ISC, BSD, Apache). Per questo niente PrimeVue (ADR 0015). Controlla la licenza prima di aggiungere un pacchetto.
 - **Tipi del client:** `frontend/src/api/schema.d.ts` è generato, non si modifica a mano.
+
+## Rilasci (ADR 0010)
+
+1. Pull request `chore(release): X.Y.Z` che: porta la versione a `X.Y.Z` in `backend/pyproject.toml` e `frontend/package.json` (poi `uv lock`, `npm install` e `make api-types`, perché la versione è nello schema OpenAPI); sposta le voci di `[Non rilasciato]` in `## [X.Y.Z] - AAAA-MM-GG` nel `CHANGELOG.md`.
+2. Dopo il merge, tag annotato su `main`: `git tag -a vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z`.
+3. Il workflow `Rilascio` verifica che tag, versioni e CHANGELOG coincidano, pubblica `ghcr.io/cruciat/gym_split_planner` con i tag `X.Y.Z`, `X.Y`, `latest` e crea la release su GitHub.
+4. Nel monorepo dell'homelab si aggiorna la versione nel compose e si applica il ruolo `compose-deploy`.
+
+## Immagine Docker
+
+- `docker compose up --build` prova l'immagine in locale su http://127.0.0.1:8000.
+- Il container gira come utente `app` (uid 10001); i dati stanno solo in `/data`; all'avvio applica le migrazioni e poi avvia Uvicorn (`docker/entrypoint.sh`).
+- La CI compila l'immagine a ogni pull request e verifica che il container diventi `healthy` e serva API e frontend.
