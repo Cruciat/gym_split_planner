@@ -4,6 +4,10 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ## [Non rilasciato]
 
+### Aggiunto
+
+- Motore: volume settimanale frazionario, valori effettivi con le personalizzazioni, volume per seduta e tetto.
+
 ## [0.2.0] - 2026-10-28
 
 Tappa M1: i dati. Nessuna funzione nuova nell'interfaccia; il database contiene il catalogo e gli split.
