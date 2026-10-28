@@ -3,7 +3,7 @@
 | Campo | Valore |
 | --- | --- |
 | Stato | Accettato (2026-10-28) |
-| Data | 2026-10-27 |
+| Data | 2026-10-27 (aggiornato il 2026-10-28: repository pubblico) |
 
 ## Contesto
 
@@ -15,7 +15,7 @@ Il codice dell'app sta in un repository separato; l'infrastruttura dell'homelab 
 2. **Pubblicazione:** GitHub Actions compila l'immagine e la pubblica su **GitHub Container Registry** come `ghcr.io/cruciat/gym_split_planner:X.Y.Z` (più `X.Y` e `latest`). Le pull request compilano l'immagine senza pubblicarla.
 3. **Deploy:** nel monorepo dell'homelab, il compose dell'app indica la versione esatta (`:X.Y.Z`). Per aggiornare si cambia il numero con un commit e si applica il ruolo Ansible `compose-deploy`.
 4. **Infrastruttura:** un container LXC creato con il modulo Terraform `lxc-container`, con Docker installato dal ruolo `docker`.
-5. **Credenziali:** se il pacchetto GHCR è privato, l'homelab usa un token con il solo permesso `read:packages`, conservato in Ansible Vault.
+5. **Credenziali:** il repository è pubblico, quindi anche il pacchetto su GHCR: l'homelab scarica l'immagine senza credenziali. Se un giorno il repository tornasse privato, servirebbe un token con il solo permesso `read:packages`, conservato in Ansible Vault.
 6. **In futuro:** Renovate nel monorepo può aprire automaticamente una pull request quando esce una nuova versione.
 
 ## Alternative considerate
