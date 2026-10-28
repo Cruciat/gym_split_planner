@@ -7,6 +7,18 @@ from gym_split_planner.domain.model import Catalog, Day, ExerciseInfo, MuscleTar
 
 P, S = Level.PRIMARY, Level.SECONDARY
 
+GROUPS = {
+    "press-incline": "chest",
+    "press-horizontal": "chest",
+    "fly-horizontal": "chest",
+    "raise-lateral": "shoulders",
+    "press-vertical": "shoulders",
+    "triceps-overhead": "triceps",
+    "triceps-pushdown": "triceps",
+    "shrug": "back",
+    "crunch": "core",
+}
+
 
 def exercise(
     code: str,
@@ -21,6 +33,7 @@ def exercise(
     secondary_family: str | None = None,
     tags: frozenset[str] = frozenset(),
     is_active: bool = True,
+    group: str | None = None,
 ) -> ExerciseInfo:
     return ExerciseInfo(
         code=code,
@@ -34,6 +47,7 @@ def exercise(
         secondary_family=secondary_family,
         tags=tags,
         is_active=is_active,
+        group=group if group is not None else GROUPS.get(family, family),
     )
 
 
