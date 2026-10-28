@@ -6,6 +6,9 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ### Aggiunto
 
+- Elenco delle schede con split, giorni, data di modifica e scheda attiva; rinomina, duplica, rendi attiva ed elimina con conferma. L'app si apre sulla scheda attiva, o sull'elenco se non ce n'è.
+- Creazione guidata in tre passi: split predefinito o scheda vuota, preferenze (già pronte), nome; poi si apre la scheda.
+- Preferenze della scheda: ordine degli attrezzi, durata massima, personalizzazioni di muscoli ed etichette con il valore del catalogo e il ripristino. Si salvano da sole; gli errori compaiono accanto ai campi.
 - API delle schede (tappa M4, ancora senza interfaccia): split predefiniti, creazione da uno split con generazione automatica o vuota, scheda completa con volumi, sedute e avvisi, elenco, rinomina, duplicazione, eliminazione, scheda attiva.
 - Controllo delle revisioni tra dispositivi: `ETag` e `If-Match` sulle schede, con `412` se la scheda è cambiata nel frattempo.
 - Gli avvisi di slot vuoto dicono quali etichette escludono gli esercizi della famiglia.

@@ -141,6 +141,7 @@ def list_splits(engine: Engine) -> tuple[SplitData, ...]:
 class PlanSummaryData:
     id: int
     name: str
+    revision: int
     split_name: str | None
     days_per_week: int
     is_active: bool
@@ -159,6 +160,7 @@ def list_plans(engine: Engine) -> tuple[PlanSummaryData, ...]:
             PlanSummaryData(
                 id=plan.id,
                 name=plan.name,
+                revision=plan.revision,
                 split_name=plan.split_template.name if plan.split_template else None,
                 days_per_week=sum(day.times_per_week for day in plan.days),
                 is_active=plan.is_active,

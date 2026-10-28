@@ -2144,6 +2144,10 @@
             "title": "Muscles",
             "type": "array"
           },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
           "revision": {
             "title": "Revision",
             "type": "integer"
@@ -2157,6 +2161,7 @@
           }
         },
         "required": [
+          "name",
           "revision",
           "equipment_order",
           "max_session_minutes",
@@ -2185,6 +2190,10 @@
             "title": "Name",
             "type": "string"
           },
+          "revision": {
+            "title": "Revision",
+            "type": "integer"
+          },
           "split_name": {
             "anyOf": [
               {
@@ -2205,6 +2214,7 @@
         "required": [
           "id",
           "name",
+          "revision",
           "split_name",
           "days_per_week",
           "is_active",

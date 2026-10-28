@@ -76,9 +76,14 @@ export function inBody(selector: string): DOMWrapper<Element>[] {
   return [...document.body.querySelectorAll(selector)].map((el) => new DOMWrapper(el))
 }
 
-/** Pulsante di una finestra di dialogo aperta, per testo. */
+/**
+ * Pulsante di una finestra di dialogo aperta, per testo. Se ce n'è più d'una (quella
+ * chiusa può restare nel `body` durante la transizione), vale l'ultima aperta.
+ */
 export function dialogButton(text: string): DOMWrapper<Element> {
-  const button = inBody('.n-dialog button').find((b) => b.text() === text)
+  const button = inBody('.n-dialog button')
+    .filter((b) => b.text() === text)
+    .at(-1)
   if (button === undefined) throw new Error(`Nessun pulsante «${text}» in una finestra aperta`)
   return button
 }
