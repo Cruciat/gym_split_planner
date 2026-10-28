@@ -4,21 +4,20 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ## [Non rilasciato]
 
+## [0.4.0] - 2026-10-28
+
+Tappa M3: il catalogo. La banca dati degli esercizi si consulta e si modifica dall'app, dal computer e dal telefono (US-01 → US-08).
+
 ### Aggiunto
 
-- Catalogo consultabile dal browser: elenco degli esercizi con filtri combinabili per gruppo, muscolo (P o anche S), famiglia, attrezzo, etichetta (con o senza), confidenza e ricerca per nome; i filtri restano nell'URL. Su telefono, elenco a schede e filtri in un pannello dal basso.
-- Dettaglio dell'esercizio: muscoli P e S, etichette con le note, famiglie, varianti cliccabili, fonti.
-- Navigazione tra Schede, Catalogo e Impostazioni (in alto su computer, in basso su telefono); Schede e Impostazioni sono ancora segnaposto.
-- API `GET /api/catalog` (tutto il catalogo, con `ETag`) e `GET /api/exercises/{id}`.
-- Creazione e modifica degli esercizi da una form: famiglie e rango, attrezzo, tipo, allungamento, confidenza, griglia dei muscoli a tre stati (vuoto → S → P), etichette con nota, fonti (anche nuove), note. Errori accanto ai campi; conferma prima di uscire con modifiche non salvate.
-- Dal dettaglio: disattivare e riattivare un esercizio, eliminarlo se non è usato in nessuna scheda (altrimenti l'app spiega dove è usato e propone di disattivarlo).
-- API `POST`, `PUT`, `DELETE /api/exercises`, `GET /api/exercises/{id}/usage` e `POST`, `PATCH`, `DELETE /api/sources`; gli errori `rule-violation` elencano tutte le regole violate con il campo a cui si riferiscono.
-- Catalogo diviso in quattro schede: Esercizi, Famiglie, Etichette, Muscoli.
-- Famiglie di movimento: creazione, modifica in linea, eliminazione solo se non usate (altrimenti l'app dice da cosa sono usate).
-- Etichette: creazione e modifica in linea di nome, simbolo, colore, effetto, punti e visibilità; eliminazione con conferma che riporta a quanti esercizi è assegnata e quante schede la personalizzano.
-- Muscoli: nomi, priorità e fascia modificabili; "nessun obiettivo" svuota la fascia; una fascia che renderebbe invalida la personalizzazione di una scheda è rifiutata con il nome della scheda.
-- Elenco degli esercizi: selezione multipla per assegnare o togliere un'etichetta a più esercizi insieme, anche dal telefono.
-- API per famiglie (`/api/families`), muscoli (`PATCH /api/muscles/{id}`) ed etichette (`/api/tags`, con `assign` e `unassign`).
+- Navigazione tra Schede, Catalogo e Impostazioni: in alto su computer, in basso su telefono. Schede e Impostazioni sono ancora segnaposto.
+- Elenco degli esercizi con filtri combinabili (gruppo, muscolo come P o anche S, famiglia, attrezzo, etichetta con o senza, confidenza, ricerca per nome) che restano nell'URL; su telefono, elenco a schede e filtri in un pannello dal basso.
+- Dettaglio dell'esercizio con muscoli P e S, etichette e note, famiglie, varianti cliccabili e fonti.
+- Creazione e modifica degli esercizi: griglia dei muscoli a tre stati, etichette con nota, fonti (anche nuove), errori accanto ai campi, conferma prima di uscire senza salvare.
+- Disattivazione, riattivazione ed eliminazione degli esercizi; un esercizio usato in una scheda si può solo disattivare.
+- Famiglie, etichette e muscoli modificabili in linea, ciascuno nella sua scheda del catalogo; eliminazioni con conferma che riporta gli utilizzi.
+- Selezione multipla nell'elenco degli esercizi per assegnare o togliere un'etichetta a più esercizi insieme.
+- API del catalogo: `GET /api/catalog` (con `ETag`), esercizi, fonti, famiglie, muscoli ed etichette in lettura e scrittura, con gli utilizzi prima di eliminare. Gli errori `rule-violation` elencano tutte le regole violate con il loro campo; `invalid-band` protegge le fasce personalizzate delle schede.
 
 ## [0.3.0] - 2026-10-28
 
@@ -53,7 +52,8 @@ Prima versione: scheletro del progetto (tappa M0). Nessuna funzione per l'utente
 - Immagine Docker unica (API e frontend) e workflow di rilascio su GHCR.
 - `GET /api/pdf/test`: PDF di prova generato con WeasyPrint, temporaneo fino a M5.
 
-[Non rilasciato]: https://github.com/Cruciat/gym_split_planner/compare/v0.3.0...HEAD
+[Non rilasciato]: https://github.com/Cruciat/gym_split_planner/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Cruciat/gym_split_planner/releases/tag/v0.1.0
