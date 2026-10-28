@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.egg-info/
+backend/data/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/coverage/
+*.tsbuildinfo
+
+# Editor e sistema
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Dati locali
+*.db
+*.db-shm
+*.db-wal
+.env
