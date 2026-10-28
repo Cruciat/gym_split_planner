@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>PDF di prova — Gym Split Planner</title>
+  <link rel="stylesheet" href="base.css">
+</head>
+<body>
+  <h1>PDF di prova</h1>
+  <p class="meta">Gym Split Planner {{ version }} · generato il {{ generated_on }}</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Esercizio</th>
+        <th class="num">Serie</th>
+        <th class="num">RIR</th>
+        <th class="num">Rec.</th>
+        {% for week in range(1, weeks + 1) %}
+        <th class="num log">S{{ week }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>
+          {{ row.name }}
+          {% if row.warning %}<span class="symbol">{{ icon('warning') }}</span><sup>{{ row.note_ref }}</sup>{% endif %}
+          {% if row.sub %}<div class="sub">{{ row.sub }}</div>{% endif %}
+        </td>
+        <td class="num">{{ row.sets }}</td>
+        <td class="num">{{ row.rir }}</td>
+        <td class="num">{{ row.rest }}</td>
+        {% for _ in range(weeks) %}
+        <td class="log"></td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p class="notes">
+    <span class="symbol">{{ icon('warning') }}</span><sup>1</sup> Collo: attenzione. Prova di simbolo SVG, nota a piè di tabella, caratteri accentati (àèéìòù) e numerazione delle pagine.<br>
+    * Ultima serie a cedimento.
+  </p>
+</body>
+</html>

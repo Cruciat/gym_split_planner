@@ -6,9 +6,11 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "alembic>=1.20.1",
     "fastapi>=0.162.0",
+    "jinja2>=3.1.6",
     "pydantic-settings>=2.16.1",
     "sqlalchemy>=2.1.6",
     "uvicorn[standard]>=0.54.0",
+    "weasyprint>=70.0",
 ]
 
 [build-system]
@@ -38,6 +40,8 @@ src = ["src", "tests"]
 select = ["E", "W", "F", "I", "UP", "B", "SIM", "RUF", "N", "C4", "PT", "RET", "TID", "PTH"]
 # ApiProblem rispecchia il nome dello standard (Problem Details), senza suffisso Error.
 ignore = ["N818"]
+# Simboli tipografici usati di proposito nei testi italiani (3 × 10, 90″, 2′).
+allowed-confusables = ["×", "′", "″"]
 
 [tool.ruff.lint.per-file-ignores]
 "src/gym_split_planner/db/migrations/versions/*" = ["N999"]
@@ -48,6 +52,10 @@ python_version = "3.12"
 mypy_path = "src"
 packages = ["gym_split_planner", "tests"]
 plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["weasyprint", "weasyprint.*"]
+ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "tests.*"
@@ -61,6 +69,8 @@ filterwarnings = [
     # Avviso di Starlette sul client di test basato su httpx: si rivaluta quando
     # FastAPI aggiornerà il proprio TestClient.
     "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+    # Dipende dalle librerie di sistema: l'immagine Docker e la CI hanno HarfBuzz-Subset.
+    "ignore:HarfBuzz-Subset will be required",
 ]
 
 [tool.coverage.run]
@@ -76,12 +86,12 @@ root_package = "gym_split_planner"
 include_external_packages = true
 
 [[tool.importlinter.contracts]]
-name = "Strati: api -> services -> db -> domain (ADR 0005)"
+name = "Strati: api -> services -> db e pdf -> domain (ADR 0005)"
 type = "layers"
 layers = [
     "gym_split_planner.api",
     "gym_split_planner.services",
-    "gym_split_planner.db",
+    "gym_split_planner.db | gym_split_planner.pdf",
     "gym_split_planner.domain",
 ]
 
@@ -89,10 +99,21 @@ layers = [
 name = "api parla solo con services (ADR 0005)"
 type = "forbidden"
 source_modules = ["gym_split_planner.api"]
-forbidden_modules = ["gym_split_planner.db", "gym_split_planner.domain"]
+forbidden_modules = ["gym_split_planner.db", "gym_split_planner.pdf", "gym_split_planner.domain"]
+# Conta solo l'import diretto: api usa services, che a sua volta usa db e pdf.
+allow_indirect_imports = true
 
 [[tool.importlinter.contracts]]
 name = "domain usa solo la libreria standard (ADR 0005)"
 type = "forbidden"
 source_modules = ["gym_split_planner.domain"]
-forbidden_modules = ["fastapi", "starlette", "pydantic", "pydantic_settings", "sqlalchemy", "alembic"]
+forbidden_modules = [
+    "fastapi",
+    "starlette",
+    "pydantic",
+    "pydantic_settings",
+    "sqlalchemy",
+    "alembic",
+    "weasyprint",
+    "jinja2",
+]

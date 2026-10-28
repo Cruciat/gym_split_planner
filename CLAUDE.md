@@ -21,6 +21,7 @@ Strati del backend (ADR 0005), verificati da import-linter:
 
 - `domain`: dataclass immutabili e funzioni pure, **solo libreria standard**. Qui stanno volumi, punteggio, generazione, durata.
 - `db`: modelli SQLAlchemy, motore, migrazioni; può importare `domain`.
+- `pdf`: template Jinja2 e WeasyPrint, allo stesso livello di `db`; icone SVG di Lucide in `pdf/icons/`.
 - `services`: casi d'uso; può importare `db` e `domain`.
 - `api`: router, schemi Pydantic, errori; può importare **solo** `services`.
 - `app.py` è l'unico punto che collega tutto (composizione); `config.py` legge le variabili `GSP_*`.

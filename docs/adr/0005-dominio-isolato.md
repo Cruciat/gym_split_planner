@@ -22,6 +22,8 @@ Il backend è diviso in tre strati, con dipendenze in una sola direzione (`api` 
 
 Una regola di lint (import-linter) impedisce a `domain` di importare FastAPI, SQLAlchemy o Pydantic.
 
+Nota (2026-10-28, issue #4): la generazione dei PDF sta in un modulo `pdf` allo stesso livello di `db`. È un adattatore verso WeasyPrint e Jinja2: può importare `domain`, è usato da `services` e mai da `api`.
+
 ## Alternative considerate
 
 - **Logica dentro gli endpoint o nei modelli SQLAlchemy:** più rapido all'inizio, ma i test richiedono database e HTTP, e il ribilanciamento della fase 2 dovrebbe districarsi da questo codice.
