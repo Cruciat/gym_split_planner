@@ -4,6 +4,15 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ## [Non rilasciato]
 
+### Aggiunto
+
+- PDF della scheda (`GET /api/plans/{id}/pdf`, con le settimane da 1 a 8): una pagina per giorno con esercizi, simboli, serie × ripetizioni, RIR, recupero, colonne per carichi e ripetizioni, note delle etichette come richiami, riscaldamento e stretching; una pagina di riepilogo con volumi e fasce, legenda e mini-allenamento quotidiano. Leggibile anche stampato in bianco e nero.
+- Icone di tutti i simboli delle etichette per il PDF, dalle stesse definizioni di Lucide dell'interfaccia.
+
+### Rimosso
+
+- `GET /api/pdf/test`, il PDF di prova di M0.
+
 ## [0.5.0] - 2026-10-28
 
 Tappa M4: l'editor. Le schede si creano, si modificano e si confrontano con le fasce di volume, dal computer e dal telefono (US-10 → US-21).

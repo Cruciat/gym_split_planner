@@ -194,26 +194,6 @@ export interface paths {
     patch: operations['patch_muscle']
     trace?: never
   }
-  '/api/pdf/test': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * PDF di prova
-     * @description Genera un PDF A4 di prova con tabella, simbolo SVG e numerazione delle pagine.
-     */
-    get: operations['get_test_pdf']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/api/plans': {
     parameters: {
       query?: never
@@ -386,6 +366,26 @@ export interface paths {
      * @description Copia completa con nome "… (copia)", non attiva.
      */
     post: operations['post_plan_duplicate']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/plans/{plan_id}/pdf': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * PDF della scheda
+     * @description Una pagina per giorno e il riepilogo; il nome del file viene dalla scheda e dalla data.
+     */
+    get: operations['get_plan_pdf']
+    put?: never
+    post?: never
     delete?: never
     options?: never
     head?: never
@@ -2678,26 +2678,6 @@ export interface operations {
       }
     }
   }
-  get_test_pdf: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description PDF A4 */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/pdf': unknown
-        }
-      }
-    }
-  }
   read_plans: {
     parameters: {
       query?: never
@@ -3292,6 +3272,47 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_plan_pdf: {
+    parameters: {
+      query?: {
+        /** @description Colonne per carichi e ripetizioni */
+        weeks?: number
+      }
+      header?: never
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description PDF A4 */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/pdf': unknown
         }
       }
       /** @description Scheda inesistente */

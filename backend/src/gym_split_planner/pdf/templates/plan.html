@@ -1,0 +1,140 @@
+<!doctype html>
+{#- PDF della scheda (US-30; wireframe, § 6). Riceve dati già formattati da services/plan_pdf.py. -#}
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>{{ name }}</title>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="plan.css">
+</head>
+<body>
+{% macro symbols(items) %}
+{% for s in items %}<span class="symbol" title="{{ s.name }}">{{ icon(s.icon) }}</span>{% if s.ref %}<sup>{{ s.ref }}</sup>{% endif %}{% endfor %}
+{% endmacro %}
+
+{% for day in days %}
+<section class="day">
+  <header class="page-head">
+    <h1>{{ name }}</h1>
+    <p class="meta">{{ split }} · {{ date }}</p>
+  </header>
+
+  <h2>{{ day.name }} <span class="day-meta">· {{ day.frequency }}{% if day.minutes %} · {{ day.minutes }}{% endif %}</span></h2>
+  {% if warmup %}<p class="warmup"><strong>Riscaldamento:</strong> {{ warmup }}</p>{% endif %}
+
+  {% if day.rows %}
+  <table class="exercises">
+    <colgroup>
+      <col class="col-name">
+      <col class="col-sets">
+      <col class="col-rir">
+      <col class="col-rest">
+      {% for _ in range(weeks) %}<col>{% endfor %}
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Esercizio</th>
+        <th class="num">Serie</th>
+        <th class="num">RIR</th>
+        <th class="num">Rec.</th>
+        {% for week in range(1, weeks + 1) %}<th class="num">S{{ week }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in day.rows %}
+      <tr class="{{ 'optional' if row.optional }}{{ ' empty' if row.empty }}">
+        <td class="name">
+          <span class="exercise">{{ row.name }}</span>{{ symbols(row.symbols) }}
+          {% if row.optional or row.alternate %}
+          <span class="flags">{% if row.optional %}facoltativo{% endif %}{% if row.optional and row.alternate %} · {% endif %}{% if row.alternate %}settimane alterne{% endif %}</span>
+          {% endif %}
+          {% if row.second %}<div class="sub">2ª seduta: {{ row.second }}{{ symbols(row.second_symbols) }}</div>{% endif %}
+          {% if row.note %}<div class="sub note">{{ row.note }}</div>{% endif %}
+        </td>
+        <td class="num">{{ row.prescription }}</td>
+        <td class="num">{{ row.rir }}</td>
+        <td class="num">{{ row.rest }}</td>
+        {% for _ in range(weeks) %}
+        <td class="log">{% for _ in range(row.sets) %}<div class="line"></div>{% endfor %}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="log-help">Nelle colonne S: kg × ripetizioni, una riga per serie.</p>
+  {% else %}
+  <p class="muted">Nessun esercizio in questo giorno.</p>
+  {% endif %}
+
+  {% if day.footnotes or day.failure_note %}
+  <div class="notes">
+    {% for note in day.footnotes %}<p><sup>{{ note.ref }}</sup> {{ note.text }}</p>{% endfor %}
+    {% if day.failure_note %}<p>* Ultima serie a cedimento.</p>{% endif %}
+  </div>
+  {% endif %}
+
+  {% if day.stretches %}
+  <p class="stretching"><strong>Stretching:</strong>
+    {% for stretch, dose in day.stretches %}{{ stretch }} ({{ dose }}){% if not loop.last %} · {% endif %}{% endfor %}
+  </p>
+  {% endif %}
+</section>
+{% endfor %}
+
+<section class="summary">
+  <header class="page-head">
+    <h1>{{ name }}</h1>
+    <p class="meta">{{ split }} · {{ date }}</p>
+  </header>
+
+  <h2>Volume settimanale</h2>
+  <p class="muted">Serie frazionarie a settimana: un muscolo primario conta per intero, uno secondario per metà. Gli esercizi facoltativi non contano.</p>
+  <div class="volume-grid">
+    {% for column in volume_columns %}
+    <table class="volumes">
+      <thead>
+        <tr><th>Muscolo</th><th class="num">Volume</th><th class="num">Fascia</th><th class="num">Stato</th></tr>
+      </thead>
+      <tbody>
+        {% for group in column %}
+        <tr><th class="group" colspan="4">{{ group.name }}</th></tr>
+        {% for row in group.rows %}
+        <tr class="status-{{ row.status }}">
+          <td>{{ row.name }}{% if row.overridden %} ●{% endif %}</td>
+          <td class="num">{{ row.volume }}</td>
+          <td class="num">{{ row.band }}</td>
+          <td class="num">{{ row.status }}</td>
+        </tr>
+        {% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+    {% endfor %}
+  </div>
+  {% if any_overridden %}<p class="muted">● fascia personalizzata in questa scheda.</p>{% endif %}
+
+  {% if legend or failure_note or any_optional %}
+  <h2>Legenda</h2>
+  <ul class="legend">
+    {% for s in legend %}<li><span class="symbol">{{ icon(s.icon) }}</span> {{ s.name }}</li>{% endfor %}
+    {% if failure_note %}<li>* ultima serie a cedimento</li>{% endif %}
+    {% if any_optional %}<li>facoltativo: si fa se c'è tempo, non conta nel volume</li>{% endif %}
+  </ul>
+  {% endif %}
+
+  {% if routine %}
+  <h2>Mini-allenamento quotidiano</h2>
+  {% for block in routine %}
+  <h3>{{ block.name }}</h3>
+  <table class="routine">
+    <tbody>
+      {% for item, dose, purpose in block.items %}
+      <tr><td>{{ item }}</td><td class="dose">{{ dose }}</td><td class="muted">{{ purpose }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endfor %}
+  {% endif %}
+</section>
+</body>
+</html>

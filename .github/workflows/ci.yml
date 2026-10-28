@@ -182,7 +182,19 @@ jobs:
           docker exec gsp python -c "import sqlite3; n = sqlite3.connect('/data/gym_split_planner.db').execute('select count(*) from exercise').fetchone()[0]; print('esercizi:', n); assert n == 81"
           docker logs gsp 2>&1 | grep -q "Dati iniziali caricati"
           docker exec gsp sh -c 'ls /data/backups/gym_split_planner-*.db'
-          docker exec gsp python -c "import urllib.request; r = urllib.request.urlopen('http://127.0.0.1:8000/api/pdf/test'); assert r.headers['Content-Type'] == 'application/pdf' and r.read(5) == b'%PDF-'"
+          # PDF di una scheda creata dal primo preset: WeasyPrint e font nell'immagine.
+          docker exec gsp python -c "
+          import json, urllib.request as u
+          base = 'http://127.0.0.1:8000/api'
+          split = json.load(u.urlopen(base + '/splits'))[0]['id']
+          body = json.dumps({'split_id': split, 'name': 'Prova CI'}).encode()
+          request = u.Request(base + '/plans', data=body, headers={'Content-Type': 'application/json'})
+          plan = json.load(u.urlopen(request))
+          r = u.urlopen(base + '/plans/%d/pdf' % plan['id'])
+          assert r.headers['Content-Type'] == 'application/pdf'
+          assert r.read(5) == b'%PDF-'
+          print('PDF della scheda:', r.headers['Content-Disposition'])
+          "
           if docker logs gsp 2>&1 | grep -q "HarfBuzz-Subset"; then
             echo "::error::Nell'immagine manca HarfBuzz-Subset, richiesta da WeasyPrint"
             exit 1
