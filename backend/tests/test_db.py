@@ -32,7 +32,7 @@ def test_upgrade_to_head_from_empty_database(tmp_path: Path) -> None:
 
     upgrade_to_head(engine)
 
-    assert current_revision(engine) == head_revision() == "0001"
+    assert current_revision(engine) == head_revision()
     engine.dispose()
 
 

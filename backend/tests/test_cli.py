@@ -18,7 +18,7 @@ def database_env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
 def test_migrate_command(capsys: pytest.CaptureFixture[str]) -> None:
     main(["migrate"])
 
-    assert "Database alla revisione 0001" in capsys.readouterr().out
+    assert "Database alla revisione 0002" in capsys.readouterr().out
 
 
 def test_openapi_command_prints_schema(capsys: pytest.CaptureFixture[str]) -> None:

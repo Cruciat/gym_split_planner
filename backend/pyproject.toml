@@ -44,7 +44,8 @@ ignore = ["N818"]
 allowed-confusables = ["×", "′", "″"]
 
 [tool.ruff.lint.per-file-ignores]
-"src/gym_split_planner/db/migrations/versions/*" = ["N999"]
+# Le migrazioni sono generate: nomi dei file con numeri e vincoli SQL su una riga.
+"src/gym_split_planner/db/migrations/versions/*" = ["N999", "E501"]
 
 [tool.mypy]
 strict = true

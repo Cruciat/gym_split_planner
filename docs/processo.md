@@ -40,8 +40,8 @@ M0 può partire appena sono accettati gli ADR 0002, 0004, 0009-0012.
 | Tappa | Contenuto | Risultato verificabile |
 | --- | --- | --- |
 | M0 Scheletro | Repository, strumenti di qualità, CI, immagine su GHCR, deploy sull'homelab con Tailscale, PDF di prova | L'indirizzo della tailnet mostra l'app dal telefono; l'endpoint di prova restituisce un PDF |
-| M1 Dati | Modello, migrazioni, seed con le famiglie, test di validità e di riferimento | Il database riproduce i volumi dell'Excel |
-| M2 Motore | Volume, punteggio, generazione, stima della durata nel modulo di dominio | Test di riferimento verdi; copertura ≥ 90% |
+| M1 Dati | Modello, migrazioni, seed con le famiglie, test di validità, backup | Al primo avvio il database contiene i dati iniziali, validi; i valori di riferimento sono versionati |
+| M2 Motore | Volume, punteggio, generazione, stima della durata nel modulo di dominio | Generando i preset dal database si ottengono i volumi dell'Excel (test di riferimento); copertura ≥ 90% |
 | M3 Catalogo | API e schermate di consultazione e modifica | US-01 → US-08 soddisfatte |
 | M4 Editor | Procedura guidata, scheda vuota, giorni, varianti, lucchetto, serie, rigenerazione, salvataggio | US-10 → US-21 soddisfatte; primi test Playwright |
 | M5 PDF | Template e download | US-30 soddisfatta |
@@ -66,7 +66,7 @@ Vedi ADR 0012. In breve: criteri di accettazione verificati, test verdi, documen
 | Livello | Cosa copre | Quando |
 | --- | --- | --- |
 | Unità (dominio) | Volume, punteggio, generazione, durata, validazioni | Sempre; soglia 90% |
-| Riferimento | I volumi dei preset coincidono con quelli dell'Excel | Da M1 |
+| Riferimento | I volumi dei preset coincidono con quelli dell'Excel | Da M2 (i valori attesi sono versionati in M1) |
 | Validità dei dati | Ogni esercizio ha una famiglia e un muscolo P; nessun riferimento rotto; ogni slot ha candidati | Da M1 |
 | Integrazione API | Endpoint su database temporaneo | Da M3 |
 | End-to-end | Crea scheda → cambia variante → scarica PDF | Da M4 |
