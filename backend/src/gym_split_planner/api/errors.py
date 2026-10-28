@@ -12,6 +12,7 @@ from gym_split_planner.services.errors import (
     InUseError,
     InvalidBandError,
     NotFoundError,
+    RevisionMismatchError,
     RuleViolationError,
     ServiceError,
 )
@@ -78,6 +79,14 @@ async def _handle_service_error(_request: Request, exc: Exception) -> JSONRespon
         return problem_response(404, "not-found", exc.title, exc.detail)
     if isinstance(exc, InUseError):
         return problem_response(409, "in-use", exc.title, exc.detail, usage=dict(exc.usage))
+    if isinstance(exc, RevisionMismatchError):
+        return problem_response(
+            412,
+            "revision-mismatch",
+            exc.title,
+            exc.detail,
+            current_revision=exc.current_revision,
+        )
     if isinstance(exc, InvalidBandError):
         return problem_response(
             409,

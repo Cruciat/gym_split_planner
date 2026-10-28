@@ -9,10 +9,11 @@ from gym_split_planner.api.routes import (
     health,
     muscles,
     pdf,
+    plans,
     sources,
     tags,
 )
 
 api_router = APIRouter()
-for module in (health, catalog, exercises, sources, families, muscles, tags, pdf):
+for module in (health, catalog, exercises, sources, families, muscles, tags, plans, pdf):
     api_router.include_router(module.router)

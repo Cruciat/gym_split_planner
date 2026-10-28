@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from gym_split_planner.domain.duration import DurationParams, day_minutes
 from gym_split_planner.domain.enums import BandStatus
 from gym_split_planner.domain.model import Catalog, LevelWeights, MuscleTarget, PlanShape
-from gym_split_planner.domain.scoring import Preferences
+from gym_split_planner.domain.scoring import Preferences, candidates
 from gym_split_planner.domain.volume import (
     band_status,
     effective_targets,
@@ -55,6 +55,8 @@ class PlanWarning:
     muscle: str | None = None
     volume: float | None = None
     minutes: float | None = None
+    excluded_by: tuple[str, ...] = ()
+    """Per ``empty-slot``: etichette che escludono gli esercizi della famiglia."""
 
 
 @dataclass(frozen=True)
@@ -113,8 +115,21 @@ def analyze(
                     PlanWarning("session-too-long", day=day.code, session=index, minutes=duration)
                 )
         warnings.extend(
-            PlanWarning("empty-slot", day=day.code, position=position, family=slot.family)
+            PlanWarning(
+                "empty-slot",
+                day=day.code,
+                position=position,
+                family=slot.family,
+                excluded_by=_exclusions(slot.family, catalog, preferences),
+            )
             for position, slot in enumerate(day.slots, 1)
             if slot.exercise is None
         )
     return Analysis(volumes, sessions, warnings)
+
+
+def _exclusions(family: str, catalog: Catalog, preferences: Preferences) -> tuple[str, ...]:
+    """Etichette che escludono i candidati della famiglia: il motivo di uno slot vuoto."""
+    return tuple(
+        sorted({code for c in candidates(family, catalog, preferences) for code in c.excluded_by})
+    )

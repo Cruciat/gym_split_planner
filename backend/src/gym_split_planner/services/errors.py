@@ -68,3 +68,14 @@ class InvalidBandError(ServiceError):
             "valida: correggila prima nelle preferenze della scheda.",
         )
         self.plans = plans
+
+
+class RevisionMismatchError(ServiceError):
+    """La scheda è cambiata dopo la revisione su cui il client lavorava (``412``, API § 4)."""
+
+    def __init__(self, current_revision: int) -> None:
+        super().__init__(
+            "Revisione non aggiornata",
+            "La scheda è stata modificata da un altro dispositivo.",
+        )
+        self.current_revision = current_revision

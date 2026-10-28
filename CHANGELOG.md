@@ -4,6 +4,16 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ## [Non rilasciato]
 
+### Aggiunto
+
+- API delle schede (tappa M4, ancora senza interfaccia): split predefiniti, creazione da uno split con generazione automatica o vuota, scheda completa con volumi, sedute e avvisi, elenco, rinomina, duplicazione, eliminazione, scheda attiva.
+- Controllo delle revisioni tra dispositivi: `ETag` e `If-Match` sulle schede, con `412` se la scheda è cambiata nel frattempo.
+- Gli avvisi di slot vuoto dicono quali etichette escludono gli esercizi della famiglia.
+
+### Modificato
+
+- Caricamento del catalogo per i calcoli più leggero: una modifica di una scheda risponde in circa 30 ms.
+
 ## [0.4.0] - 2026-10-28
 
 Tappa M3: il catalogo. La banca dati degli esercizi si consulta e si modifica dall'app, dal computer e dal telefono (US-01 → US-08).
