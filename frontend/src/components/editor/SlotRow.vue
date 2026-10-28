@@ -22,9 +22,13 @@ const props = defineProps<{
   draggable: boolean
   highlighted: boolean
   emptyReason: string | null
+  /** Il giorno si ripete: c'è una seconda seduta e la sua variante. */
+  repeated: boolean
 }>()
 const emit = defineEmits<{
   move: [delta: -1 | 1]
+  variants: []
+  second: []
   open: []
   family: []
   note: []
@@ -45,9 +49,10 @@ function setNumber(field: 'sets' | 'rep_min' | 'rep_max', value: number | null):
   patch({ [field]: value })
 }
 
-type Action = 'family' | 'optional' | 'alternate' | 'note' | 'delete'
+type Action = 'second' | 'family' | 'optional' | 'alternate' | 'note' | 'delete'
 
 const menu = computed(() => [
+  ...(props.repeated ? [{ key: 'second', label: t.slotMenu.secondSession }] : []),
   { key: 'family', label: t.slotMenu.changeFamily },
   {
     key: 'optional',
@@ -63,6 +68,7 @@ function act(key: Action): void {
   if (key === 'optional') patch({ is_optional: !props.item.is_optional })
   else if (key === 'alternate') patch({ weekly_weight: alternate.value ? 1 : 0.5 })
   else if (key === 'family') emit('family')
+  else if (key === 'second') emit('second')
   else if (key === 'note') emit('note')
   else emit('delete')
 }
@@ -93,7 +99,19 @@ function openSheet(): void {
       @keydown.enter="openSheet"
     >
       <div class="title">
-        <strong :class="{ muted: item.exercise === null }" data-testid="slot-name">
+        <button
+          v-if="!mobile && !reorder"
+          type="button"
+          class="name-button"
+          :aria-label="t.openVariants(name)"
+          data-testid="open-variants"
+          @click="emit('variants')"
+        >
+          <strong :class="{ muted: item.exercise === null }" data-testid="slot-name">
+            {{ item.exercise?.name ?? t.emptySlot }}
+          </strong>
+        </button>
+        <strong v-else :class="{ muted: item.exercise === null }" data-testid="slot-name">
           {{ item.exercise?.name ?? t.emptySlot }}
         </strong>
         <TagBadges v-if="item.exercise" :links="item.exercise.badges" />
@@ -269,6 +287,23 @@ function openSheet(): void {
 
 .title strong {
   font-weight: 500;
+}
+
+.name-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.name-button:hover strong,
+.name-button:focus-visible strong {
+  color: var(--primary-color);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
 
 .tag {

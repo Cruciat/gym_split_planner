@@ -198,6 +198,8 @@ export const texts = {
     notePlaceholder: 'es. presa stretta, schiena appoggiata',
     slotActions: (name: string): string => `Azioni per ${name}`,
     slotMenu: {
+      variants: 'Cambia esercizio',
+      secondSession: 'Variante per la seconda seduta',
       changeFamily: 'Cambia famiglia',
       optionalOn: 'Segna come facoltativo',
       optionalOff: 'Non più facoltativo',
@@ -227,6 +229,8 @@ export const texts = {
     moveUp: (name: string): string => `Sposta ${name} più in alto`,
     moveDown: (name: string): string => `Sposta ${name} più in basso`,
     drag: (name: string): string => `Trascina ${name}`,
+    regenerate: 'Rigenera',
+    openVariants: (name: string): string => `Varianti di ${name}`,
     leaveTitle: 'Uscire con modifiche non salvate?',
     leaveText:
       'La connessione si è interrotta: alcune modifiche non sono state inviate e andranno perse.',
@@ -270,6 +274,59 @@ export const texts = {
         `${day}, esercizio ${String(position)}: nessun esercizio per «${family}»`,
       secondSession: (day: string): string => `${day} (2ª seduta)`,
     },
+  },
+
+  variants: {
+    title: (day: string, position: number, family: string): string =>
+      `${day} · esercizio ${String(position)} · ${family}`,
+    secondTitle: (day: string, position: number): string =>
+      `Seconda seduta · ${day} · esercizio ${String(position)}`,
+    current: (name: string | null): string => `Attuale: ${name ?? 'nessuno'}`,
+    currentMark: 'attuale',
+    noChange: 'nessun cambio',
+    score: 'Punteggio',
+    why: 'Perché?',
+    hideWhy: 'Nascondi',
+    breakdown: {
+      confidence: 'Confidenza',
+      equipment: 'Attrezzo',
+      stretch: 'Allungamento',
+      family: 'Famiglia',
+      rank: 'Rango',
+      tags: 'Etichette',
+    },
+    excluded: 'Escluse dalle etichette',
+    excludedBy: (tags: string[]): string => `esclusa da ${quoted(tags)}`,
+    useExcludedTitle: 'Usare un esercizio escluso?',
+    useExcluded: (name: string, tags: string[]): string =>
+      `«${name}» è escluso ${tags.length === 1 ? 'dall’etichetta' : 'dalle etichette'} ${quoted(tags)}. Usarlo lo stesso?`,
+    useAnyway: 'Usalo lo stesso',
+    noVariant: 'Nessuna variante',
+    noVariantHelp: 'Le due sedute usano lo stesso esercizio.',
+    otherFamilies: 'Altre famiglie',
+    search: 'Cerca per nome',
+    noResults: 'Nessun esercizio con questo nome.',
+    empty: 'Nessun esercizio attivo per questa famiglia.',
+    choose: (name: string): string => `Scegli ${name}`,
+    applied: (name: string): string => `«${name}» applicato.`,
+    close: 'Chiudi',
+  },
+
+  regenerate: {
+    title: 'Rigenera con le preferenze attuali',
+    intro:
+      'Gli esercizi che cambierebbero con le preferenze di oggi. Serie, ripetizioni e note restano come sono.',
+    position: (day: string, position: number): string => `${day} · ${String(position)}`,
+    locked: (n: number): string =>
+      `Gli esercizi con il lucchetto non vengono toccati (${String(n)}).`,
+    aligned: 'La scheda è già allineata alle preferenze.',
+    apply: (n: number): string =>
+      n === 1 ? 'Applica 1 modifica' : `Applica ${String(n)} modifiche`,
+    applied: (n: number): string =>
+      n === 1 ? 'Rigenerato 1 esercizio.' : `Rigenerati ${String(n)} esercizi.`,
+    none: 'nessuno',
+    cancel: 'Annulla',
+    close: 'Chiudi',
   },
 
   saveState: {

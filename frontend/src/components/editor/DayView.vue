@@ -7,6 +7,7 @@ import DayDialog from '@/components/editor/DayDialog.vue'
 import SlotDialog from '@/components/editor/SlotDialog.vue'
 import SlotRow from '@/components/editor/SlotRow.vue'
 import SlotSheet from '@/components/editor/SlotSheet.vue'
+import VariantsPanel from '@/components/editor/VariantsPanel.vue'
 import TextDialog from '@/components/editor/TextDialog.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import { useSortable } from '@/composables/useSortable'
@@ -34,6 +35,10 @@ const dayDialog = ref(false)
 const slotDialog = ref<{ mode: 'add' | 'family'; slot: Slot | null } | null>(null)
 const noteSlot = ref<Slot | null>(null)
 const sheetSlotId = ref<number | null>(null)
+const variants = ref<{ slotId: number; session: 1 | 2 } | null>(null)
+const variantsSlot = computed(
+  () => props.day.slots.find((s) => s.id === variants.value?.slotId) ?? null,
+)
 
 const plan = computed(() => editor.plan.value)
 const minutes = computed(() => (plan.value === null ? [] : dayMinutes(plan.value, props.day.id)))
@@ -182,7 +187,7 @@ async function deleteSlot(slot: Slot): Promise<void> {
   await editor.deleteSlot(slot.id)
 }
 
-function fromSheet(action: 'family' | 'note' | 'delete'): void {
+function fromSheet(action: 'variants' | 'second' | 'family' | 'note' | 'delete'): void {
   const slot = sheetSlot.value
   if (slot === null) return
   if (action === 'delete') {
@@ -190,7 +195,9 @@ function fromSheet(action: 'family' | 'note' | 'delete'): void {
     return
   }
   sheetSlotId.value = null
-  if (action === 'family') slotDialog.value = { mode: 'family', slot }
+  if (action === 'variants') variants.value = { slotId: slot.id, session: 1 }
+  else if (action === 'second') variants.value = { slotId: slot.id, session: 2 }
+  else if (action === 'family') slotDialog.value = { mode: 'family', slot }
   else noteSlot.value = slot
 }
 
@@ -229,11 +236,14 @@ const highlighted = toRef(props, 'highlightedSlot')
         :draggable="draggable"
         :highlighted="highlighted === slot.id"
         :empty-reason="emptyReason(slot)"
+        :repeated="day.times_per_week >= 2"
         @move="(delta) => moveSlot(index, index + delta)"
         @open="sheetSlotId = slot.id"
         @family="slotDialog = { mode: 'family', slot }"
         @note="noteSlot = slot"
         @delete="deleteSlot(slot)"
+        @variants="variants = { slotId: slot.id, session: 1 }"
+        @second="variants = { slotId: slot.id, session: 2 }"
       />
     </ol>
 
@@ -283,10 +293,20 @@ const highlighted = toRef(props, 'highlightedSlot')
     <SlotSheet
       v-if="mobile"
       :item="sheetSlot"
+      :repeated="day.times_per_week >= 2"
       @close="sheetSlotId = null"
+      @variants="fromSheet('variants')"
+      @second="fromSheet('second')"
       @family="fromSheet('family')"
       @note="fromSheet('note')"
       @delete="fromSheet('delete')"
+    />
+    <VariantsPanel
+      :day="day"
+      :item="variantsSlot"
+      :session="variants?.session ?? 1"
+      :mobile="mobile"
+      @close="variants = null"
     />
   </section>
 </template>

@@ -8,12 +8,20 @@ import {
   NSkeleton,
   useMessage,
 } from 'naive-ui'
-import { ChevronUp, EllipsisVertical, Pencil, Plus, SlidersHorizontal } from 'lucide-vue-next'
+import {
+  ChevronUp,
+  EllipsisVertical,
+  Pencil,
+  Plus,
+  RefreshCw,
+  SlidersHorizontal,
+} from 'lucide-vue-next'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave, RouterLink, useRoute, useRouter } from 'vue-router'
 
 import DayDialog from '@/components/editor/DayDialog.vue'
 import DayView from '@/components/editor/DayView.vue'
+import RegenerateDialog from '@/components/editor/RegenerateDialog.vue'
 import TextDialog from '@/components/editor/TextDialog.vue'
 import SaveStatus from '@/components/SaveStatus.vue'
 import VolumePanel from '@/components/VolumePanel.vue'
@@ -101,13 +109,17 @@ async function rename(name: string): Promise<void> {
   if (name !== plan.value?.name) await editor.rename(name)
 }
 
+const regenerating = ref(false)
+
 const mobileMenu = [
   { key: 'preferences', label: t.preferences },
+  { key: 'regenerate', label: t.regenerate },
   { key: 'rename', label: t.rename },
 ]
 
-function actOnPlan(key: 'preferences' | 'rename'): void {
+function actOnPlan(key: 'preferences' | 'regenerate' | 'rename'): void {
   if (key === 'rename') renaming.value = true
+  else if (key === 'regenerate') regenerating.value = true
   else void router.push(`/schede/${String(props.id)}/preferenze`)
 }
 
@@ -211,6 +223,16 @@ onBeforeRouteLeave(async () => {
             <template #icon><SlidersHorizontal :size="16" /></template>
             {{ t.preferences }}
           </NButton>
+          <NButton
+            v-if="!mobile"
+            secondary
+            :disabled="plan.days.length === 0"
+            data-testid="regenerate"
+            @click="regenerating = true"
+          >
+            <template #icon><RefreshCw :size="16" /></template>
+            {{ t.regenerate }}
+          </NButton>
           <NDropdown
             v-else
             trigger="click"
@@ -308,6 +330,7 @@ onBeforeRouteLeave(async () => {
       </NDrawer>
 
       <DayDialog v-model:show="addingDay" :title="t.addDayTitle" :action="t.add" @submit="addDay" />
+      <RegenerateDialog v-model:show="regenerating" />
       <TextDialog
         v-model:show="renaming"
         :title="t.renameTitle"

@@ -33,6 +33,7 @@ make setup          # dipendenze e hook di pre-commit
 make dev-backend    # API su :8000
 make dev-frontend   # frontend su :5173 con /api inoltrato
 make check          # tutti i controlli della CI
+make e2e            # test end-to-end (Playwright) sull'app compilata
 make api-types      # dopo ogni modifica al contratto delle API
 ```
 
