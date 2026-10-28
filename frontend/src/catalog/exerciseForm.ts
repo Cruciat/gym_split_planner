@@ -16,6 +16,7 @@ import type {
   Problem,
   Stretch,
 } from '@/api/client'
+import { problemMessages } from '@/catalog/problems'
 import { texts } from '@/texts'
 
 export interface MuscleEntry {
@@ -202,25 +203,17 @@ function asField(name: unknown): FormField | null {
 }
 
 /**
- * Errori del server accanto ai campi: `violations` di un `rule-violation` e campi
- * di un `validation-error` (`loc` = `["body", campo, …]`). Quello che non ha un
- * campo finisce in `general`, da mostrare sopra la form.
+ * Errori del server accanto ai campi della form (API, § 3.1). Un errore su un campo
+ * che la form non mostra finisce in `general`, da mostrare sopra la form.
  */
 export function errorsFromProblem(problem: Problem): { fields: FormErrors; general: string[] } {
+  const messages = problemMessages(problem, texts.exerciseForm.errors.invalid)
   const fields: FormErrors = {}
-  const general: string[] = []
-  for (const violation of problem.violations ?? []) {
-    const field = asField(violation.field)
-    if (field === null) general.push(violation.message)
-    else fields[field] ??= violation.message
-  }
-  for (const error of problem.errors ?? []) {
-    const field = asField(error.loc[1])
-    if (field === null) general.push(error.msg)
-    else fields[field] ??= texts.exerciseForm.errors.invalid
-  }
-  if (Object.keys(fields).length === 0 && general.length === 0) {
-    general.push(problem.detail ?? problem.title)
+  const general = [...messages.general]
+  for (const [name, message] of Object.entries(messages.fields)) {
+    const field = asField(name)
+    if (field === null) general.push(message)
+    else fields[field] = message
   }
   return { fields, general }
 }

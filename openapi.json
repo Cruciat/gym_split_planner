@@ -694,6 +694,50 @@
         "title": "ExerciseUsageOut",
         "type": "object"
       },
+      "FamilyIn": {
+        "description": "Nuova famiglia di movimento. Senza ``code``, si genera dal nome.",
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "muscle_group_id": {
+            "title": "Muscle Group Id",
+            "type": "integer"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "muscle_group_id"
+        ],
+        "title": "FamilyIn",
+        "type": "object"
+      },
       "FamilyOut": {
         "description": "Famiglia di movimento.",
         "properties": {
@@ -738,6 +782,93 @@
           "sort_order"
         ],
         "title": "FamilyOut",
+        "type": "object"
+      },
+      "FamilyPatch": {
+        "description": "Modifica parziale di una famiglia; il ``code`` non cambia.",
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "muscle_group_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Muscle Group Id"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort Order"
+          }
+        },
+        "title": "FamilyPatch",
+        "type": "object"
+      },
+      "FamilyUsageOut": {
+        "description": "Chi usa una famiglia. Esercizi principali, slot e schede ne impediscono l'eliminazione.",
+        "properties": {
+          "exercises": {
+            "title": "Exercises",
+            "type": "integer"
+          },
+          "plans": {
+            "items": {
+              "$ref": "#/components/schemas/PlanUsageOut"
+            },
+            "title": "Plans",
+            "type": "array"
+          },
+          "secondary_exercises": {
+            "title": "Secondary Exercises",
+            "type": "integer"
+          },
+          "split_slots": {
+            "title": "Split Slots",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "exercises",
+          "secondary_exercises",
+          "split_slots",
+          "plans"
+        ],
+        "title": "FamilyUsageOut",
         "type": "object"
       },
       "HTTPValidationError": {
@@ -989,6 +1120,110 @@
           "sort_order"
         ],
         "title": "MuscleOut",
+        "type": "object"
+      },
+      "MusclePatch": {
+        "description": "Modifica parziale di un muscolo. Con ``priority: \"none\"`` la fascia si svuota;\naltrimenti servono minimo e massimo, con minimo < massimo.",
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "enum": [
+                  "priority",
+                  "standard",
+                  "none"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "short_name": {
+            "anyOf": [
+              {
+                "maxLength": 40,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Short Name"
+          },
+          "weekly_max": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Max"
+          },
+          "weekly_min": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Min"
+          }
+        },
+        "title": "MusclePatch",
+        "type": "object"
+      },
+      "PlanRefOut": {
+        "description": "Scheda citata da un utilizzo o da un errore.",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "PlanRefOut",
         "type": "object"
       },
       "PlanUsageOut": {
@@ -1334,6 +1569,126 @@
         "title": "StretchOut",
         "type": "object"
       },
+      "TagAssignIn": {
+        "description": "Esercizi a cui assegnare l'etichetta. La nota vale per tutti: a chi ha già\nl'etichetta si aggiorna solo se il campo ``note`` è presente.",
+        "properties": {
+          "exercise_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 1000,
+            "minItems": 1,
+            "title": "Exercise Ids",
+            "type": "array"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "required": [
+          "exercise_ids"
+        ],
+        "title": "TagAssignIn",
+        "type": "object"
+      },
+      "TagIn": {
+        "description": "Nuova etichetta. Bonus e penalità hanno bisogno di punti maggiori di zero.",
+        "properties": {
+          "code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Code"
+          },
+          "color": {
+            "default": "neutral",
+            "enum": [
+              "neutral",
+              "info",
+              "success",
+              "warning",
+              "danger"
+            ],
+            "title": "Color",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "effect": {
+            "default": "none",
+            "enum": [
+              "none",
+              "bonus",
+              "penalty",
+              "exclude"
+            ],
+            "title": "Effect",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "points": {
+            "default": 0,
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Points",
+            "type": "number"
+          },
+          "show_badge": {
+            "default": true,
+            "title": "Show Badge",
+            "type": "boolean"
+          },
+          "symbol": {
+            "enum": [
+              "warning",
+              "ban",
+              "info",
+              "star",
+              "heart",
+              "zap",
+              "flag",
+              "eye-off"
+            ],
+            "title": "Symbol",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "symbol"
+        ],
+        "title": "TagIn",
+        "type": "object"
+      },
       "TagLinkIn": {
         "description": "Etichetta assegnata, con nota facoltativa.",
         "properties": {
@@ -1463,6 +1818,171 @@
           "sort_order"
         ],
         "title": "TagOut",
+        "type": "object"
+      },
+      "TagPatch": {
+        "description": "Modifica parziale di un'etichetta.",
+        "properties": {
+          "color": {
+            "anyOf": [
+              {
+                "enum": [
+                  "neutral",
+                  "info",
+                  "success",
+                  "warning",
+                  "danger"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Color"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "effect": {
+            "anyOf": [
+              {
+                "enum": [
+                  "none",
+                  "bonus",
+                  "penalty",
+                  "exclude"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effect"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 120,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "points": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Points"
+          },
+          "show_badge": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Show Badge"
+          },
+          "sort_order": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sort Order"
+          },
+          "symbol": {
+            "anyOf": [
+              {
+                "enum": [
+                  "warning",
+                  "ban",
+                  "info",
+                  "star",
+                  "heart",
+                  "zap",
+                  "flag",
+                  "eye-off"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Symbol"
+          }
+        },
+        "title": "TagPatch",
+        "type": "object"
+      },
+      "TagUnassignIn": {
+        "description": "Esercizi da cui togliere l'etichetta.",
+        "properties": {
+          "exercise_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 1000,
+            "minItems": 1,
+            "title": "Exercise Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "exercise_ids"
+        ],
+        "title": "TagUnassignIn",
+        "type": "object"
+      },
+      "TagUsageOut": {
+        "description": "Esercizi con l'etichetta e schede che la personalizzano.",
+        "properties": {
+          "exercises": {
+            "title": "Exercises",
+            "type": "integer"
+          },
+          "plans_with_overrides": {
+            "items": {
+              "$ref": "#/components/schemas/PlanRefOut"
+            },
+            "title": "Plans With Overrides",
+            "type": "array"
+          }
+        },
+        "required": [
+          "exercises",
+          "plans_with_overrides"
+        ],
+        "title": "TagUsageOut",
         "type": "object"
       },
       "ValidationError": {
@@ -1827,6 +2347,188 @@
         ]
       }
     },
+    "/api/families": {
+      "post": {
+        "description": "La famiglia nuova va in fondo all'elenco.",
+        "operationId": "post_family",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FamilyIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FamilyOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Crea una famiglia",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/families/{family_id}": {
+      "delete": {
+        "description": "Rifiutata se ha esercizi principali, slot di split o di schede (C5).",
+        "operationId": "remove_family",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Famiglia inesistente"
+          },
+          "409": {
+            "description": "Famiglia in uso (`in-use`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Elimina una famiglia non usata",
+        "tags": [
+          "catalogo"
+        ]
+      },
+      "patch": {
+        "operationId": "patch_family",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FamilyPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FamilyOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Famiglia inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Modifica una famiglia",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/families/{family_id}/usage": {
+      "get": {
+        "operationId": "read_family_usage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "family_id",
+            "required": true,
+            "schema": {
+              "title": "Family Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FamilyUsageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Famiglia inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Chi usa una famiglia",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
     "/api/health": {
       "get": {
         "description": "Usato dal controllo di salute del container: risponde 503 se il database non risponde.",
@@ -1856,6 +2558,65 @@
         "summary": "Stato dell'applicazione",
         "tags": [
           "sistema"
+        ]
+      }
+    },
+    "/api/muscles/{muscle_id}": {
+      "patch": {
+        "description": "Nomi, priorità, fascia e note. Vale subito per le schede che non lo personalizzano.",
+        "operationId": "patch_muscle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "muscle_id",
+            "required": true,
+            "schema": {
+              "title": "Muscle Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MusclePatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MuscleOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Muscolo inesistente"
+          },
+          "409": {
+            "description": "La fascia renderebbe invalida una scheda (`invalid-band`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Modifica un muscolo",
+        "tags": [
+          "catalogo"
         ]
       }
     },
@@ -2007,6 +2768,295 @@
           }
         },
         "summary": "Modifica una fonte",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/tags": {
+      "post": {
+        "operationId": "post_tag",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Crea un'etichetta",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/tags/{tag_id}": {
+      "delete": {
+        "description": "Toglie anche assegnazioni e personalizzazioni delle schede; il client chiede\nconferma dopo aver letto gli utilizzi (US-08 CA3).",
+        "operationId": "remove_tag",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag_id",
+            "required": true,
+            "schema": {
+              "title": "Tag Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Etichetta inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Elimina un'etichetta",
+        "tags": [
+          "catalogo"
+        ]
+      },
+      "patch": {
+        "description": "Effetto e punti valgono subito per le schede che non li personalizzano.",
+        "operationId": "patch_tag",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag_id",
+            "required": true,
+            "schema": {
+              "title": "Tag Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Etichetta inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Modifica un'etichetta",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/tags/{tag_id}/assign": {
+      "post": {
+        "operationId": "post_tag_assign",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag_id",
+            "required": true,
+            "schema": {
+              "title": "Tag Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagAssignIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagUsageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Etichetta inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Assegna un'etichetta a più esercizi",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/tags/{tag_id}/unassign": {
+      "post": {
+        "operationId": "post_tag_unassign",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag_id",
+            "required": true,
+            "schema": {
+              "title": "Tag Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TagUnassignIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagUsageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Etichetta inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Toglie un'etichetta da più esercizi",
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/tags/{tag_id}/usage": {
+      "get": {
+        "operationId": "read_tag_usage",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "tag_id",
+            "required": true,
+            "schema": {
+              "title": "Tag Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagUsageOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Etichetta inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Chi usa un'etichetta",
         "tags": [
           "catalogo"
         ]

@@ -10,6 +10,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from gym_split_planner.services.errors import (
     InUseError,
+    InvalidBandError,
     NotFoundError,
     RuleViolationError,
     ServiceError,
@@ -77,6 +78,14 @@ async def _handle_service_error(_request: Request, exc: Exception) -> JSONRespon
         return problem_response(404, "not-found", exc.title, exc.detail)
     if isinstance(exc, InUseError):
         return problem_response(409, "in-use", exc.title, exc.detail, usage=dict(exc.usage))
+    if isinstance(exc, InvalidBandError):
+        return problem_response(
+            409,
+            "invalid-band",
+            exc.title,
+            exc.detail,
+            plans=[{"id": plan.id, "name": plan.name} for plan in exc.plans],
+        )
     if isinstance(exc, RuleViolationError):
         first = exc.errors[0]
         return problem_response(

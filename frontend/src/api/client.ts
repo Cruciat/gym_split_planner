@@ -66,13 +66,15 @@ export interface Problem {
   violations?: Violation[]
   errors?: FieldError[]
   usage?: unknown
+  /** Schede citate da un `invalid-band` (API, § 3). */
+  plans?: { id: number; name: string }[]
 }
 
 /** Riconosce un Problem Details nella risposta d'errore di `openapi-fetch`. */
 export function asProblem(error: unknown, status: number): Problem {
   if (typeof error === 'object' && error !== null && 'code' in error && 'title' in error) {
     const body = error as Record<string, unknown>
-    const { code, title, detail, violations, errors, usage } = body
+    const { code, title, detail, violations, errors, usage, plans } = body
     if (typeof code === 'string' && typeof title === 'string') {
       return {
         status,
@@ -82,6 +84,7 @@ export function asProblem(error: unknown, status: number): Problem {
         ...(Array.isArray(violations) ? { violations: violations as Violation[] } : {}),
         ...(Array.isArray(errors) ? { errors: errors as FieldError[] } : {}),
         ...('usage' in body ? { usage } : {}),
+        ...(Array.isArray(plans) ? { plans: plans as { id: number; name: string }[] } : {}),
       }
     }
   }

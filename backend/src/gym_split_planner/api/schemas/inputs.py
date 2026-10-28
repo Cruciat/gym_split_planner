@@ -23,7 +23,10 @@ Name = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max
 """Nome obbligatorio (esercizi, fonti), senza spazi ai bordi."""
 
 Label = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=120)]
-"""Testo breve obbligatorio (es. il tipo di una fonte)."""
+"""Testo breve obbligatorio (es. il tipo di una fonte, il nome di una famiglia)."""
+
+ShortLabel = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=40)]
+"""Nome breve obbligatorio, per tabelle strette e PDF (es. il nome breve di un muscolo)."""
 
 ShortText = Annotated[
     Annotated[str, StringConstraints(strip_whitespace=True, max_length=120)] | None,
@@ -43,3 +46,14 @@ HttpUrl = Annotated[
     AfterValidator(_http_url),
 ]
 """Indirizzo web facoltativo, solo ``http`` o ``https``."""
+
+
+def reject_null(value: object) -> object:
+    """In una modifica parziale un campo obbligatorio si può omettere, non svuotare.
+
+    Da usare con ``field_validator(..., mode="after")``: non scatta per i campi
+    omessi, perché i valori predefiniti non vengono validati.
+    """
+    if value is None:
+        raise ValueError("Il campo non può essere vuoto")
+    return value

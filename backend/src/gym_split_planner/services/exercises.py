@@ -27,12 +27,7 @@ from gym_split_planner.db.models import (
 )
 from gym_split_planner.db.session import make_session_factory
 from gym_split_planner.db.types import utc_now
-from gym_split_planner.domain.catalog_rules import (
-    check_exercise,
-    is_valid_code,
-    slugify,
-    unique_code,
-)
+from gym_split_planner.domain.catalog_rules import check_exercise
 from gym_split_planner.domain.enums import Confidence, Kind, Level, Stretch
 from gym_split_planner.services.catalog import (
     ExerciseDetailData,
@@ -40,14 +35,13 @@ from gym_split_planner.services.catalog import (
     TagLinkData,
     get_exercise_detail,
 )
+from gym_split_planner.services.common import name_taken, new_code, unknown
 from gym_split_planner.services.errors import (
     InUseError,
     NotFoundError,
     RuleError,
     RuleViolationError,
 )
-
-CODE_MAX_LENGTH = 60
 
 
 @dataclass(frozen=True)
@@ -96,21 +90,8 @@ def create_exercise(
     """Crea un esercizio. Senza ``code`` lo genera dal nome, libero e immutabile."""
     with make_session_factory(engine)() as session:
         errors = _check(session, data, exercise_id=None)
-        taken = set(session.scalars(select(Exercise.code)))
-        if code is None:
-            code = unique_code(
-                slugify(data.name, max_length=CODE_MAX_LENGTH), taken, max_length=CODE_MAX_LENGTH
-            )
-        elif not is_valid_code(code) or len(code) > CODE_MAX_LENGTH:
-            errors.append(
-                RuleError(
-                    "invalid-code",
-                    "code",
-                    "Il codice può contenere solo minuscole, cifre e trattini tra le parole.",
-                )
-            )
-        elif code in taken:
-            errors.append(RuleError("code-taken", "code", f"Il codice «{code}» è già usato."))
+        code, code_errors = new_code(session, Exercise.code, data.name, code)
+        errors += code_errors
         if errors:
             raise RuleViolationError(tuple(errors))
 
@@ -200,17 +181,17 @@ def _check(session: Session, data: ExerciseInput, exercise_id: int | None) -> li
 
     families = _ids(session, MovementFamily)
     if data.primary_family_id not in families:
-        errors.append(_unknown("primary_family_id", "La famiglia principale non esiste."))
+        errors.append(unknown("primary_family_id", "La famiglia principale non esiste."))
     if data.secondary_family_id is not None and data.secondary_family_id not in families:
-        errors.append(_unknown("secondary_family_id", "La famiglia secondaria non esiste."))
+        errors.append(unknown("secondary_family_id", "La famiglia secondaria non esiste."))
     if session.get(Equipment, data.equipment_id) is None:
-        errors.append(_unknown("equipment_id", "L'attrezzo non esiste."))
+        errors.append(unknown("equipment_id", "L'attrezzo non esiste."))
     if not {m.muscle_id for m in data.muscles} <= _ids(session, Muscle):
-        errors.append(_unknown("muscles", "Uno dei muscoli non esiste."))
+        errors.append(unknown("muscles", "Uno dei muscoli non esiste."))
     if not {t.tag_id for t in data.tags} <= _ids(session, Tag):
-        errors.append(_unknown("tags", "Una delle etichette non esiste."))
+        errors.append(unknown("tags", "Una delle etichette non esiste."))
     if not set(data.source_ids) <= _ids(session, Source):
-        errors.append(_unknown("source_ids", "Una delle fonti non esiste."))
+        errors.append(unknown("source_ids", "Una delle fonti non esiste."))
 
     if _has_duplicates(m.muscle_id for m in data.muscles):
         errors.append(
@@ -219,18 +200,11 @@ def _check(session: Session, data: ExerciseInput, exercise_id: int | None) -> li
     if _has_duplicates(t.tag_id for t in data.tags):
         errors.append(RuleError("duplicate-tag", "tags", "Un'etichetta compare più di una volta."))
 
-    same_name = select(Exercise.id).where(func.lower(Exercise.name) == data.name.lower())
-    if exercise_id is not None:
-        same_name = same_name.where(Exercise.id != exercise_id)
-    if session.scalars(same_name).first() is not None:
+    if name_taken(session, Exercise.name, Exercise.id, data.name, exercise_id):
         errors.append(
             RuleError("name-taken", "name", f"Esiste già un esercizio chiamato «{data.name}».")
         )
     return errors
-
-
-def _unknown(field: str, message: str) -> RuleError:
-    return RuleError("unknown-reference", field, message)
 
 
 def _has_duplicates(values: Iterable[int]) -> bool:

@@ -5,6 +5,9 @@ const PlansPage = () => import('@/pages/PlansPage.vue')
 const CatalogPage = () => import('@/pages/CatalogPage.vue')
 const ExerciseDetailPage = () => import('@/pages/ExerciseDetailPage.vue')
 const ExerciseFormPage = () => import('@/pages/ExerciseFormPage.vue')
+const FamiliesPage = () => import('@/pages/FamiliesPage.vue')
+const TagsPage = () => import('@/pages/TagsPage.vue')
+const MusclesPage = () => import('@/pages/MusclesPage.vue')
 const SettingsPage = () => import('@/pages/SettingsPage.vue')
 const NotFoundPage = () => import('@/pages/NotFoundPage.vue')
 
@@ -16,6 +19,9 @@ export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: PlansPage },
   { path: '/schede', name: 'plans', component: PlansPage },
   { path: '/catalogo', name: 'catalog', component: CatalogPage },
+  { path: '/catalogo/famiglie', name: 'families', component: FamiliesPage },
+  { path: '/catalogo/etichette', name: 'tags', component: TagsPage },
+  { path: '/catalogo/muscoli', name: 'muscles', component: MusclesPage },
   { path: '/catalogo/esercizi/nuovo', name: 'exercise-new', component: ExerciseFormPage },
   {
     path: '/catalogo/esercizi/:id(\\d+)/modifica',

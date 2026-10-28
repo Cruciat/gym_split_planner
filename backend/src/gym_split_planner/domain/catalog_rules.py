@@ -10,7 +10,8 @@ from collections.abc import Hashable, Mapping, Set
 from dataclasses import dataclass
 from typing import Any
 
-from gym_split_planner.domain.enums import Level
+from gym_split_planner.domain.enums import Level, Priority, TagEffect
+from gym_split_planner.domain.model import MuscleTarget
 
 _CODE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 _NOT_ALNUM = re.compile(r"[^a-z0-9]+")
@@ -98,3 +99,54 @@ def check_exercise(
             )
         )
     return tuple(violations)
+
+
+def check_band(
+    priority: Priority, weekly_min: float | None, weekly_max: float | None
+) -> tuple[Violation, ...]:
+    """Fascia di un muscolo (US-07 CA2; modello dati, § 3.2).
+
+    Con un obiettivo (prioritario o non prioritario) servono minimo e massimo, con
+    ``0 <= minimo < massimo``. Con "nessun obiettivo" la fascia non conta.
+    """
+    if priority is Priority.NONE:
+        return ()
+    violations: list[Violation] = []
+    for field, value in (("weekly_min", weekly_min), ("weekly_max", weekly_max)):
+        if value is None:
+            violations.append(
+                Violation(
+                    "band-required",
+                    field,
+                    "Con un obiettivo servono il minimo e il massimo della fascia.",
+                )
+            )
+    if violations or weekly_min is None or weekly_max is None:
+        return tuple(violations)
+    if weekly_min < 0:
+        violations.append(
+            Violation("band-negative", "weekly_min", "Il minimo non può essere negativo.")
+        )
+    elif weekly_min >= weekly_max:
+        violations.append(
+            Violation("band-order", "weekly_max", "Il massimo deve essere maggiore del minimo.")
+        )
+    return tuple(violations)
+
+
+def is_valid_target(target: MuscleTarget) -> bool:
+    """Vero se priorità e fascia (del catalogo o effettive) rispettano ``check_band``."""
+    return not check_band(target.priority, target.weekly_min, target.weekly_max)
+
+
+def check_tag(effect: TagEffect, points: float) -> tuple[Violation, ...]:
+    """Bonus e penalità hanno bisogno di punti positivi (modello dati, § 3.9)."""
+    if effect in (TagEffect.BONUS, TagEffect.PENALTY) and points <= 0:
+        return (
+            Violation(
+                "points-required",
+                "points",
+                "Bonus e penalità hanno bisogno di punti maggiori di zero.",
+            ),
+        )
+    return ()

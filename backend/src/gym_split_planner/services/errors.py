@@ -47,3 +47,24 @@ class InUseError(ServiceError):
     def __init__(self, title: str, detail: str, usage: Mapping[str, Any]) -> None:
         super().__init__(title, detail)
         self.usage = usage
+
+
+@dataclass(frozen=True)
+class PlanRef:
+    """Scheda citata in un errore: ``id`` per il link, nome per il messaggio."""
+
+    id: int
+    name: str
+
+
+class InvalidBandError(ServiceError):
+    """Una modifica al catalogo lascerebbe una scheda con una fascia non valida (``409``)."""
+
+    def __init__(self, plans: tuple[PlanRef, ...]) -> None:
+        names = ", ".join(f"«{plan.name}»" for plan in plans)
+        super().__init__(
+            "Fascia non valida in una scheda",
+            f"Con questa fascia la personalizzazione delle schede {names} non sarebbe più "
+            "valida: correggila prima nelle preferenze della scheda.",
+        )
+        self.plans = plans

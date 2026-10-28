@@ -96,6 +96,64 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/families': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Crea una famiglia
+     * @description La famiglia nuova va in fondo all'elenco.
+     */
+    post: operations['post_family']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/families/{family_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /**
+     * Elimina una famiglia non usata
+     * @description Rifiutata se ha esercizi principali, slot di split o di schede (C5).
+     */
+    delete: operations['remove_family']
+    options?: never
+    head?: never
+    /** Modifica una famiglia */
+    patch: operations['patch_family']
+    trace?: never
+  }
+  '/api/families/{family_id}/usage': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Chi usa una famiglia */
+    get: operations['read_family_usage']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/health': {
     parameters: {
       query?: never
@@ -114,6 +172,26 @@ export interface paths {
     options?: never
     head?: never
     patch?: never
+    trace?: never
+  }
+  '/api/muscles/{muscle_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    /**
+     * Modifica un muscolo
+     * @description Nomi, priorità, fascia e note. Vale subito per le schede che non lo personalizzano.
+     */
+    patch: operations['patch_muscle']
     trace?: never
   }
   '/api/pdf/test': {
@@ -178,6 +256,99 @@ export interface paths {
      * @description Cambiano solo i campi inviati; ``null`` svuota i campi facoltativi.
      */
     patch: operations['patch_source']
+    trace?: never
+  }
+  '/api/tags': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Crea un'etichetta */
+    post: operations['post_tag']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/tags/{tag_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /**
+     * Elimina un'etichetta
+     * @description Toglie anche assegnazioni e personalizzazioni delle schede; il client chiede
+     *     conferma dopo aver letto gli utilizzi (US-08 CA3).
+     */
+    delete: operations['remove_tag']
+    options?: never
+    head?: never
+    /**
+     * Modifica un'etichetta
+     * @description Effetto e punti valgono subito per le schede che non li personalizzano.
+     */
+    patch: operations['patch_tag']
+    trace?: never
+  }
+  '/api/tags/{tag_id}/assign': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Assegna un'etichetta a più esercizi */
+    post: operations['post_tag_assign']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/tags/{tag_id}/unassign': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Toglie un'etichetta da più esercizi */
+    post: operations['post_tag_unassign']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/tags/{tag_id}/usage': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Chi usa un'etichetta */
+    get: operations['read_tag_usage']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
     trace?: never
   }
 }
@@ -439,6 +610,20 @@ export interface components {
       plans: components['schemas']['PlanUsageOut'][]
     }
     /**
+     * FamilyIn
+     * @description Nuova famiglia di movimento. Senza ``code``, si genera dal nome.
+     */
+    FamilyIn: {
+      /** Code */
+      code?: string | null
+      /** Description */
+      description?: string | null
+      /** Muscle Group Id */
+      muscle_group_id: number
+      /** Name */
+      name: string
+    }
+    /**
      * FamilyOut
      * @description Famiglia di movimento.
      */
@@ -455,6 +640,34 @@ export interface components {
       name: string
       /** Sort Order */
       sort_order: number
+    }
+    /**
+     * FamilyPatch
+     * @description Modifica parziale di una famiglia; il ``code`` non cambia.
+     */
+    FamilyPatch: {
+      /** Description */
+      description?: string | null
+      /** Muscle Group Id */
+      muscle_group_id?: number | null
+      /** Name */
+      name?: string | null
+      /** Sort Order */
+      sort_order?: number | null
+    }
+    /**
+     * FamilyUsageOut
+     * @description Chi usa una famiglia. Esercizi principali, slot e schede ne impediscono l'eliminazione.
+     */
+    FamilyUsageOut: {
+      /** Exercises */
+      exercises: number
+      /** Plans */
+      plans: components['schemas']['PlanUsageOut'][]
+      /** Secondary Exercises */
+      secondary_exercises: number
+      /** Split Slots */
+      split_slots: number
     }
     /** HTTPValidationError */
     HTTPValidationError: {
@@ -563,6 +776,35 @@ export interface components {
       weekly_min: number | null
     }
     /**
+     * MusclePatch
+     * @description Modifica parziale di un muscolo. Con ``priority: "none"`` la fascia si svuota;
+     *     altrimenti servono minimo e massimo, con minimo < massimo.
+     */
+    MusclePatch: {
+      /** Name */
+      name?: string | null
+      /** Notes */
+      notes?: string | null
+      /** Priority */
+      priority?: ('priority' | 'standard' | 'none') | null
+      /** Short Name */
+      short_name?: string | null
+      /** Weekly Max */
+      weekly_max?: number | null
+      /** Weekly Min */
+      weekly_min?: number | null
+    }
+    /**
+     * PlanRefOut
+     * @description Scheda citata da un utilizzo o da un errore.
+     */
+    PlanRefOut: {
+      /** Id */
+      id: number
+      /** Name */
+      name: string
+    }
+    /**
      * PlanUsageOut
      * @description Scheda che usa una risorsa, con quanti slot.
      */
@@ -669,6 +911,56 @@ export interface components {
       targets: string
     }
     /**
+     * TagAssignIn
+     * @description Esercizi a cui assegnare l'etichetta. La nota vale per tutti: a chi ha già
+     *     l'etichetta si aggiorna solo se il campo ``note`` è presente.
+     */
+    TagAssignIn: {
+      /** Exercise Ids */
+      exercise_ids: number[]
+      /** Note */
+      note?: string | null
+    }
+    /**
+     * TagIn
+     * @description Nuova etichetta. Bonus e penalità hanno bisogno di punti maggiori di zero.
+     */
+    TagIn: {
+      /** Code */
+      code?: string | null
+      /**
+       * Color
+       * @default neutral
+       * @enum {string}
+       */
+      color: 'neutral' | 'info' | 'success' | 'warning' | 'danger'
+      /** Description */
+      description?: string | null
+      /**
+       * Effect
+       * @default none
+       * @enum {string}
+       */
+      effect: 'none' | 'bonus' | 'penalty' | 'exclude'
+      /** Name */
+      name: string
+      /**
+       * Points
+       * @default 0
+       */
+      points: number
+      /**
+       * Show Badge
+       * @default true
+       */
+      show_badge: boolean
+      /**
+       * Symbol
+       * @enum {string}
+       */
+      symbol: 'warning' | 'ban' | 'info' | 'star' | 'heart' | 'zap' | 'flag' | 'eye-off'
+    }
+    /**
      * TagLinkIn
      * @description Etichetta assegnata, con nota facoltativa.
      */
@@ -719,6 +1011,46 @@ export interface components {
       sort_order: number
       /** Symbol */
       symbol: string
+    }
+    /**
+     * TagPatch
+     * @description Modifica parziale di un'etichetta.
+     */
+    TagPatch: {
+      /** Color */
+      color?: ('neutral' | 'info' | 'success' | 'warning' | 'danger') | null
+      /** Description */
+      description?: string | null
+      /** Effect */
+      effect?: ('none' | 'bonus' | 'penalty' | 'exclude') | null
+      /** Name */
+      name?: string | null
+      /** Points */
+      points?: number | null
+      /** Show Badge */
+      show_badge?: boolean | null
+      /** Sort Order */
+      sort_order?: number | null
+      /** Symbol */
+      symbol?: ('warning' | 'ban' | 'info' | 'star' | 'heart' | 'zap' | 'flag' | 'eye-off') | null
+    }
+    /**
+     * TagUnassignIn
+     * @description Esercizi da cui togliere l'etichetta.
+     */
+    TagUnassignIn: {
+      /** Exercise Ids */
+      exercise_ids: number[]
+    }
+    /**
+     * TagUsageOut
+     * @description Esercizi con l'etichetta e schede che la personalizzano.
+     */
+    TagUsageOut: {
+      /** Exercises */
+      exercises: number
+      /** Plans With Overrides */
+      plans_with_overrides: components['schemas']['PlanRefOut'][]
     }
     /** ValidationError */
     ValidationError: {
@@ -990,6 +1322,162 @@ export interface operations {
       }
     }
   }
+  post_family: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FamilyIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FamilyOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  remove_family: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        family_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Famiglia inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Famiglia in uso (`in-use`) */
+      409: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  patch_family: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        family_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['FamilyPatch']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FamilyOut']
+        }
+      }
+      /** @description Famiglia inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  read_family_usage: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        family_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['FamilyUsageOut']
+        }
+      }
+      /** @description Famiglia inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   get_health: {
     parameters: {
       query?: never
@@ -1015,6 +1503,55 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['HealthOut']
+        }
+      }
+    }
+  }
+  patch_muscle: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        muscle_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['MusclePatch']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MuscleOut']
+        }
+      }
+      /** @description Muscolo inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description La fascia renderebbe invalida una scheda (`invalid-band`) */
+      409: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
         }
       }
     }
@@ -1133,6 +1670,239 @@ export interface operations {
         }
       }
       /** @description Fonte inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  post_tag: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TagIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TagOut']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  remove_tag: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        tag_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Etichetta inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  patch_tag: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        tag_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TagPatch']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TagOut']
+        }
+      }
+      /** @description Etichetta inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  post_tag_assign: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        tag_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TagAssignIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TagUsageOut']
+        }
+      }
+      /** @description Etichetta inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  post_tag_unassign: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        tag_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TagUnassignIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TagUsageOut']
+        }
+      }
+      /** @description Etichetta inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  read_tag_usage: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        tag_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['TagUsageOut']
+        }
+      }
+      /** @description Etichetta inesistente */
       404: {
         headers: {
           [name: string]: unknown
