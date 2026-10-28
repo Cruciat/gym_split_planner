@@ -5,7 +5,9 @@ import { makeCatalog, makePlan, makeVolumes } from '@/test/fixtures'
 import {
   barGeometry,
   dayMinutes,
+  deltaEffect,
   filterVolumes,
+  formatDelta,
   groupVolumes,
   statusCounts,
   warningItems,
@@ -45,6 +47,20 @@ describe('pannello del volume', () => {
     expect(bar.zoneStart).toBeCloseTo(41.667, 2)
     expect(bar.zoneStart + bar.zoneWidth).toBeCloseTo(83.333, 2)
     expect(bar.marker).toBe(50)
+  })
+
+  it('colora i cambi rispetto alla fascia', () => {
+    const [within, above, below, , none] = volumes
+    // Capo lungo a 8 su 10-18: aggiungere avvicina, togliere allontana.
+    expect(deltaEffect(below, 2)).toBe('closer')
+    expect(deltaEffect(below, -1)).toBe('farther')
+    // Petto medio a 15 su 10-14: togliere avvicina.
+    expect(deltaEffect(above, -1)).toBe('closer')
+    // Dentro la fascia e senza uscirne non cambia nulla; uscendo allontana.
+    expect(deltaEffect(within, 1)).toBe('neutral')
+    expect(deltaEffect(within, 7)).toBe('farther')
+    expect(deltaEffect(none, 3)).toBe('neutral')
+    expect([formatDelta(2), formatDelta(-1.5)]).toEqual(['+2', '−1,5'])
   })
 
   it('conta i muscoli sotto e sopra', () => {

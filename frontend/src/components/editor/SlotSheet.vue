@@ -7,8 +7,15 @@ import { type Slot, type SlotPatch, usePlanEditor } from '@/plans/editor'
 import { texts } from '@/texts'
 
 /** Sul telefono: campi e azioni di un esercizio in un foglio dal basso (wireframe, § 3.7). */
-const props = defineProps<{ item: Slot | null }>()
-const emit = defineEmits<{ close: []; family: []; note: []; delete: [] }>()
+const props = defineProps<{ item: Slot | null; repeated: boolean }>()
+const emit = defineEmits<{
+  close: []
+  variants: []
+  second: []
+  family: []
+  note: []
+  delete: []
+}>()
 const t = texts.editor
 const editor = usePlanEditor()
 
@@ -108,6 +115,12 @@ function setNumber(field: 'sets' | 'rep_min' | 'rep_max', value: number | null):
       <p v-if="item.note" class="note">{{ item.note }}</p>
 
       <div class="buttons">
+        <NButton secondary data-testid="sheet-variants" @click="emit('variants')">
+          {{ t.slotMenu.variants }}
+        </NButton>
+        <NButton v-if="repeated" secondary data-testid="sheet-second" @click="emit('second')">
+          {{ t.slotMenu.secondSession }}
+        </NButton>
         <NButton secondary @click="emit('family')">{{ t.slotMenu.changeFamily }}</NButton>
         <NButton secondary @click="emit('note')">{{ t.slotMenu.note }}</NButton>
         <NButton secondary type="error" data-testid="sheet-delete" @click="emit('delete')">

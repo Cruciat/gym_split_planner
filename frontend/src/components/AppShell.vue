@@ -20,6 +20,7 @@ const style = computed(() => ({
   '--muted-color': vars.value.textColor3,
   '--error-color': vars.value.errorColor,
   '--warning-color': vars.value.warningColor,
+  '--success-color': vars.value.successColor,
   '--on-primary-color': vars.value.baseColor,
   '--page-color': vars.value.bodyColor,
 }))

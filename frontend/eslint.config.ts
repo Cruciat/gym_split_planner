@@ -9,7 +9,13 @@ export default defineConfigWithVueTs(
   },
   {
     name: 'app/ignores',
-    ignores: ['dist/**', 'coverage/**', 'src/api/schema.d.ts'],
+    ignores: [
+      'dist/**',
+      'coverage/**',
+      'test-results/**',
+      'playwright-report/**',
+      'src/api/schema.d.ts',
+    ],
   },
   pluginVue.configs['flat/recommended'],
   vueTsConfigs.strictTypeChecked,

@@ -1,5 +1,5 @@
 # Comandi di sviluppo. Richiedono uv e Node 22.
-.PHONY: setup dev-backend dev-frontend check test api-types migrate
+.PHONY: setup dev-backend dev-frontend check test e2e api-types migrate
 
 setup: ## Installa le dipendenze e gli hook di pre-commit
 	cd backend && uv sync
@@ -24,6 +24,9 @@ check: ## Tutti i controlli della CI
 test: ## Solo i test
 	cd backend && uv run pytest
 	cd frontend && npm test
+
+e2e: ## Test end-to-end (Playwright) sull'app compilata, con un database nuovo
+	cd frontend && npm run build && npm run e2e
 
 api-types: ## Rigenera schema OpenAPI e tipi del client
 	cd backend && uv run python -m gym_split_planner openapi > ../openapi.json

@@ -6,7 +6,7 @@
  */
 
 import type { Catalog, Plan } from '@/api/client'
-import { texts } from '@/texts'
+import { formatNumber, texts } from '@/texts'
 
 export type Volume = Plan['analysis']['volumes'][number]
 export type PlanWarning = Plan['analysis']['warnings'][number]
@@ -158,4 +158,35 @@ export function dayMinutes(plan: Plan, dayId: number): number[] {
     .filter((s) => s.day_id === dayId)
     .sort((a, b) => a.session - b.session)
     .map((s) => s.minutes)
+}
+
+/** Distanza dalla fascia: zero dentro, altrimenti quanto manca o quanto si eccede. */
+function bandDistance(value: number, min: number, max: number): number {
+  if (value < min) return min - value
+  if (value > max) return value - max
+  return 0
+}
+
+/**
+ * Effetto di un cambio di volume su un muscolo (wireframe, § 3.4): avvicina alla
+ * fascia (verde), allontana (arancione) o non cambia la distanza.
+ */
+export function deltaEffect(
+  volume: Volume | undefined,
+  delta: number,
+): 'closer' | 'farther' | 'neutral' {
+  if (volume === undefined || !hasTarget(volume)) return 'neutral'
+  const min = volume.weekly_min ?? 0
+  const max = volume.weekly_max ?? 0
+  const before = bandDistance(volume.volume, min, max)
+  const after = bandDistance(volume.volume + delta, min, max)
+  if (after < before) return 'closer'
+  if (after > before) return 'farther'
+  return 'neutral'
+}
+
+/** Cambio con il segno: `+2`, `−1,5` (meno tipografico). */
+export function formatDelta(delta: number): string {
+  const text = formatNumber(Math.abs(delta))
+  return delta < 0 ? `−${text}` : `+${text}`
 }

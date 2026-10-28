@@ -6,6 +6,10 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ### Aggiunto
 
+- Varianti di un esercizio toccandone il nome: candidati con attrezzo, simboli, punteggio e cambi di volume in verde se avvicinano alla fascia e in arancione se allontanano; «Perché?» con le voci del punteggio; esclusi in fondo, scelti solo dopo conferma.
+- Variante della seconda seduta: «Nessuna variante», gli esercizi della famiglia, poi le altre famiglie con la ricerca per nome.
+- Rigenerazione dall'editor: differenze con le preferenze attuali, tutte spuntate, applicazione solo di quelle scelte; gli esercizi bloccati restano e sono contati.
+- Primi test end-to-end con Playwright sull'app compilata, su desktop e telefono (`make e2e`), anche nella CI.
 - Editor della scheda: giorni in schede, esercizi con famiglia, simboli delle etichette, variante della seconda seduta e nota; serie e ripetizioni modificabili nella riga, lucchetto, facoltativo, settimane alterne; aggiunta (famiglia, poi esercizio), cambio di famiglia ed eliminazione degli esercizi.
 - Giorni: aggiunta, nome e volte a settimana (con conferma se si perdono varianti della seconda seduta), spostamento, eliminazione con conferma.
 - Riordino di giorni ed esercizi trascinandoli; sul telefono, e per la tastiera, con la modalità "Riordina" e le frecce.

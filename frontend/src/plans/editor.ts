@@ -27,6 +27,9 @@ export type DayInput = Schemas['DayIn']
 export type DayPatch = Schemas['DayPatch']
 export type SlotInput = Schemas['SlotIn']
 export type SlotPatch = Schemas['SlotPatch']
+export type Candidates = Schemas['CandidatesOut']
+export type Candidate = Schemas['CandidateOut']
+export type RegenerationPreview = Schemas['RegenerationPreviewOut']
 
 interface Result {
   data?: Plan
@@ -246,6 +249,49 @@ export function createPlanEditor(planId: number, notify: Notifier) {
     )
   }
 
+  /** Candidati di uno slot, per la prima (`1`) o la seconda seduta (`2`): sola lettura. */
+  async function candidates(slotId: number, session: 1 | 2): Promise<Candidates | null> {
+    try {
+      const { data, error, response } = await api.GET(
+        '/api/plans/{plan_id}/slots/{slot_id}/candidates',
+        { params: { path: { plan_id: planId, slot_id: slotId }, query: { session } } },
+      )
+      if (data !== undefined) return data
+      notify.error(problemText(asProblem(error, response.status)))
+    } catch {
+      notify.error(texts.common.loadFailed)
+    }
+    return null
+  }
+
+  /** Differenze della rigenerazione con le preferenze correnti (US-18 CA2). */
+  async function previewRegeneration(): Promise<RegenerationPreview | null> {
+    try {
+      const { data, error, response } = await api.POST('/api/plans/{plan_id}/regenerate/preview', {
+        params: { path: { plan_id: planId } },
+      })
+      if (data !== undefined) return data
+      notify.error(problemText(asProblem(error, response.status)))
+    } catch {
+      notify.error(texts.common.loadFailed)
+    }
+    return null
+  }
+
+  /**
+   * Applica le differenze scelte. La revisione è quella dell'anteprima, non quella
+   * corrente: se nel frattempo la scheda è cambiata, il server risponde `412` e le
+   * differenze mostrate non valgono più.
+   */
+  const regenerate = (slotIds: number[], previewRevision: number) =>
+    enqueue(() =>
+      api.POST('/api/plans/{plan_id}/regenerate', {
+        params: { path: { plan_id: planId } },
+        body: { slot_ids: slotIds },
+        headers: headers(previewRevision),
+      }),
+    )
+
   return {
     plan: plan as Readonly<Ref<Plan | null>>,
     loadState: readonly(loadState),
@@ -263,6 +309,9 @@ export function createPlanEditor(planId: number, notify: Notifier) {
     updateSlot,
     deleteSlot,
     reorderSlots,
+    candidates,
+    previewRegeneration,
+    regenerate,
   }
 }
 

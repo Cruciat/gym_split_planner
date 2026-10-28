@@ -71,6 +71,39 @@ jobs:
       - name: Build
         run: npm run build
 
+  e2e:
+    name: End-to-end
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: backend/uv.lock
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Librerie di sistema per WeasyPrint
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 fonts-dejavu-core
+      - name: Dipendenze
+        run: |
+          (cd backend && uv sync --locked)
+          (cd frontend && npm ci && npx playwright install --with-deps chromium)
+      - name: Test end-to-end
+        run: make e2e
+      - name: Rapporto di Playwright
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: frontend/playwright-report/
+          retention-days: 7
+
   api-contract:
     name: Contratto API allineato
     runs-on: ubuntu-latest
