@@ -96,3 +96,38 @@ jobs:
             echo "::error::Schema o tipi del client non aggiornati: esegui 'make api-types' e fai commit."
             exit 1
           fi
+
+  docker:
+    name: Immagine Docker
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - name: Build (senza pubblicare)
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          load: true
+          push: false
+          tags: gym_split_planner:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Prova di avvio del container
+        run: |
+          docker run -d --name gsp --health-interval=2s gym_split_planner:ci
+          status=starting
+          for _ in $(seq 1 30); do
+            status=$(docker inspect --format '{{.State.Health.Status}}' gsp)
+            [ "$status" = healthy ] && break
+            sleep 2
+          done
+          docker logs gsp
+          if [ "$status" != healthy ]; then
+            echo "::error::Il container non è diventato healthy (stato: $status)"
+            exit 1
+          fi
+          echo "Utente del processo: $(docker exec gsp id -u)"
+          docker exec gsp sh -c '[ "$(id -u)" = 10001 ]'
+          docker exec gsp python -c "import json, urllib.request; print(json.load(urllib.request.urlopen('http://127.0.0.1:8000/api/health')))"
+          docker exec gsp python -c "import urllib.request; assert b'id=\"app\"' in urllib.request.urlopen('http://127.0.0.1:8000/schede/1').read()"
+          docker exec gsp test -f /data/gym_split_planner.db

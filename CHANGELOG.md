@@ -10,3 +10,4 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 - Struttura del progetto: backend FastAPI a strati, frontend Vue 3, controlli di qualità e integrazione continua.
 - `GET /api/health` con stato del database.
 - Errori dell'API in formato Problem Details.
+- Immagine Docker unica (API e frontend) e workflow di rilascio su GHCR.

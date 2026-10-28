@@ -1,0 +1,14 @@
+# Prova locale dell'immagine: `docker compose up --build`, poi http://127.0.0.1:8000.
+# In produzione il compose sta nel monorepo dell'homelab, con il sidecar Tailscale (ADR 0010, 0011).
+services:
+  app:
+    build: .
+    image: gym_split_planner:dev
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - data:/data
+    restart: unless-stopped
+
+volumes:
+  data:
