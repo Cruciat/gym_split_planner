@@ -17,6 +17,8 @@ from gym_split_planner.api.schemas.plans import (
     PlanOut,
     PlanSettingsOut,
     PreferencesIn,
+    RegenerateIn,
+    RegenerationPreviewOut,
     SlotIn,
     SlotOrderIn,
     SlotPatch,
@@ -34,6 +36,7 @@ from gym_split_planner.services.plan_edit import (
 )
 from gym_split_planner.services.plan_settings import get_plan_settings, set_preferences
 from gym_split_planner.services.plan_view import PlanViewData
+from gym_split_planner.services.regeneration import apply_regeneration, preview_regeneration
 
 router = APIRouter(tags=["schede"])
 
@@ -244,3 +247,37 @@ def read_slot_candidates(
     return CandidatesOut.model_validate(
         slot_candidates(_engine(request), plan_id, slot_id, session)
     )
+
+
+# --- Rigenerazione (§ 6.9; US-18) ------------------------------------------------------
+
+
+@router.post(
+    "/plans/{plan_id}/regenerate/preview",
+    response_model=RegenerationPreviewOut,
+    summary="Anteprima della rigenerazione",
+    responses=_NOT_FOUND,
+)
+def post_regenerate_preview(request: Request, plan_id: int) -> RegenerationPreviewOut:
+    """Differenze con una nuova generazione, senza modificare nulla; non richiede
+    ``If-Match`` ma dice su quale revisione sono calcolate."""
+    return RegenerationPreviewOut.model_validate(preview_regeneration(_engine(request), plan_id))
+
+
+@router.post(
+    "/plans/{plan_id}/regenerate",
+    response_model=PlanOut,
+    summary="Applica la rigenerazione",
+    responses=PRECONDITION_RESPONSES,
+)
+def post_regenerate(
+    request: Request,
+    response: Response,
+    plan_id: int,
+    body: RegenerateIn,
+    if_match: IfMatch = None,
+) -> PlanOut:
+    """Applica le differenze degli slot scelti; ``If-Match`` con la revisione dell'anteprima."""
+    revision = expected_revision(if_match)
+    view = apply_regeneration(_engine(request), plan_id, body.slot_ids, revision)
+    return _plan(view, response)

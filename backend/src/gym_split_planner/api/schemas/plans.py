@@ -463,3 +463,39 @@ class CandidatesOut(_Out):
     session: int
     current_exercise_id: int | None
     candidates: list[CandidateOut]
+
+
+# --- Rigenerazione (§ 6.9, § 8.2) -----------------------------------------------------
+
+
+class ExerciseRefOut(_Out):
+    exercise_id: int
+    name: str
+
+
+class RegenerationChangeOut(_Out):
+    """Uno slot che la rigenerazione cambierebbe."""
+
+    slot_id: int
+    day_id: int
+    day_name: str
+    position: int
+    current: ExerciseRefOut | None
+    proposed: ExerciseRefOut
+    volume_delta: list[VolumeDeltaOut]
+
+
+class RegenerationPreviewOut(_Out):
+    """Differenze calcolate sulla ``revision`` indicata, senza modificare nulla."""
+
+    revision: int
+    changes: list[RegenerationChangeOut]
+    locked_slots: int
+
+
+class RegenerateIn(BaseModel):
+    """Slot dell'anteprima da applicare, tutti o una parte."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    slot_ids: list[int] = Field(min_length=1, max_length=200)

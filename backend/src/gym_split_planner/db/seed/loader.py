@@ -7,6 +7,7 @@ in una transazione: o si carica tutto, o niente.
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import yaml
 from pydantic import BaseModel
@@ -224,3 +225,8 @@ def seed_if_empty(engine: Engine, data_dir: Path = DATA_DIR) -> SeedReport | Non
         if not is_empty(session):
             return None
         return load_seed(session, data_dir)
+
+
+def default_settings(data_dir: Path = DATA_DIR) -> dict[str, Any]:
+    """Impostazioni globali dei dati iniziali: i valori del "Ripristina predefiniti"."""
+    return dict(_read(data_dir, "settings.yaml", SettingsFile).settings)

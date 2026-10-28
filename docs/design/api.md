@@ -153,7 +153,25 @@ Gli slot si modificano con un URL corto (`/plans/{id}/slots/{slot_id}`), senza i
 | --- | --- | --- |
 | `GET /api/health` | `{"status": "ok", "version": "1.2.0", "database": "ok"}`. Usato dal controllo di salute del container | US-41 |
 | `GET /api/settings` | Impostazioni globali (`app_setting`): pesi dei livelli, tetto per seduta, pesi del punteggio, parametri della durata, testo del riscaldamento, RIR | US-20 |
+| `GET /api/settings/defaults` | I valori iniziali dei dati di partenza, per il pulsante "Ripristina" dell'interfaccia. Non modifica nulla | US-20 |
 | `PUT /api/settings` | Sostituisce le impostazioni, con validazione (pesi ≥ 0, tetto > 0…). Effetto immediato sulle analisi; la generazione già fatta non cambia finché non si rigenera | US-20 |
+
+Il corpo di `GET` e `PUT` è lo stesso oggetto, con tutte le chiavi obbligatorie e nessuna in più:
+
+```json
+{
+  "level_weights": {"P": 1.0, "S": 0.5},
+  "session_cap": 10,
+  "score_weights": {"confidence": 3, "equipment": 4, "stretch": 1, "family": 1, "rank": 0.5},
+  "duration_params": {"set_seconds": 45, "rest_compound_seconds": 150, "rest_isolation_seconds": 90,
+                      "change_seconds": 60, "warmup_set_seconds": 30, "warmup_rest_seconds": 60,
+                      "warmup_minutes": 10, "stretching_minutes": 6},
+  "warmup_text": "5-10 minuti di cardio leggero…",
+  "effort": {"rir": "0-2", "failure_last_set": true}
+}
+```
+
+Regole: `P` in (0, 2], `S` in [0, 2] e non maggiore di `P`; `session_cap` in (0, 50]; pesi del punteggio tra 0 e 20; durate in secondi o minuti con limiti ragionevoli; `rir` come `2` o `0-2`. Le impostazioni non hanno revisione: un solo utente, modifiche rare. Cambiarle non incrementa la `revision` delle schede, ma ogni risposta successiva della scheda ha volumi, durate, avvisi e RIR ricalcolati.
 
 ### 6.2 Catalogo in lettura
 
@@ -315,6 +333,11 @@ Risposta di `candidates` (estratto):
 | `POST /api/plans/{id}/regenerate/preview` | Calcola le differenze tra la scheda e una nuova generazione con le preferenze correnti, senza modificare nulla. Per ogni slot che cambierebbe: `slot_id`, giorno, esercizio attuale e proposto, effetto sul volume. Non richiede `If-Match`, ma restituisce la `revision` su cui è calcolata | US-18 CA2 |
 | `POST /api/plans/{id}/regenerate` | `{"slot_ids": [..]}`: applica le differenze degli slot scelti (tutti o una parte). Richiede `If-Match` con la revisione dell'anteprima: se nel frattempo la scheda è cambiata, `412` e si ricalcola l'anteprima | US-18 |
 
+- Lo slot bloccato non compare tra le differenze; `locked_slots` dice quanti sono, perché l'interfaccia possa scriverlo ("3 slot bloccati restano come sono"). Con le preferenze invariate le differenze sono vuote (algoritmo, G6).
+- Cambia solo l'esercizio principale: serie, ripetizioni, facoltativo, settimane alterne e nota restano come sono (G7). Se la variante della seconda seduta coincide con il nuovo esercizio, viene tolta.
+- L'applicazione ricalcola le differenze sulla revisione indicata e applica quelle degli slot scelti; uno slot scelto che non ha più differenze resta com'è. Un `slot_id` che non è della scheda è `422 rule-violation` (`unknown-reference`, campo `slot_ids`). La risposta è la scheda completa con il nuovo `ETag`.
+- `volume_delta` è calcolato come per i candidati (§ 6.8), contando le sedute in cui lo slot usa l'esercizio principale.
+
 È un `POST` anche l'anteprima perché è un calcolo, non la lettura di una risorsa, e in futuro potrà ricevere opzioni nel corpo (per esempio il ribilanciamento della fase 2).
 
 ### 6.10 PDF
@@ -465,7 +488,8 @@ Con i tre livelli il client mostra il valore effettivo, segnala ciò che è pers
       "proposed": {"exercise_id": 38, "name": "Rematore con appoggio al petto"},
       "volume_delta": [{"muscle_id": 10, "code": "lats", "delta": 3.0}]
     }
-  ]
+  ],
+  "locked_slots": 3
 }
 ```
 
