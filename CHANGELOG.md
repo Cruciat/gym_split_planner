@@ -4,6 +4,10 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ## [Non rilasciato]
 
+## [0.2.0] - 2026-10-28
+
+Tappa M1: i dati. Nessuna funzione nuova nell'interfaccia; il database contiene il catalogo e gli split.
+
 ### Aggiunto
 
 - Modello dati della fase 1 (catalogo, etichette, split, schede, impostazioni) con migrazione e vincoli nel database.
@@ -23,5 +27,6 @@ Prima versione: scheletro del progetto (tappa M0). Nessuna funzione per l'utente
 - Immagine Docker unica (API e frontend) e workflow di rilascio su GHCR.
 - `GET /api/pdf/test`: PDF di prova generato con WeasyPrint, temporaneo fino a M5.
 
-[Non rilasciato]: https://github.com/Cruciat/gym_split_planner/compare/v0.1.0...HEAD
+[Non rilasciato]: https://github.com/Cruciat/gym_split_planner/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Cruciat/gym_split_planner/releases/tag/v0.1.0
