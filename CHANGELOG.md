@@ -9,6 +9,7 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 - API delle schede (tappa M4, ancora senza interfaccia): split predefiniti, creazione da uno split con generazione automatica o vuota, scheda completa con volumi, sedute e avvisi, elenco, rinomina, duplicazione, eliminazione, scheda attiva.
 - Controllo delle revisioni tra dispositivi: `ETag` e `If-Match` sulle schede, con `412` se la scheda è cambiata nel frattempo.
 - Gli avvisi di slot vuoto dicono quali etichette escludono gli esercizi della famiglia.
+- API per modificare una scheda: preferenze e personalizzazioni con i valori del catalogo e quelli effettivi; giorni (aggiunta, modifica, eliminazione, ordine); slot (aggiunta con il miglior candidato, cambio di esercizio o di famiglia, variante della seconda seduta, serie, ripetizioni, facoltativo, settimane alterne, lucchetto, nota, eliminazione, ordine); candidati di uno slot con punteggio ed effetto sul volume.
 
 ### Modificato
 

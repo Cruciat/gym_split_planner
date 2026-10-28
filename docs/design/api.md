@@ -95,6 +95,15 @@ Regole del catalogo:
 | `band-required` | Muscolo con un obiettivo (prioritario o non prioritario) senza minimo o massimo della fascia |
 | `band-order`, `band-negative` | Fascia con minimo non inferiore al massimo, o minimo negativo |
 | `points-required` | Etichetta con effetto bonus o penalità e punti non positivi |
+| `equipment-order` | Preferenze con un ordine degli attrezzi che non li contiene tutti, ciascuno una volta |
+| `exercise-family` | Esercizio di uno slot che non ha la famiglia dello slot né come principale né come secondaria |
+| `exercise-inactive` | Esercizio disattivato scelto per uno slot (resta valido dove era già) |
+| `second-session-requires-repeat` | Variante della seconda seduta, o i suoi candidati, in un giorno fatto una volta sola |
+| `second-exercise-distinct` | Variante della seconda seduta uguale all'esercizio principale |
+| `reps-order` | Ripetizioni minime oltre le massime |
+| `order-mismatch` | Nuovo ordine di giorni o slot che non elenca tutti gli elementi, ciascuno una volta |
+
+Nelle preferenze di una scheda, `field` è il percorso nel JSON: `overrides.muscles.quads.weekly_max`.
 
 ## 4. Concorrenza
 
@@ -262,6 +271,8 @@ Tutte richiedono `If-Match` e restituiscono la scheda completa.
 | `PUT /api/plans/{id}/days/{day_id}/slots/order` | `{"slot_ids": [..]}`, come per i giorni | US-16 CA2 |
 | `GET /api/plans/{id}/slots/{slot_id}/candidates` | Candidati con punteggio e anteprima del volume. Parametro `session=1` (esercizio principale, default) o `session=2` (variante della seconda seduta). Non modifica nulla | US-14, US-17 |
 
+Le richieste su giorni e slot rifiutano i campi sconosciuti (`validation-error`): un nome sbagliato non passa inosservato come una modifica vuota. Uno slot aggiunto senza esercizio riceve il miglior candidato della famiglia, o resta vuoto se non ce n'è; senza esercizio né serie valgono 3 × 6-12.
+
 Regole del `PATCH` sullo slot:
 
 - `exercise_id` deve avere la famiglia dello slot come principale o secondaria (`rule-violation` altrimenti). Un esercizio escluso da un'etichetta è accettato: l'esclusione vale solo per le scelte automatiche (algoritmo, § 3.1).
@@ -294,7 +305,8 @@ Risposta di `candidates` (estratto):
 
 - Ordine: candidati non esclusi per punteggio (algoritmo, § 3.3), poi gli esclusi, ciascuno con `excluded_by` (codici delle etichette). Con `session=2`, prima la famiglia dello slot, poi le altre (`family_match: "other"`).
 - `volume_delta` contiene solo i muscoli che cambiano (algoritmo, § 5).
-- `score_breakdown` serve a spiegare la scelta nell'interfaccia ("perché questo?"): la somma delle voci è `score`.
+- `score_breakdown` serve a spiegare la scelta nell'interfaccia ("perché questo?"): la somma delle voci è `score`. Punteggio e voci sono arrotondati a tre decimali.
+- `current_exercise_id` è l'esercizio principale con `session=1`, la variante della seconda seduta (anche `null`) con `session=2`.
 
 ### 6.9 Rigenerazione
 
@@ -439,7 +451,7 @@ Note sui campi:
 }
 ```
 
-Con i tre livelli il client mostra il valore effettivo, segnala ciò che è personalizzato e sa a cosa tornerebbe il ripristino, senza ricalcolare nulla.
+Con i tre livelli il client mostra il valore effettivo, segnala ciò che è personalizzato e sa a cosa tornerebbe il ripristino, senza ricalcolare nulla. La vista riporta anche la `revision` della scheda, da usare in `If-Match` per il `PUT` delle preferenze; per ogni muscolo `short_name` e `group_code`, per ogni etichetta `symbol` e `color`. Nei livelli `override` i campi non personalizzati valgono `null`.
 
 ### 8.2 Differenze della rigenerazione
 

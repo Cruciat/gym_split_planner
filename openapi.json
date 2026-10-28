@@ -86,6 +86,116 @@
         "title": "BadgeOut",
         "type": "object"
       },
+      "CandidateOut": {
+        "description": "Candidato con punteggio, motivi di esclusione ed effetto sul volume settimanale.",
+        "properties": {
+          "badges": {
+            "items": {
+              "$ref": "#/components/schemas/BadgeOut"
+            },
+            "title": "Badges",
+            "type": "array"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "equipment": {
+            "title": "Equipment",
+            "type": "string"
+          },
+          "excluded_by": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Excluded By",
+            "type": "array"
+          },
+          "exercise_id": {
+            "title": "Exercise Id",
+            "type": "integer"
+          },
+          "family_match": {
+            "enum": [
+              "primary",
+              "secondary",
+              "other"
+            ],
+            "title": "Family Match",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "score": {
+            "title": "Score",
+            "type": "number"
+          },
+          "score_breakdown": {
+            "$ref": "#/components/schemas/ScoreBreakdownOut"
+          },
+          "volume_delta": {
+            "items": {
+              "$ref": "#/components/schemas/VolumeDeltaOut"
+            },
+            "title": "Volume Delta",
+            "type": "array"
+          }
+        },
+        "required": [
+          "exercise_id",
+          "code",
+          "name",
+          "equipment",
+          "family_match",
+          "score",
+          "score_breakdown",
+          "badges",
+          "excluded_by",
+          "volume_delta"
+        ],
+        "title": "CandidateOut",
+        "type": "object"
+      },
+      "CandidatesOut": {
+        "properties": {
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/CandidateOut"
+            },
+            "title": "Candidates",
+            "type": "array"
+          },
+          "current_exercise_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Exercise Id"
+          },
+          "session": {
+            "title": "Session",
+            "type": "integer"
+          },
+          "slot_id": {
+            "title": "Slot Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "slot_id",
+          "session",
+          "current_exercise_id",
+          "candidates"
+        ],
+        "title": "CandidatesOut",
+        "type": "object"
+      },
       "CatalogOut": {
         "description": "Tutto il catalogo in una risposta (API, § 6.2).",
         "properties": {
@@ -167,6 +277,61 @@
         "title": "CatalogOut",
         "type": "object"
       },
+      "DayIn": {
+        "additionalProperties": false,
+        "description": "Giorno nuovo; senza ``position`` va in fondo.",
+        "properties": {
+          "name": {
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "times_per_week": {
+            "maximum": 3.0,
+            "minimum": 1.0,
+            "title": "Times Per Week",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "times_per_week"
+        ],
+        "title": "DayIn",
+        "type": "object"
+      },
+      "DayOrderIn": {
+        "additionalProperties": false,
+        "description": "Tutti gli ``id`` dei giorni della scheda, nel nuovo ordine.",
+        "properties": {
+          "day_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 50,
+            "title": "Day Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "day_ids"
+        ],
+        "title": "DayOrderIn",
+        "type": "object"
+      },
       "DayOut": {
         "properties": {
           "id": {
@@ -209,6 +374,40 @@
           "slots"
         ],
         "title": "DayOut",
+        "type": "object"
+      },
+      "DayPatch": {
+        "additionalProperties": false,
+        "description": "Nome e volte a settimana. Scendendo a 1, le varianti della seconda seduta si tolgono.",
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "times_per_week": {
+            "anyOf": [
+              {
+                "maximum": 3.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Times Per Week"
+          }
+        },
+        "title": "DayPatch",
         "type": "object"
       },
       "DayStretchOut": {
@@ -1481,6 +1680,101 @@
         "title": "MusclePatch",
         "type": "object"
       },
+      "MuscleSettingOut": {
+        "description": "Un muscolo con i tre livelli: catalogo, personalizzazione, effettivo.",
+        "properties": {
+          "catalog": {
+            "$ref": "#/components/schemas/MuscleValuesOut"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "effective": {
+            "$ref": "#/components/schemas/MuscleValuesOut"
+          },
+          "group_code": {
+            "title": "Group Code",
+            "type": "string"
+          },
+          "muscle_id": {
+            "title": "Muscle Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "override": {
+            "$ref": "#/components/schemas/MuscleValuesOut"
+          },
+          "short_name": {
+            "title": "Short Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "muscle_id",
+          "code",
+          "name",
+          "short_name",
+          "group_code",
+          "catalog",
+          "override",
+          "effective"
+        ],
+        "title": "MuscleSettingOut",
+        "type": "object"
+      },
+      "MuscleValuesOut": {
+        "properties": {
+          "priority": {
+            "anyOf": [
+              {
+                "enum": [
+                  "priority",
+                  "standard",
+                  "none"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "weekly_max": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Max"
+          },
+          "weekly_min": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Min"
+          }
+        },
+        "required": [
+          "priority",
+          "weekly_min",
+          "weekly_max"
+        ],
+        "title": "MuscleValuesOut",
+        "type": "object"
+      },
       "MuscleVolumeRefOut": {
         "properties": {
           "muscle_id": {
@@ -1546,6 +1840,7 @@
         "type": "object"
       },
       "PlanCreateIn": {
+        "additionalProperties": false,
         "description": "Con ``split_id``: copia lo split e genera. Con ``null``: scheda vuota.",
         "properties": {
           "name": {
@@ -1677,6 +1972,7 @@
         "type": "object"
       },
       "PlanRenameIn": {
+        "additionalProperties": false,
         "properties": {
           "name": {
             "maxLength": 120,
@@ -1689,6 +1985,56 @@
           "name"
         ],
         "title": "PlanRenameIn",
+        "type": "object"
+      },
+      "PlanSettingsOut": {
+        "description": "Vista della schermata delle preferenze (US-11).",
+        "properties": {
+          "equipment_order": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Equipment Order",
+            "type": "array"
+          },
+          "max_session_minutes": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Session Minutes"
+          },
+          "muscles": {
+            "items": {
+              "$ref": "#/components/schemas/MuscleSettingOut"
+            },
+            "title": "Muscles",
+            "type": "array"
+          },
+          "revision": {
+            "title": "Revision",
+            "type": "integer"
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/TagSettingOut"
+            },
+            "title": "Tags",
+            "type": "array"
+          }
+        },
+        "required": [
+          "revision",
+          "equipment_order",
+          "max_session_minutes",
+          "muscles",
+          "tags"
+        ],
+        "title": "PlanSettingsOut",
         "type": "object"
       },
       "PlanSummaryOut": {
@@ -1894,6 +2240,44 @@
         "title": "RoutineItemOut",
         "type": "object"
       },
+      "ScoreBreakdownOut": {
+        "properties": {
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "equipment": {
+            "title": "Equipment",
+            "type": "number"
+          },
+          "family": {
+            "title": "Family",
+            "type": "number"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "number"
+          },
+          "stretch": {
+            "title": "Stretch",
+            "type": "number"
+          },
+          "tags": {
+            "title": "Tags",
+            "type": "number"
+          }
+        },
+        "required": [
+          "confidence",
+          "equipment",
+          "stretch",
+          "family",
+          "rank",
+          "tags"
+        ],
+        "title": "ScoreBreakdownOut",
+        "type": "object"
+      },
       "SessionOut": {
         "description": "Seduta concreta: due per i giorni con una variante della seconda seduta.",
         "properties": {
@@ -1977,6 +2361,102 @@
           "badges"
         ],
         "title": "SlotExerciseOut",
+        "type": "object"
+      },
+      "SlotIn": {
+        "additionalProperties": false,
+        "description": "Slot nuovo. Senza esercizio: il miglior candidato della famiglia. Senza serie e\nripetizioni: 3 × 6-12 per i multiarticolari, 3 × 10-15 per l'isolamento.",
+        "properties": {
+          "exercise_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exercise Id"
+          },
+          "family_id": {
+            "title": "Family Id",
+            "type": "integer"
+          },
+          "position": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position"
+          },
+          "rep_max": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rep Max"
+          },
+          "rep_min": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rep Min"
+          },
+          "sets": {
+            "anyOf": [
+              {
+                "maximum": 8.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sets"
+          }
+        },
+        "required": [
+          "family_id"
+        ],
+        "title": "SlotIn",
+        "type": "object"
+      },
+      "SlotOrderIn": {
+        "additionalProperties": false,
+        "description": "Tutti gli ``id`` degli slot del giorno, nel nuovo ordine.",
+        "properties": {
+          "slot_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 100,
+            "title": "Slot Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "slot_ids"
+        ],
+        "title": "SlotOrderIn",
         "type": "object"
       },
       "SlotOut": {
@@ -2100,6 +2580,131 @@
           "last_set_to_failure"
         ],
         "title": "SlotOut",
+        "type": "object"
+      },
+      "SlotPatch": {
+        "additionalProperties": false,
+        "description": "Modifica parziale di uno slot, tutta o niente (regole nel § 6.8).",
+        "properties": {
+          "exercise_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exercise Id"
+          },
+          "family_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Family Id"
+          },
+          "is_optional": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Optional"
+          },
+          "locked": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Locked"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 5000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "rep_max": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rep Max"
+          },
+          "rep_min": {
+            "anyOf": [
+              {
+                "maximum": 100.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rep Min"
+          },
+          "second_exercise_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Second Exercise Id"
+          },
+          "sets": {
+            "anyOf": [
+              {
+                "maximum": 8.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sets"
+          },
+          "weekly_weight": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Weekly Weight"
+          }
+        },
+        "title": "SlotPatch",
         "type": "object"
       },
       "SourceIn": {
@@ -2985,6 +3590,58 @@
         "title": "TagPatch",
         "type": "object"
       },
+      "TagSettingOut": {
+        "properties": {
+          "catalog": {
+            "$ref": "#/components/schemas/TagValuesOut"
+          },
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "color": {
+            "enum": [
+              "neutral",
+              "info",
+              "success",
+              "warning",
+              "danger"
+            ],
+            "title": "Color",
+            "type": "string"
+          },
+          "effective": {
+            "$ref": "#/components/schemas/TagValuesOut"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "override": {
+            "$ref": "#/components/schemas/TagValuesOut"
+          },
+          "symbol": {
+            "title": "Symbol",
+            "type": "string"
+          },
+          "tag_id": {
+            "title": "Tag Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tag_id",
+          "code",
+          "name",
+          "symbol",
+          "color",
+          "catalog",
+          "override",
+          "effective"
+        ],
+        "title": "TagSettingOut",
+        "type": "object"
+      },
       "TagUnassignIn": {
         "description": "Esercizi da cui togliere l'etichetta.",
         "properties": {
@@ -3024,6 +3681,44 @@
           "plans_with_overrides"
         ],
         "title": "TagUsageOut",
+        "type": "object"
+      },
+      "TagValuesOut": {
+        "properties": {
+          "effect": {
+            "anyOf": [
+              {
+                "enum": [
+                  "none",
+                  "bonus",
+                  "penalty",
+                  "exclude"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effect"
+          },
+          "points": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Points"
+          }
+        },
+        "required": [
+          "effect",
+          "points"
+        ],
+        "title": "TagValuesOut",
         "type": "object"
       },
       "ValidationError": {
@@ -3111,6 +3806,29 @@
           "tags"
         ],
         "title": "VariantOut",
+        "type": "object"
+      },
+      "VolumeDeltaOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "delta": {
+            "title": "Delta",
+            "type": "number"
+          },
+          "muscle_id": {
+            "title": "Muscle Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "muscle_id",
+          "code",
+          "delta"
+        ],
+        "title": "VolumeDeltaOut",
         "type": "object"
       },
       "VolumeOut": {
@@ -4176,6 +4894,505 @@
         ]
       }
     },
+    "/api/plans/{plan_id}/days": {
+      "post": {
+        "operationId": "post_day",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Revisione della scheda, es. `\"17\"`",
+            "in": "header",
+            "name": "if-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Revisione della scheda, es. `\"17\"`",
+              "title": "If-Match"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DayIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente (`not-found`)"
+          },
+          "412": {
+            "description": "Revisione non aggiornata (`revision-mismatch`, con `current_revision`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "428": {
+            "description": "Manca `If-Match` (`revision-required`)"
+          }
+        },
+        "summary": "Aggiunge un giorno",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/days/order": {
+      "put": {
+        "operationId": "put_day_order",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Revisione della scheda, es. `\"17\"`",
+            "in": "header",
+            "name": "if-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Revisione della scheda, es. `\"17\"`",
+              "title": "If-Match"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DayOrderIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente (`not-found`)"
+          },
+          "412": {
+            "description": "Revisione non aggiornata (`revision-mismatch`, con `current_revision`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "428": {
+            "description": "Manca `If-Match` (`revision-required`)"
+          }
+        },
+        "summary": "Riordina i giorni",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/days/{day_id}": {
+      "delete": {
+        "description": "Con i suoi slot; restituisce la scheda completa.",
+        "operationId": "remove_day",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "day_id",
+            "required": true,
+            "schema": {
+              "title": "Day Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Revisione della scheda, es. `\"17\"`",
+            "in": "header",
+            "name": "if-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Revisione della scheda, es. `\"17\"`",
+              "title": "If-Match"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente (`not-found`)"
+          },
+          "412": {
+            "description": "Revisione non aggiornata (`revision-mismatch`, con `current_revision`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "428": {
+            "description": "Manca `If-Match` (`revision-required`)"
+          }
+        },
+        "summary": "Elimina un giorno",
+        "tags": [
+          "schede"
+        ]
+      },
+      "patch": {
+        "operationId": "patch_day",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "day_id",
+            "required": true,
+            "schema": {
+              "title": "Day Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Revisione della scheda, es. `\"17\"`",
+            "in": "header",
+            "name": "if-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Revisione della scheda, es. `\"17\"`",
+              "title": "If-Match"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DayPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente (`not-found`)"
+          },
+          "412": {
+            "description": "Revisione non aggiornata (`revision-mismatch`, con `current_revision`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "428": {
+            "description": "Manca `If-Match` (`revision-required`)"
+          }
+        },
+        "summary": "Modifica un giorno",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/days/{day_id}/slots": {
+      "post": {
+        "operationId": "post_slot",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "day_id",
+            "required": true,
+            "schema": {
+              "title": "Day Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Revisione della scheda, es. `\"17\"`",
+            "in": "header",
+            "name": "if-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Revisione della scheda, es. `\"17\"`",
+              "title": "If-Match"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlotIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente (`not-found`)"
+          },
+          "412": {
+            "description": "Revisione non aggiornata (`revision-mismatch`, con `current_revision`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "428": {
+            "description": "Manca `If-Match` (`revision-required`)"
+          }
+        },
+        "summary": "Aggiunge uno slot",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/days/{day_id}/slots/order": {
+      "put": {
+        "operationId": "put_slot_order",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "day_id",
+            "required": true,
+            "schema": {
+              "title": "Day Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Revisione della scheda, es. `\"17\"`",
+            "in": "header",
+            "name": "if-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Revisione della scheda, es. `\"17\"`",
+              "title": "If-Match"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlotOrderIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente (`not-found`)"
+          },
+          "412": {
+            "description": "Revisione non aggiornata (`revision-mismatch`, con `current_revision`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "428": {
+            "description": "Manca `If-Match` (`revision-required`)"
+          }
+        },
+        "summary": "Riordina gli slot di un giorno",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
     "/api/plans/{plan_id}/duplicate": {
       "post": {
         "description": "Copia completa con nome \"… (copia)\", non attiva.",
@@ -4217,6 +5434,366 @@
           }
         },
         "summary": "Duplica una scheda",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/preferences": {
+      "put": {
+        "description": "Normalizza e valida sui valori effettivi; non rigenera, aggiorna solo l'analisi.",
+        "operationId": "put_plan_preferences",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Revisione della scheda, es. `\"17\"`",
+            "in": "header",
+            "name": "if-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Revisione della scheda, es. `\"17\"`",
+              "title": "If-Match"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreferencesIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente (`not-found`)"
+          },
+          "412": {
+            "description": "Revisione non aggiornata (`revision-mismatch`, con `current_revision`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "428": {
+            "description": "Manca `If-Match` (`revision-required`)"
+          }
+        },
+        "summary": "Sostituisce le preferenze",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/settings": {
+      "get": {
+        "description": "Per ogni muscolo ed etichetta: valore del catalogo, personalizzazione, effettivo.",
+        "operationId": "read_plan_settings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanSettingsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda o slot inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Preferenze e personalizzazioni",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/slots/{slot_id}": {
+      "delete": {
+        "operationId": "remove_slot",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "slot_id",
+            "required": true,
+            "schema": {
+              "title": "Slot Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Revisione della scheda, es. `\"17\"`",
+            "in": "header",
+            "name": "if-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Revisione della scheda, es. `\"17\"`",
+              "title": "If-Match"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente (`not-found`)"
+          },
+          "412": {
+            "description": "Revisione non aggiornata (`revision-mismatch`, con `current_revision`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "428": {
+            "description": "Manca `If-Match` (`revision-required`)"
+          }
+        },
+        "summary": "Elimina uno slot",
+        "tags": [
+          "schede"
+        ]
+      },
+      "patch": {
+        "description": "Esercizio, variante della seconda seduta, famiglia, serie, ripetizioni, facoltativo,\nsettimane alterne, lucchetto, nota: tutto o niente.",
+        "operationId": "patch_slot",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "slot_id",
+            "required": true,
+            "schema": {
+              "title": "Slot Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Revisione della scheda, es. `\"17\"`",
+            "in": "header",
+            "name": "if-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Revisione della scheda, es. `\"17\"`",
+              "title": "If-Match"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlotPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente (`not-found`)"
+          },
+          "412": {
+            "description": "Revisione non aggiornata (`revision-mismatch`, con `current_revision`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "428": {
+            "description": "Manca `If-Match` (`revision-required`)"
+          }
+        },
+        "summary": "Modifica uno slot",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/slots/{slot_id}/candidates": {
+      "get": {
+        "description": "Con punteggio, voci del punteggio, esclusioni ed effetto sul volume. Non modifica nulla.",
+        "operationId": "read_slot_candidates",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "slot_id",
+            "required": true,
+            "schema": {
+              "title": "Slot Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "1 principale, 2 seconda seduta",
+            "in": "query",
+            "name": "session",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "description": "1 principale, 2 seconda seduta",
+              "maximum": 2,
+              "minimum": 1,
+              "title": "Session",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidatesOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda o slot inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Candidati di uno slot",
         "tags": [
           "schede"
         ]
