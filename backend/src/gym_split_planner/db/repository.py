@@ -11,6 +11,7 @@ from gym_split_planner.db.models import (
     Exercise,
     ExerciseMuscle,
     ExerciseTag,
+    MovementFamily,
     Muscle,
     SplitTemplate,
     Tag,
@@ -32,7 +33,7 @@ def load_catalog(session: Session) -> Catalog:
     """Tutto il catalogo che serve ai calcoli, compresi gli esercizi disattivati."""
     exercises = session.scalars(
         select(Exercise).options(
-            selectinload(Exercise.primary_family),
+            selectinload(Exercise.primary_family).selectinload(MovementFamily.group),
             selectinload(Exercise.secondary_family),
             selectinload(Exercise.equipment),
             selectinload(Exercise.muscles).selectinload(ExerciseMuscle.muscle),
@@ -52,6 +53,7 @@ def load_catalog(session: Session) -> Catalog:
             muscles={link.muscle.code: link.level for link in e.muscles},
             tags=frozenset(link.tag.code for link in e.tags),
             is_active=e.is_active,
+            group=e.primary_family.group.code,
         )
         for e in exercises
     ]

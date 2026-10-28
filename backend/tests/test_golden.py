@@ -25,11 +25,13 @@ from gym_split_planner.db.repository import (
 )
 from gym_split_planner.db.seed.loader import seed_if_empty
 from gym_split_planner.db.session import make_session_factory
+from gym_split_planner.domain.duration import DurationParams, day_minutes
 from gym_split_planner.domain.generation import generate
 from gym_split_planner.domain.scoring import Preferences
 from gym_split_planner.domain.volume import weekly_volume
 
 GOLDEN = Path(__file__).parent / "data" / "golden_volumes.csv"
+GOLDEN_DURATIONS = Path(__file__).parent / "data" / "golden_durations.csv"
 
 
 def _expected() -> dict[str, dict[str, float]]:
@@ -66,3 +68,23 @@ def test_every_split_has_golden_values(seeded_engine: Engine) -> None:
         splits = set(session.scalars(select(SplitTemplate.code)))
 
     assert splits == set(_expected())
+
+
+def _expected_durations() -> list[tuple[str, str, float]]:
+    with GOLDEN_DURATIONS.open(encoding="utf-8") as fh:
+        return [
+            (r["split_code"], r["day_code"], float(r["expected_minutes"]))
+            for r in csv.DictReader(fh)
+        ]
+
+
+@pytest.mark.parametrize(("split", "day", "minutes"), _expected_durations())
+def test_generated_day_matches_golden_duration(
+    seeded_engine: Engine, split: str, day: str, minutes: float
+) -> None:
+    with make_session_factory(seeded_engine)() as session:
+        catalog = load_catalog(session)
+        plan, _ = generate(load_split_shape(session, split), catalog, Preferences())
+
+    [generated] = [d for d in plan.days if d.code == day]
+    assert [round(m, 1) for m in day_minutes(generated, catalog, DurationParams())] == [minutes]

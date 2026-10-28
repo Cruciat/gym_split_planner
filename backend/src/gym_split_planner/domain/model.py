@@ -59,6 +59,8 @@ class ExerciseInfo:
     secondary_family: str | None = None
     tags: frozenset[str] = frozenset()
     is_active: bool = True
+    group: str = ""
+    """Gruppo muscolare della famiglia principale: serve alle serie di avvicinamento."""
 
     def family_match(self, family: str) -> float | None:
         """1 se ``family`` è la principale, 0,5 se è la secondaria, ``None`` altrimenti."""

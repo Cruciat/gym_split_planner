@@ -82,6 +82,8 @@ class MovementFamily(Base):
     muscle_group_id: Mapped[int] = mapped_column(ForeignKey("muscle_group.id", ondelete="RESTRICT"))
     sort_order: Mapped[int] = mapped_column(Integer)
 
+    group: Mapped[MuscleGroup] = relationship()
+
 
 class Exercise(Base):
     """Esercizio del catalogo (§ 3.5)."""
