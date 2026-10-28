@@ -119,7 +119,17 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Prova di avvio del container
         run: |
-          docker run -d --name gsp --health-interval=2s gym_split_planner:ci
+          # Come il Compose dell'homelab (ADR-041 del monorepo): cartella dei dati
+          # di root, passo di avvio che la assegna all'utente dell'app, poi l'app
+          # con filesystem di sola lettura e senza capability.
+          sudo mkdir -p /srv/gsp-data
+          docker run --rm --user 0:0 --entrypoint chown -v /srv/gsp-data:/data \
+            gym_split_planner:ci 10001:10001 /data
+          docker run -d --name gsp --health-interval=2s \
+            --read-only --tmpfs /tmp -e XDG_CACHE_HOME=/tmp/cache \
+            --cap-drop ALL --security-opt no-new-privileges:true \
+            -v /srv/gsp-data:/data \
+            gym_split_planner:ci
           status=starting
           for _ in $(seq 1 30); do
             status=$(docker inspect --format '{{.State.Health.Status}}' gsp)
