@@ -58,5 +58,5 @@ make api-types      # dopo ogni modifica al contratto delle API
 ## Immagine Docker
 
 - `docker compose up --build` prova l'immagine in locale su http://127.0.0.1:8000.
-- Il container gira come utente `app` (uid 10001); i dati stanno solo in `/data`; all'avvio applica le migrazioni e poi avvia Uvicorn (`docker/entrypoint.sh`).
+- Il container gira come utente `app` (uid 10001); i dati stanno solo in `/data`, con i backup giornalieri in `/data/backups` (ADR 0003); all'avvio applica le migrazioni e poi avvia Uvicorn (`docker/entrypoint.sh`).
 - La CI compila l'immagine a ogni pull request e verifica che il container diventi `healthy` e serva API e frontend.

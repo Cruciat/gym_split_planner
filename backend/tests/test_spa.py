@@ -22,7 +22,11 @@ def static_dir(tmp_path: Path) -> Path:
 
 @pytest.fixture
 def spa_client(tmp_path: Path, static_dir: Path) -> Iterator[TestClient]:
-    settings = Settings(database_url=f"sqlite:///{tmp_path / 'db.sqlite'}", static_dir=static_dir)
+    settings = Settings(
+        database_url=f"sqlite:///{tmp_path / 'db.sqlite'}",
+        static_dir=static_dir,
+        backup_enabled=False,
+    )
     app = create_app(settings)
     with TestClient(app) as client:
         yield client

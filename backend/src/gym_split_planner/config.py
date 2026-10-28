@@ -24,6 +24,18 @@ class Settings(BaseSettings):
     skip_seed: bool = False
     """Se vero, al primo avvio non carica i dati iniziali (per importare un'esportazione)."""
 
+    backup_enabled: bool = True
+    """Backup giornaliero del database SQLite (ADR 0003)."""
+
+    backup_dir: Path | None = None
+    """Cartella dei backup; se assente, ``backups`` accanto al file del database."""
+
+    backup_keep: int = 14
+    """Quanti backup giornalieri conservare."""
+
+    backup_check_seconds: int = 3600
+    """Ogni quanto controllare se il backup del giorno c'è già."""
+
 
 @lru_cache
 def get_settings() -> Settings:
