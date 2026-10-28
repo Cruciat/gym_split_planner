@@ -360,6 +360,11 @@ Dati
   Versione 1.0.0
 ```
 
+- Le impostazioni sono una form con «Salva» esplicito, non a salvataggio automatico: valgono per tutte le schede, e salvare a ogni tasto ricalcolerebbe le analisi a metà di un numero. Uscire con modifiche non salvate chiede conferma.
+- «Ripristina predefiniti» mette nella form i valori iniziali (`GET /api/settings/defaults`); si applicano salvando.
+- Gli errori del server compaiono accanto al campo, o nel gruppo quando riguardano più campi (es. il peso di S non può superare quello di P).
+- La sezione Dati (esportazione e importazione) arriva con M6; fino ad allora sotto le impostazioni restano versione e stato del server.
+
 ## 6. PDF (US-30)
 
 A4 verticale, una pagina per giorno, poi una pagina di riepilogo. Un giorno con varianti della seconda seduta resta su una pagina sola: la variante è indicata sotto l'esercizio.

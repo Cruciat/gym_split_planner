@@ -12,6 +12,7 @@ import type {
   PlanSummary,
   Split,
 } from '@/api/client'
+import type { Settings } from '@/settings/form'
 
 const exercise = (
   overrides: Partial<ExerciseSummary> & Pick<ExerciseSummary, 'id' | 'code' | 'name'>,
@@ -535,6 +536,27 @@ export function makePlanSettings(): PlanSettings {
       override: { effect: null, points: null },
       effective: { effect: t.effect, points: t.points },
     })),
+  }
+}
+
+/** Impostazioni globali come nei dati iniziali (`GET /api/settings`). */
+export function makeSettings(): Settings {
+  return {
+    level_weights: { P: 1, S: 0.5 },
+    session_cap: 10,
+    score_weights: { confidence: 3, equipment: 4, stretch: 1, family: 1, rank: 0.5 },
+    duration_params: {
+      set_seconds: 45,
+      rest_compound_seconds: 150,
+      rest_isolation_seconds: 90,
+      change_seconds: 60,
+      warmup_set_seconds: 30,
+      warmup_rest_seconds: 60,
+      warmup_minutes: 10,
+      stretching_minutes: 6,
+    },
+    warmup_text: '5-10 minuti di cardio leggero',
+    effort: { rir: '0-2', failure_last_set: true },
   }
 }
 
