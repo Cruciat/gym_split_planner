@@ -1,7 +1,16 @@
 name: Rilascio
 
-# Parte con un tag vX.Y.Z su main (ADR 0010). Procedura in CLAUDE.md, sezione "Rilasci".
+# Due modi di partire (ADR 0010; procedura in CLAUDE.md, sezione "Rilasci"):
+# - "Run workflow" dalla scheda Actions, indicando la versione: il workflow crea
+#   il tag vX.Y.Z sull'ultimo commit di main e prosegue;
+# - push di un tag vX.Y.Z creato a mano.
 on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versione da rilasciare, senza la v iniziale (es. 0.1.0)"
+        required: true
+        type: string
   push:
     tags: ["v*.*.*"]
 
@@ -9,27 +18,67 @@ permissions:
   contents: write
   packages: write
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   release:
     name: Immagine su GHCR e release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-
-      - name: Versioni coerenti con il tag
+      - name: Versione da rilasciare
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          tag="${GITHUB_REF_NAME#v}"
+          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then
+            version="${INPUT_VERSION#v}"
+          else
+            version="${GITHUB_REF_NAME#v}"
+          fi
+          if ! echo "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Versione non valida: '$version' (atteso X.Y.Z)"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v7
+        with:
+          # Con il lancio manuale si rilascia sempre l'ultimo commit di main.
+          ref: ${{ github.event_name == 'workflow_dispatch' && 'main' || github.ref }}
+          fetch-depth: 0
+
+      - name: Versioni coerenti
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
           py=$(grep -m1 '^version = ' backend/pyproject.toml | cut -d'"' -f2)
           js=$(node -p "require('./frontend/package.json').version")
-          echo "tag=$tag pyproject=$py package.json=$js"
-          if [ "$tag" != "$py" ] || [ "$tag" != "$js" ]; then
-            echo "::error::Il tag $tag non coincide con le versioni del progetto ($py, $js)"
+          echo "richiesta=$VERSION pyproject=$py package.json=$js"
+          if [ "$VERSION" != "$py" ] || [ "$VERSION" != "$js" ]; then
+            echo "::error::La versione $VERSION non coincide con quelle del progetto ($py, $js)"
             exit 1
           fi
-          if ! grep -q "^## \[$tag\]" CHANGELOG.md; then
-            echo "::error::Manca la sezione [$tag] in CHANGELOG.md"
+          if ! grep -q "^## \[$VERSION\]" CHANGELOG.md; then
+            echo "::error::Manca la sezione [$VERSION] in CHANGELOG.md"
             exit 1
           fi
+
+      - name: Tag su main (solo con il lancio manuale)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            echo "::error::Il tag $TAG esiste già"
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "$TAG"
+          git push origin "$TAG"
 
       - uses: docker/setup-buildx-action@v4
 
@@ -45,8 +94,8 @@ jobs:
         with:
           images: ghcr.io/cruciat/gym_split_planner
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{version}},value=${{ steps.version.outputs.tag }}
+            type=semver,pattern={{major}}.{{minor}},value=${{ steps.version.outputs.tag }}
             type=raw,value=latest
 
       - name: Build e pubblicazione
@@ -56,14 +105,15 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: VERSION=${{ github.ref_name }}
+          build-args: VERSION=${{ steps.version.outputs.tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Release su GitHub con le note del CHANGELOG
         env:
           GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          TAG: ${{ steps.version.outputs.tag }}
         run: |
-          tag="${GITHUB_REF_NAME#v}"
-          awk -v t="$tag" '$0 ~ "^## \\[" t "\\]" {f=1; next} /^## \[/ {f=0} f' CHANGELOG.md > notes.md
-          gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md
+          awk -v t="$VERSION" '$0 ~ "^## \\[" t "\\]" {f=1; next} /^## \[/ {f=0} f' CHANGELOG.md > notes.md
+          gh release create "$TAG" --verify-tag --title "$TAG" --notes-file notes.md

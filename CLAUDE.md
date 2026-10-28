@@ -50,8 +50,8 @@ make api-types      # dopo ogni modifica al contratto delle API
 ## Rilasci (ADR 0010)
 
 1. Pull request `chore(release): X.Y.Z` che: porta la versione a `X.Y.Z` in `backend/pyproject.toml` e `frontend/package.json` (poi `uv lock`, `npm install` e `make api-types`, perché la versione è nello schema OpenAPI); sposta le voci di `[Non rilasciato]` in `## [X.Y.Z] - AAAA-MM-GG` nel `CHANGELOG.md`.
-2. Dopo il merge, tag annotato su `main`: `git tag -a vX.Y.Z -m "vX.Y.Z" && git push origin vX.Y.Z`.
-3. Il workflow `Rilascio` verifica che tag, versioni e CHANGELOG coincidano, pubblica `ghcr.io/cruciat/gym_split_planner` con i tag `X.Y.Z`, `X.Y`, `latest` e crea la release su GitHub.
+2. Dopo il merge: scheda **Actions → Rilascio → Run workflow**, con la versione `X.Y.Z`. Il workflow crea il tag `vX.Y.Z` sull'ultimo commit di `main` (in alternativa si può fare push di un tag a mano; dalle sessioni di Claude il push dei tag non è permesso).
+3. Il workflow `Rilascio` verifica che versione, progetto e CHANGELOG coincidano, pubblica `ghcr.io/cruciat/gym_split_planner` con i tag `X.Y.Z`, `X.Y`, `latest` e crea la release su GitHub.
 4. Nel monorepo dell'homelab si aggiorna la versione nel compose e si applica il ruolo `compose-deploy`.
 
 ## Immagine Docker
