@@ -4,13 +4,17 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ## [Non rilasciato]
 
+## [0.6.0] - 2026-10-28
+
+Tappa M5: il PDF. La scheda si scarica in A4 da stampare e annotare in palestra (US-30), e le impostazioni globali si modificano dall'app.
+
 ### Aggiunto
 
-- Schermata delle impostazioni globali: pesi dei livelli e tetto per seduta, pesi del punteggio, parametri della durata, RIR e cedimento, testo del riscaldamento per il PDF. Salvataggio esplicito con gli errori accanto ai campi, ripristino dei valori iniziali, conferma prima di uscire senza salvare.
 - PDF della scheda (`GET /api/plans/{id}/pdf`, con le settimane da 1 a 8): una pagina per giorno con esercizi, simboli, serie × ripetizioni, RIR, recupero, colonne per carichi e ripetizioni, note delle etichette come richiami, riscaldamento e stretching; una pagina di riepilogo con volumi e fasce, legenda e mini-allenamento quotidiano. Leggibile anche stampato in bianco e nero.
 - Pulsante «PDF» nell'editor, con la scelta delle settimane da annotare; sul telefono nel menu ⋮. Il file prende il nome dal server e riflette anche le ultime modifiche in coda.
-- Il test end-to-end scarica il PDF della scheda e ne controlla nome e pagine.
 - Icone di tutti i simboli delle etichette per il PDF, dalle stesse definizioni di Lucide dell'interfaccia.
+- Schermata delle impostazioni globali: pesi dei livelli e tetto per seduta, pesi del punteggio, parametri della durata, RIR e cedimento, testo del riscaldamento per il PDF. Salvataggio esplicito con gli errori accanto ai campi, ripristino dei valori iniziali, conferma prima di uscire senza salvare.
+- Il test end-to-end scarica il PDF della scheda e ne controlla nome e pagine.
 
 ### Rimosso
 
@@ -88,7 +92,8 @@ Prima versione: scheletro del progetto (tappa M0). Nessuna funzione per l'utente
 - Immagine Docker unica (API e frontend) e workflow di rilascio su GHCR.
 - `GET /api/pdf/test`: PDF di prova generato con WeasyPrint, temporaneo fino a M5.
 
-[Non rilasciato]: https://github.com/Cruciat/gym_split_planner/compare/v0.5.0...HEAD
+[Non rilasciato]: https://github.com/Cruciat/gym_split_planner/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.2.0...v0.3.0
