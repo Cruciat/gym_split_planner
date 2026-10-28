@@ -348,7 +348,7 @@ Risposta di `candidates` (estratto):
 
 Il PDF si genera a ogni richiesta, senza cache: costa qualche centinaio di millisecondi ed è sempre allineato alla scheda.
 
-Fino a M5 esiste anche `GET /api/pdf/test`, un PDF di prova che verifica WeasyPrint nell'immagine (issue #4). Viene rimosso quando arriva il PDF della scheda.
+Il PDF ha una pagina per giorno (tabella degli esercizi con simboli, serie × ripetizioni, RIR, recupero e colonne per carichi e ripetizioni; richiami delle note delle etichette; stretching) e una pagina di riepilogo (volumi con fascia e stato, legenda, mini-allenamento quotidiano), come nel wireframe § 6. Il template riceve dati già formattati dalla stessa vista della scheda. `GET /api/pdf/test`, il PDF di prova di M0, è stato rimosso.
 
 ### 6.11 Esportazione e importazione
 

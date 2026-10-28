@@ -4933,24 +4933,6 @@
         ]
       }
     },
-    "/api/pdf/test": {
-      "get": {
-        "description": "Genera un PDF A4 di prova con tabella, simbolo SVG e numerazione delle pagine.",
-        "operationId": "get_test_pdf",
-        "responses": {
-          "200": {
-            "content": {
-              "application/pdf": {}
-            },
-            "description": "PDF A4"
-          }
-        },
-        "summary": "PDF di prova",
-        "tags": [
-          "sistema"
-        ]
-      }
-    },
     "/api/plans": {
       "get": {
         "description": "Dalla modificata più di recente (US-19 CA1).",
@@ -5756,6 +5738,62 @@
           }
         },
         "summary": "Duplica una scheda",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/pdf": {
+      "get": {
+        "description": "Una pagina per giorno e il riepilogo; il nome del file viene dalla scheda e dalla data.",
+        "operationId": "get_plan_pdf",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Colonne per carichi e ripetizioni",
+            "in": "query",
+            "name": "weeks",
+            "required": false,
+            "schema": {
+              "default": 4,
+              "description": "Colonne per carichi e ripetizioni",
+              "maximum": 8,
+              "minimum": 1,
+              "title": "Weeks",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {}
+            },
+            "description": "PDF A4"
+          },
+          "404": {
+            "description": "Scheda inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "PDF della scheda",
         "tags": [
           "schede"
         ]

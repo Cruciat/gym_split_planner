@@ -1,0 +1,212 @@
+/* PDF della scheda (wireframe, § 6): leggibile anche stampato in bianco e nero. */
+
+.day + .day,
+.summary {
+  break-before: page;
+}
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 0.6pt solid #111;
+  padding-bottom: 1.5mm;
+  margin-bottom: 4mm;
+}
+
+.page-head h1 {
+  font-size: 11pt;
+  margin: 0;
+}
+
+.page-head .meta {
+  margin: 0;
+  font-size: 8.5pt;
+}
+
+h2 {
+  font-size: 14pt;
+  margin: 0 0 2mm;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+h2 .day-meta {
+  font-size: 9.5pt;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  color: #333;
+}
+
+.summary h2 {
+  font-size: 12pt;
+  margin-top: 5mm;
+}
+
+.summary .page-head + h2 {
+  margin-top: 0;
+}
+
+h3 {
+  font-size: 10pt;
+  margin: 3mm 0 1mm;
+}
+
+.warmup {
+  margin: 0 0 3mm;
+  font-size: 8.5pt;
+}
+
+table.exercises {
+  table-layout: fixed;
+}
+
+.col-name {
+  width: 54mm;
+}
+
+.col-sets {
+  width: 19mm;
+}
+
+.col-rir {
+  width: 11mm;
+}
+
+.col-rest {
+  width: 12mm;
+}
+
+.exercises td,
+.exercises th {
+  padding: 1.3mm 1.4mm;
+}
+
+.exercise {
+  font-weight: bold;
+}
+
+.flags {
+  display: block;
+  font-size: 7.5pt;
+  font-style: italic;
+  color: #333;
+}
+
+.optional .exercise {
+  font-weight: normal;
+}
+
+.empty .exercise {
+  font-weight: normal;
+  font-style: italic;
+  color: #555;
+}
+
+.note {
+  font-style: italic;
+}
+
+.symbol svg {
+  margin-left: 0.6mm;
+}
+
+sup {
+  font-size: 6.5pt;
+  line-height: 0;
+}
+
+.log {
+  padding: 1mm 1.2mm 0.6mm;
+}
+
+.line {
+  height: 4.6mm;
+  /* Linea continua: WeasyPrint disegna il tratteggio punto per punto e il PDF esplode. */
+  border-bottom: 0.3pt solid #aaa;
+}
+
+.log-help {
+  margin: 1mm 0 0;
+  font-size: 7.5pt;
+  color: #555;
+}
+
+.notes {
+  margin-top: 3mm;
+  font-size: 8.5pt;
+}
+
+.notes p {
+  margin: 0 0 0.8mm;
+}
+
+.stretching {
+  margin-top: 3mm;
+  font-size: 8.5pt;
+}
+
+.muted {
+  color: #555;
+  font-size: 8.5pt;
+}
+
+/* Volumi su due colonne affiancate: il riepilogo sta in una pagina. */
+.volume-grid {
+  display: flex;
+  gap: 5mm;
+  align-items: flex-start;
+}
+
+table.volumes {
+  width: 50%;
+  font-size: 8pt;
+  table-layout: fixed;
+}
+
+.volumes td,
+.volumes th {
+  padding: 0.55mm 1.4mm;
+}
+
+.volumes .num {
+  width: 12mm;
+}
+
+.volumes th.group {
+  background: #f2f2f2;
+  font-size: 7.5pt;
+  text-transform: uppercase;
+}
+
+/* Lo stato è scritto; sotto e sopra fascia anche in grassetto, per la stampa senza colori. */
+.status-sotto td:last-child,
+.status-sopra td:last-child {
+  font-weight: bold;
+}
+
+.legend {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 8.5pt;
+  columns: 2;
+}
+
+.legend li {
+  margin-bottom: 0.8mm;
+}
+
+table.routine {
+  font-size: 8.5pt;
+}
+
+.routine td {
+  padding: 0.8mm 1.6mm;
+}
+
+.routine .dose {
+  width: 38mm;
+  white-space: nowrap;
+}

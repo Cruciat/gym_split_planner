@@ -1,22 +1,33 @@
-"""PDF di prova (issue #4). Verrà sostituito da ``GET /api/plans/{id}/pdf`` in M5."""
+"""PDF della scheda (US-30; API, § 6.10)."""
 
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Query, Request
 from fastapi.responses import Response
 
-from gym_split_planner.services.pdf_test import build_test_pdf
+from gym_split_planner.services.plan_pdf import DEFAULT_WEEKS, plan_pdf
 
-router = APIRouter(tags=["sistema"])
+router = APIRouter(tags=["schede"])
 
 
 @router.get(
-    "/pdf/test",
-    summary="PDF di prova",
+    "/plans/{plan_id}/pdf",
+    summary="PDF della scheda",
     response_class=Response,
-    responses={200: {"content": {"application/pdf": {}}, "description": "PDF A4"}},
+    responses={
+        200: {"content": {"application/pdf": {}}, "description": "PDF A4"},
+        404: {"description": "Scheda inesistente"},
+    },
 )
-def get_test_pdf() -> Response:
-    """Genera un PDF A4 di prova con tabella, simbolo SVG e numerazione delle pagine."""
-    pdf = build_test_pdf()
+def get_plan_pdf(
+    request: Request,
+    plan_id: int,
+    weeks: Annotated[int, Query(ge=1, le=8, description="Colonne per carichi e ripetizioni")] = (
+        DEFAULT_WEEKS
+    ),
+) -> Response:
+    """Una pagina per giorno e il riepilogo; il nome del file viene dalla scheda e dalla data."""
+    pdf = plan_pdf(request.app.state.engine, plan_id, weeks)
     return Response(
         content=pdf.content,
         media_type="application/pdf",
