@@ -4,6 +4,13 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ## [Non rilasciato]
 
+### Aggiunto
+
+- Catalogo consultabile dal browser: elenco degli esercizi con filtri combinabili per gruppo, muscolo (P o anche S), famiglia, attrezzo, etichetta (con o senza), confidenza e ricerca per nome; i filtri restano nell'URL. Su telefono, elenco a schede e filtri in un pannello dal basso.
+- Dettaglio dell'esercizio: muscoli P e S, etichette con le note, famiglie, varianti cliccabili, fonti.
+- Navigazione tra Schede, Catalogo e Impostazioni (in alto su computer, in basso su telefono); Schede e Impostazioni sono ancora segnaposto.
+- API `GET /api/catalog` (tutto il catalogo, con `ETag`) e `GET /api/exercises/{id}`.
+
 ## [0.3.0] - 2026-10-28
 
 Tappa M2: il motore. Nessuna funzione nuova nell'interfaccia; i calcoli serviranno a catalogo e schede (M3, M4).

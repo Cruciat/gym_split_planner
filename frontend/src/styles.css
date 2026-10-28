@@ -5,3 +5,22 @@
 body {
   margin: 0;
 }
+
+/* Contenitore di ogni pagina: margini comuni, utilizzabile da 380 px (NF2). */
+.page {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2.5rem;
+}
+
+/* Link nel testo delle pagine, con il colore d'accento del tema (AppShell). */
+.text-link {
+  color: var(--primary-color);
+  text-underline-offset: 0.15em;
+}
+
+@media (max-width: 767px) {
+  .page {
+    padding: 1rem 1rem 1.5rem;
+  }
+}
