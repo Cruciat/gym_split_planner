@@ -388,6 +388,7 @@ legenda dei simboli, mini-allenamento quotidiano (collo e bacino).
 - Caselle S1-S4: una colonna per settimana (`weeks`, default 4), ciascuna con spazio per "kg × ripetizioni" di ogni serie.
 - Le note delle etichette sono richiami numerati sotto la tabella, così la riga resta corta.
 - Il PDF usa le stesse icone dell'interfaccia, in bianco e nero leggibile (stampa senza colori).
+- Nell'editor il pulsante `[PDF]` scarica subito con le settimane scelte (predefinito 4); accanto, un menu con 1-8 settimane. Sul telefono «PDF» nel menu `⋮` apre una finestra con la scelta delle settimane e «Scarica». Prima dello scarico partono le modifiche ancora in coda.
 
 ## 7. Stati comuni
 
