@@ -4,6 +4,10 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ## [Non rilasciato]
 
+### Aggiunto
+
+- Modello dati della fase 1 (catalogo, etichette, split, schede, impostazioni) con migrazione e vincoli nel database.
+
 ## [0.1.0] - 2026-10-28
 
 Prima versione: scheletro del progetto (tappa M0). Nessuna funzione per l'utente oltre alla pagina di stato e al PDF di prova.

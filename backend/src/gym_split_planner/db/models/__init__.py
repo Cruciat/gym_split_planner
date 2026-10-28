@@ -1,0 +1,51 @@
+"""Modelli SQLAlchemy. Importarli tutti qui registra le tabelle in ``Base.metadata``."""
+
+from gym_split_planner.db.models.catalog import (
+    DailyRoutineItem,
+    Equipment,
+    Exercise,
+    ExerciseMuscle,
+    ExerciseSource,
+    ExerciseTag,
+    MovementFamily,
+    Muscle,
+    MuscleGroup,
+    Source,
+    StretchExercise,
+    Tag,
+)
+from gym_split_planner.db.models.plans import (
+    AppSetting,
+    DayTemplate,
+    DayTemplateStretch,
+    Plan,
+    PlanDay,
+    PlanDayStretch,
+    PlanSlot,
+    SlotTemplate,
+    SplitTemplate,
+)
+
+__all__ = [
+    "AppSetting",
+    "DailyRoutineItem",
+    "DayTemplate",
+    "DayTemplateStretch",
+    "Equipment",
+    "Exercise",
+    "ExerciseMuscle",
+    "ExerciseSource",
+    "ExerciseTag",
+    "MovementFamily",
+    "Muscle",
+    "MuscleGroup",
+    "Plan",
+    "PlanDay",
+    "PlanDayStretch",
+    "PlanSlot",
+    "SlotTemplate",
+    "Source",
+    "SplitTemplate",
+    "StretchExercise",
+    "Tag",
+]

@@ -6,14 +6,26 @@ Due modi d'uso:
   ``GSP_DATABASE_URL`` o, in mancanza, dal valore predefinito delle impostazioni.
 """
 
+from typing import Any, Literal
+
 from alembic import context
+from alembic.autogenerate.api import AutogenContext
 from sqlalchemy import Connection
 
 from gym_split_planner.config import get_settings
+from gym_split_planner.db import models  # noqa: F401  (registra le tabelle)
 from gym_split_planner.db.base import Base
 from gym_split_planner.db.engine import make_engine
+from gym_split_planner.db.types import UtcDateTime
 
 target_metadata = Base.metadata
+
+
+def _render_item(type_: str, obj: Any, _autogen_context: AutogenContext) -> str | Literal[False]:
+    """Le migrazioni non importano tipi dell'app, che potrebbero cambiare nel tempo."""
+    if type_ == "type" and isinstance(obj, UtcDateTime):
+        return "sa.String(length=20)"
+    return False
 
 
 def _run(connection: Connection) -> None:
@@ -23,6 +35,7 @@ def _run(connection: Connection) -> None:
         # SQLite non sa modificare le colonne: Alembic ricrea la tabella (ADR 0003).
         render_as_batch=True,
         compare_type=True,
+        render_item=_render_item,
     )
     with context.begin_transaction():
         context.run_migrations()
