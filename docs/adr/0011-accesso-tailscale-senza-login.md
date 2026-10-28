@@ -2,7 +2,7 @@
 
 | Campo | Valore |
 | --- | --- |
-| Stato | Accettato (2026-10-28) |
+| Stato | Accettato (2026-10-28); la parte sul container Tailscale è superata da ADR 0016 |
 | Data | 2026-10-27 |
 
 ## Contesto
@@ -11,8 +11,8 @@ L'app ha un solo utente, che vi accede dai propri dispositivi già collegati all
 
 ## Decisione
 
-- Un container **sidecar `tailscale/tailscale`** nello stesso compose dell'app, con nome macchina `gym-split-planner`, autenticato con una auth key conservata in Ansible Vault e stato persistente in un volume.
-- **`tailscale serve`** espone l'app in HTTPS all'indirizzo `https://gym-split-planner.<tailnet>.ts.net`, con certificato gestito da Tailscale.
+- ~~Un container **sidecar `tailscale/tailscale`** nello stesso compose dell'app, con nome macchina `gym-split-planner`, autenticato con una auth key conservata in Ansible Vault e stato persistente in un volume.~~ Superato da ADR 0016: accesso per IP e porta tramite il subnet router dell'homelab.
+- ~~**`tailscale serve`** espone l'app in HTTPS all'indirizzo `https://gym-split-planner.<tailnet>.ts.net`, con certificato gestito da Tailscale.~~ Superato da ADR 0016.
 - Nessuna porta dell'app pubblicata sull'host; nessuna esposizione su internet (niente Funnel).
 - Nessun login nell'app. Chiunque sia nella tailnet ha accesso completo; le ACL di Tailscale possono restringere l'accesso ai soli dispositivi personali.
 

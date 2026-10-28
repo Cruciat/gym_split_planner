@@ -13,7 +13,7 @@ Il codice dell'app sta in un repository separato; l'infrastruttura dell'homelab 
 
 1. **Versioni:** SemVer. Un tag `vX.Y.Z` sul repository dell'app avvia il workflow di rilascio.
 2. **Pubblicazione:** GitHub Actions compila l'immagine e la pubblica su **GitHub Container Registry** come `ghcr.io/cruciat/gym_split_planner:X.Y.Z` (più `X.Y` e `latest`). Le pull request compilano l'immagine senza pubblicarla.
-3. **Deploy:** nel monorepo dell'homelab, il compose dell'app indica la versione esatta (`:X.Y.Z`). Per aggiornare si cambia il numero con un commit e si applica il ruolo Ansible `compose-deploy`.
+3. **Deploy:** nel monorepo dell'homelab, il compose dell'app indica la versione esatta (`:X.Y.Z`). Per aggiornare si cambia il numero con un commit e si applica il ruolo Ansible `compose-deploy` (`deploy-compose.yml -e compose_stack_name=apps/gym-split-planner --limit gym-split-planner`; dettagli nell'ADR-041 del monorepo).
 4. **Infrastruttura:** un container LXC creato con il modulo Terraform `lxc-container`, con Docker installato dal ruolo `docker`.
 5. **Credenziali:** il repository è pubblico, quindi anche il pacchetto su GHCR: l'homelab scarica l'immagine senza credenziali. Se un giorno il repository tornasse privato, servirebbe un token con il solo permesso `read:packages`, conservato in Ansible Vault.
 6. **In futuro:** Renovate nel monorepo può aprire automaticamente una pull request quando esce una nuova versione.
