@@ -24,6 +24,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/pdf/test': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * PDF di prova
+     * @description Genera un PDF A4 di prova con tabella, simbolo SVG e numerazione delle pagine.
+     */
+    get: operations['get_test_pdf']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
 export type webhooks = Record<string, never>
 export interface components {
@@ -80,6 +100,26 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['HealthOut']
+        }
+      }
+    }
+  }
+  get_test_pdf: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description PDF A4 */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/pdf': unknown
         }
       }
     }

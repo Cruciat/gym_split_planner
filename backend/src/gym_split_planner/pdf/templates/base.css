@@ -1,0 +1,83 @@
+/* Stile comune dei PDF: A4 verticale, font incorporati nell'immagine (ADR 0008). */
+@page {
+  size: A4;
+  margin: 14mm 12mm 16mm;
+  @bottom-right {
+    content: "Pagina " counter(page) " di " counter(pages);
+    font-size: 8pt;
+    color: #555;
+  }
+  @bottom-left {
+    content: string(document-title);
+    font-size: 8pt;
+    color: #555;
+  }
+}
+
+html {
+  font-family: "DejaVu Sans", sans-serif;
+  font-size: 9.5pt;
+  color: #111;
+}
+
+h1 {
+  font-size: 15pt;
+  margin: 0 0 1mm;
+  string-set: document-title content();
+}
+
+.meta {
+  color: #444;
+  margin: 0 0 5mm;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 0.4pt solid #888;
+  padding: 1.6mm 1.8mm;
+  vertical-align: top;
+}
+
+th {
+  background: #eee;
+  text-align: left;
+  font-weight: bold;
+}
+
+thead {
+  display: table-header-group;
+}
+
+tr {
+  break-inside: avoid;
+}
+
+.num {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.log {
+  width: 13mm;
+}
+
+.symbol svg {
+  width: 3.4mm;
+  height: 3.4mm;
+  vertical-align: -0.6mm;
+}
+
+.sub {
+  font-size: 8pt;
+  color: #444;
+}
+
+.notes {
+  margin-top: 3mm;
+  font-size: 8.5pt;
+}

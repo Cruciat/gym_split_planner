@@ -72,6 +72,24 @@
           "sistema"
         ]
       }
+    },
+    "/api/pdf/test": {
+      "get": {
+        "description": "Genera un PDF A4 di prova con tabella, simbolo SVG e numerazione delle pagine.",
+        "operationId": "get_test_pdf",
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {}
+            },
+            "description": "PDF A4"
+          }
+        },
+        "summary": "PDF di prova",
+        "tags": [
+          "sistema"
+        ]
+      }
     }
   }
 }

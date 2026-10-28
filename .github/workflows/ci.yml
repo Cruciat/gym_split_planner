@@ -25,6 +25,11 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: backend/uv.lock
+      - name: Librerie di sistema per WeasyPrint
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 fonts-dejavu-core
       - name: Dipendenze
         run: uv sync --locked
       - name: Formattazione (ruff)
@@ -131,3 +136,8 @@ jobs:
           docker exec gsp python -c "import json, urllib.request; print(json.load(urllib.request.urlopen('http://127.0.0.1:8000/api/health')))"
           docker exec gsp python -c "import urllib.request; assert b'id=\"app\"' in urllib.request.urlopen('http://127.0.0.1:8000/schede/1').read()"
           docker exec gsp test -f /data/gym_split_planner.db
+          docker exec gsp python -c "import urllib.request; r = urllib.request.urlopen('http://127.0.0.1:8000/api/pdf/test'); assert r.headers['Content-Type'] == 'application/pdf' and r.read(5) == b'%PDF-'"
+          if docker logs gsp 2>&1 | grep -q "HarfBuzz-Subset"; then
+            echo "::error::Nell'immagine manca HarfBuzz-Subset, richiesta da WeasyPrint"
+            exit 1
+          fi
