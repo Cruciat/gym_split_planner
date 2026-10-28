@@ -230,6 +230,16 @@ export const texts = {
     moveDown: (name: string): string => `Sposta ${name} più in basso`,
     drag: (name: string): string => `Trascina ${name}`,
     regenerate: 'Rigenera',
+    pdf: 'PDF',
+    pdfLabel: (weeks: number): string =>
+      `Scarica il PDF con ${weeks === 1 ? '1 settimana' : `${String(weeks)} settimane`} da annotare`,
+    pdfWeeks: (weeks: number): string =>
+      weeks === 1 ? '1 settimana' : `${String(weeks)} settimane`,
+    pdfChooseWeeks: 'Settimane da annotare',
+    pdfTitle: 'Scarica il PDF',
+    pdfHelp: 'Una colonna per settimana, con una riga per serie per kg e ripetizioni.',
+    pdfDownload: 'Scarica',
+    pdfDownloaded: (filename: string): string => `Scaricato «${filename}».`,
     openVariants: (name: string): string => `Varianti di ${name}`,
     leaveTitle: 'Uscire con modifiche non salvate?',
     leaveText:

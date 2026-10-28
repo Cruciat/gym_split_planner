@@ -69,7 +69,7 @@ Vedi ADR 0012. In breve: criteri di accettazione verificati, test verdi, documen
 | Riferimento | I volumi dei preset coincidono con quelli dell'Excel | Da M2 (i valori attesi sono versionati in M1) |
 | Validità dei dati | Ogni esercizio ha una famiglia e un muscolo P; nessun riferimento rotto; ogni slot ha candidati | Da M1 |
 | Integrazione API | Endpoint su database temporaneo | Da M3 |
-| End-to-end | Playwright sull'app compilata, su desktop e telefono (`make e2e`, job «End-to-end» della CI): crea scheda da preset → cambia variante → blocca → rigenera; in M5 si aggiunge lo scarico del PDF | Da M4 |
+| End-to-end | Playwright sull'app compilata, su desktop e telefono (`make e2e`, job «End-to-end» della CI): crea scheda da preset → cambia variante → blocca → rigenera → scarica il PDF (nome del file e numero di pagine) | Da M4 |
 
 ## 8. Ruoli
 

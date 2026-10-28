@@ -2,6 +2,7 @@
 import {
   NAlert,
   NButton,
+  NButtonGroup,
   NDrawer,
   NDrawerContent,
   NDropdown,
@@ -9,8 +10,10 @@ import {
   useMessage,
 } from 'naive-ui'
 import {
+  ChevronDown,
   ChevronUp,
   EllipsisVertical,
+  FileDown,
   Pencil,
   Plus,
   RefreshCw,
@@ -21,6 +24,7 @@ import { onBeforeRouteLeave, RouterLink, useRoute, useRouter } from 'vue-router'
 
 import DayDialog from '@/components/editor/DayDialog.vue'
 import DayView from '@/components/editor/DayView.vue'
+import PdfDialog from '@/components/editor/PdfDialog.vue'
 import RegenerateDialog from '@/components/editor/RegenerateDialog.vue'
 import TextDialog from '@/components/editor/TextDialog.vue'
 import SaveStatus from '@/components/SaveStatus.vue'
@@ -28,7 +32,8 @@ import VolumePanel from '@/components/VolumePanel.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import { NARROW_QUERY, useIsMobile, useMediaQuery } from '@/composables/useIsMobile'
 import { useSortable } from '@/composables/useSortable'
-import { createPlanEditor, providePlanEditor } from '@/plans/editor'
+import { createPlanEditor, problemText, providePlanEditor } from '@/plans/editor'
+import { DEFAULT_WEEKS, downloadPlanPdf, WEEK_OPTIONS } from '@/plans/pdf'
 import { statusCounts, type WarningTarget } from '@/plans/volume'
 import { useCatalogStore } from '@/stores/catalog'
 import { texts } from '@/texts'
@@ -111,15 +116,49 @@ async function rename(name: string): Promise<void> {
 
 const regenerating = ref(false)
 
+// --- PDF (US-30) --------------------------------------------------------------------------
+
+const pdfWeeks = ref(DEFAULT_WEEKS)
+const pdfDialog = ref(false)
+const pdfLoading = ref(false)
+const weekMenu = computed(() =>
+  WEEK_OPTIONS.map((n) => ({
+    key: n,
+    label: n === pdfWeeks.value ? `✓ ${t.pdfWeeks(n)}` : t.pdfWeeks(n),
+  })),
+)
+
+/** Prima le modifiche in coda, poi il PDF: così il file è quello che si vede. */
+async function downloadPdf(weeks: number): Promise<void> {
+  pdfWeeks.value = weeks
+  pdfLoading.value = true
+  try {
+    await editor.settle()
+    const result = await downloadPlanPdf(props.id, weeks)
+    if (result.ok) {
+      pdfDialog.value = false
+      message.success(t.pdfDownloaded(result.filename))
+    } else {
+      message.error(problemText(result.problem), { duration: 6000 })
+    }
+  } catch {
+    message.error(texts.common.loadFailed)
+  } finally {
+    pdfLoading.value = false
+  }
+}
+
 const mobileMenu = [
   { key: 'preferences', label: t.preferences },
   { key: 'regenerate', label: t.regenerate },
+  { key: 'pdf', label: t.pdf },
   { key: 'rename', label: t.rename },
 ]
 
-function actOnPlan(key: 'preferences' | 'regenerate' | 'rename'): void {
+function actOnPlan(key: 'preferences' | 'regenerate' | 'pdf' | 'rename'): void {
   if (key === 'rename') renaming.value = true
   else if (key === 'regenerate') regenerating.value = true
+  else if (key === 'pdf') pdfDialog.value = true
   else void router.push(`/schede/${String(props.id)}/preferenze`)
 }
 
@@ -233,6 +272,29 @@ onBeforeRouteLeave(async () => {
             <template #icon><RefreshCw :size="16" /></template>
             {{ t.regenerate }}
           </NButton>
+          <NButtonGroup v-if="!mobile">
+            <NButton
+              secondary
+              :loading="pdfLoading"
+              :aria-label="t.pdfLabel(pdfWeeks)"
+              :title="t.pdfLabel(pdfWeeks)"
+              data-testid="pdf"
+              @click="downloadPdf(pdfWeeks)"
+            >
+              <template #icon><FileDown :size="16" /></template>
+              {{ t.pdf }}
+            </NButton>
+            <NDropdown
+              trigger="click"
+              placement="bottom-end"
+              :options="weekMenu"
+              @select="(weeks: number) => downloadPdf(weeks)"
+            >
+              <NButton secondary :aria-label="t.pdfChooseWeeks" data-testid="pdf-weeks-menu">
+                <template #icon><ChevronDown :size="16" /></template>
+              </NButton>
+            </NDropdown>
+          </NButtonGroup>
           <NDropdown
             v-else
             trigger="click"
@@ -331,6 +393,12 @@ onBeforeRouteLeave(async () => {
 
       <DayDialog v-model:show="addingDay" :title="t.addDayTitle" :action="t.add" @submit="addDay" />
       <RegenerateDialog v-model:show="regenerating" />
+      <PdfDialog
+        v-model:show="pdfDialog"
+        :weeks="pdfWeeks"
+        :loading="pdfLoading"
+        @download="downloadPdf"
+      />
       <TextDialog
         v-model:show="renaming"
         :title="t.renameTitle"

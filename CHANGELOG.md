@@ -7,6 +7,8 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 ### Aggiunto
 
 - PDF della scheda (`GET /api/plans/{id}/pdf`, con le settimane da 1 a 8): una pagina per giorno con esercizi, simboli, serie × ripetizioni, RIR, recupero, colonne per carichi e ripetizioni, note delle etichette come richiami, riscaldamento e stretching; una pagina di riepilogo con volumi e fasce, legenda e mini-allenamento quotidiano. Leggibile anche stampato in bianco e nero.
+- Pulsante «PDF» nell'editor, con la scelta delle settimane da annotare; sul telefono nel menu ⋮. Il file prende il nome dal server e riflette anche le ultime modifiche in coda.
+- Il test end-to-end scarica il PDF della scheda e ne controlla nome e pagine.
 - Icone di tutti i simboli delle etichette per il PDF, dalle stesse definizioni di Lucide dell'interfaccia.
 
 ### Rimosso
