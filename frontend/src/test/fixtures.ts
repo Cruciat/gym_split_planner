@@ -3,7 +3,15 @@
  * Nomi e codici presi dai dati iniziali, per leggere i test senza tradurre.
  */
 
-import type { Catalog, ExerciseDetail, ExerciseSummary } from '@/api/client'
+import type {
+  Catalog,
+  ExerciseDetail,
+  ExerciseSummary,
+  Plan,
+  PlanSettings,
+  PlanSummary,
+  Split,
+} from '@/api/client'
 
 const exercise = (
   overrides: Partial<ExerciseSummary> & Pick<ExerciseSummary, 'id' | 'code' | 'name'>,
@@ -241,6 +249,159 @@ export function makeDetail(): ExerciseDetail {
         tags: [],
       },
     ],
+  }
+}
+
+/** Due split predefiniti, con giorni e slot ridotti. */
+export function makeSplits(): Split[] {
+  const slot = {
+    family: { id: 1, code: 'press-incline', name: 'Spinta inclinata' },
+    sets: 3,
+    rep_min: 6,
+    rep_max: 12,
+    is_optional: false,
+    weekly_weight: 1,
+    note: null,
+  }
+  return [
+    {
+      id: 1,
+      code: 'ppl-3',
+      name: 'Push/Pull/Legs, 3 giorni',
+      description: 'Ogni muscolo una volta a settimana.',
+      days_per_week: 3,
+      days: [
+        { name: 'Push', times_per_week: 1, slots: [slot] },
+        { name: 'Pull', times_per_week: 1, slots: [] },
+        { name: 'Legs', times_per_week: 1, slots: [] },
+      ],
+    },
+    {
+      id: 2,
+      code: 'ul-4',
+      name: 'Upper/Lower, 4 giorni',
+      description: null,
+      days_per_week: 4,
+      days: [
+        { name: 'Upper', times_per_week: 2, slots: [slot] },
+        { name: 'Lower', times_per_week: 2, slots: [] },
+      ],
+    },
+  ]
+}
+
+export function makePlanSummaries(): PlanSummary[] {
+  return [
+    {
+      id: 1,
+      name: 'PPL autunno',
+      revision: 4,
+      split_name: 'Push/Pull/Legs, 3 giorni',
+      days_per_week: 3,
+      is_active: true,
+      updated_at: '2026-10-28T10:00:00Z',
+    },
+    {
+      id: 2,
+      name: 'Prova vuota',
+      revision: 1,
+      split_name: null,
+      days_per_week: 1,
+      is_active: false,
+      updated_at: '2026-10-20T10:00:00Z',
+    },
+  ]
+}
+
+/** Una scheda completa con un giorno e uno slot, senza avvisi. */
+export function makePlan(overrides: Partial<Plan> = {}): Plan {
+  return {
+    id: 1,
+    name: 'PPL autunno',
+    revision: 4,
+    is_active: true,
+    split: { id: 1, code: 'ppl-3', name: 'Push/Pull/Legs, 3 giorni' },
+    created_at: '2026-10-20T10:00:00Z',
+    updated_at: '2026-10-28T10:00:00Z',
+    preferences: {
+      version: 2,
+      equipment_order: ['machine', 'cable', 'free-weight'],
+      max_session_minutes: 75,
+      overrides: { muscles: {}, tags: {} },
+    },
+    days: [
+      {
+        id: 10,
+        name: 'Push',
+        position: 1,
+        times_per_week: 1,
+        stretches: [],
+        slots: [
+          {
+            id: 100,
+            position: 1,
+            family: { id: 1, code: 'press-incline', name: 'Spinta inclinata' },
+            exercise: {
+              id: 1,
+              code: 'chest-press-incline',
+              name: 'Chest press inclinata',
+              equipment: 'machine',
+              kind: 'compound',
+              is_active: true,
+              badges: [],
+            },
+            second_exercise: null,
+            sets: 3,
+            rep_min: 6,
+            rep_max: 12,
+            is_optional: false,
+            weekly_weight: 1,
+            locked: false,
+            note: null,
+            rest_seconds: 150,
+            rir: '0-2',
+            last_set_to_failure: true,
+          },
+        ],
+      },
+    ],
+    analysis: { volumes: [], sessions: [], warnings: [] },
+    ...overrides,
+  }
+}
+
+/** Vista delle preferenze della scheda 1, con il petto medio personalizzato. */
+export function makePlanSettings(): PlanSettings {
+  const catalog = makeCatalog()
+  return {
+    name: 'PPL autunno',
+    revision: 4,
+    equipment_order: ['machine', 'cable', 'free-weight'],
+    max_session_minutes: 75,
+    muscles: catalog.muscles.map((m) => {
+      const values = { priority: m.priority, weekly_min: m.weekly_min, weekly_max: m.weekly_max }
+      const custom = m.code === 'chest-mid'
+      return {
+        muscle_id: m.id,
+        code: m.code,
+        name: m.name,
+        short_name: m.short_name,
+        group_code: m.muscle_group_id === 1 ? 'chest' : 'triceps',
+        catalog: values,
+        override: { priority: null, weekly_min: null, weekly_max: custom ? 14 : null },
+        effective: custom ? { ...values, weekly_max: 14 } : values,
+      }
+    }),
+    tags: catalog.tags.map((t) => ({
+      tag_id: t.id,
+      code: t.code,
+      name: t.name,
+      symbol: t.symbol,
+      color: t.color,
+      catalog: { effect: t.effect, points: t.points },
+      override: { effect: null, points: null },
+      effective: { effect: t.effect, points: t.points },
+    })),
   }
 }
 

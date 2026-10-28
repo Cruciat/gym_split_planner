@@ -1490,6 +1490,8 @@ export interface components {
       max_session_minutes: number | null
       /** Muscles */
       muscles: components['schemas']['MuscleSettingOut'][]
+      /** Name */
+      name: string
       /** Revision */
       revision: number
       /** Tags */
@@ -1508,6 +1510,8 @@ export interface components {
       is_active: boolean
       /** Name */
       name: string
+      /** Revision */
+      revision: number
       /** Split Name */
       split_name: string | null
       /**

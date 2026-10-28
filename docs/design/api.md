@@ -247,7 +247,7 @@ La stessa struttura è il campo `usage` dell'errore `409 in-use`.
 
 | Metodo e percorso | Descrizione | Storie |
 | --- | --- | --- |
-| `GET /api/plans` | Elenco dalla modificata più di recente: `id`, `name`, `split_name`, `days_per_week`, `is_active`, `updated_at` | US-19 CA1 |
+| `GET /api/plans` | Elenco dalla modificata più di recente: `id`, `name`, `revision` (per rinominare dall'elenco), `split_name`, `days_per_week`, `is_active`, `updated_at` | US-19 CA1 |
 | `POST /api/plans` | `{"split_id": 3 \| null, "name": "…"?, "preferences": {…}?}`. Con `split_id`: copia lo split e genera (US-12). Con `null`: scheda vuota. Senza nome: "<nome dello split> — gg/mm/aaaa" o "Scheda vuota — gg/mm/aaaa". Le preferenze si normalizzano e validano come in § 6.6 e guidano già la generazione. Uno `split_id` inesistente è un `rule-violation` (`unknown-reference`). `201` con la scheda completa | US-10, US-11, US-12 |
 | `GET /api/plans/{id}` | Scheda completa con analisi (§ 7) | US-13 |
 | `PATCH /api/plans/{id}` | Rinomina. Richiede `If-Match` | US-19 CA2 |
@@ -474,7 +474,7 @@ Note sui campi:
 }
 ```
 
-Con i tre livelli il client mostra il valore effettivo, segnala ciò che è personalizzato e sa a cosa tornerebbe il ripristino, senza ricalcolare nulla. La vista riporta anche la `revision` della scheda, da usare in `If-Match` per il `PUT` delle preferenze; per ogni muscolo `short_name` e `group_code`, per ogni etichetta `symbol` e `color`. Nei livelli `override` i campi non personalizzati valgono `null`.
+Con i tre livelli il client mostra il valore effettivo, segnala ciò che è personalizzato e sa a cosa tornerebbe il ripristino, senza ricalcolare nulla. La vista riporta anche il `name` e la `revision` della scheda, da usare in `If-Match` per il `PUT` delle preferenze; per ogni muscolo `short_name` e `group_code`, per ogni etichetta `symbol` e `color`. Nei livelli `override` i campi non personalizzati valgono `null`.
 
 ### 8.2 Differenze della rigenerazione
 

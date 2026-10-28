@@ -36,12 +36,27 @@ export type ExerciseCreateInput = Schemas['ExerciseCreateIn']
 export type ExerciseUsage = Schemas['ExerciseUsageOut']
 export type SourceInput = Schemas['SourceIn']
 
+export type Split = Schemas['SplitOut']
+export type PlanSummary = Schemas['PlanSummaryOut']
+export type Plan = Schemas['PlanOut']
+export type PlanSettings = Schemas['PlanSettingsOut']
+export type MuscleSetting = Schemas['MuscleSettingOut']
+export type TagSetting = Schemas['TagSettingOut']
+export type PreferencesInput = Schemas['PreferencesIn']
+export type StoredPreferences = Schemas['PreferencesOut']
+
 export type Level = ExerciseSummary['muscles'][number]['level']
 export type Kind = ExerciseSummary['kind']
 export type Stretch = ExerciseSummary['stretch']
 export type Confidence = ExerciseSummary['confidence']
 export type Priority = Muscle['priority']
 export type TagColor = Tag['color']
+export type TagEffect = Tag['effect']
+
+/** Intestazione `If-Match` per le modifiche di una scheda (API, § 4). */
+export function ifMatch(revision: number): { 'If-Match': string } {
+  return { 'If-Match': `"${String(revision)}"` }
+}
 
 /** Regola violata in un `rule-violation` (API, § 3.1). */
 export interface Violation {

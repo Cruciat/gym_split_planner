@@ -262,6 +262,7 @@ class PlanSummaryOut(_Out):
 
     id: int
     name: str
+    revision: int
     split_name: str | None
     days_per_week: int
     is_active: bool
@@ -327,6 +328,7 @@ class TagSettingOut(_Out):
 class PlanSettingsOut(_Out):
     """Vista della schermata delle preferenze (US-11)."""
 
+    name: str
     revision: int
     equipment_order: list[str]
     max_session_minutes: float | None

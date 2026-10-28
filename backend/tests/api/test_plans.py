@@ -238,6 +238,7 @@ def test_read_and_list(api: TestClient) -> None:
     assert listed[1] == {
         "id": first["id"],
         "name": "Prima",
+        "revision": 1,
         "split_name": "Push/Pull/Legs, 3 giorni",
         "days_per_week": 3,
         "is_active": False,

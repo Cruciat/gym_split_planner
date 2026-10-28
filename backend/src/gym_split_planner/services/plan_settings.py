@@ -63,6 +63,7 @@ class TagSettingData:
 
 @dataclass(frozen=True)
 class PlanSettingsData:
+    name: str
     revision: int
     equipment_order: tuple[str, ...]
     max_session_minutes: float | None
@@ -79,6 +80,7 @@ def get_plan_settings(engine: Engine, plan_id: int) -> PlanSettingsData:
         prefs = plan_preferences(plan.preferences, equipment_order(session))
         stored = _stored_overrides(plan.preferences)
         return PlanSettingsData(
+            name=plan.name,
             revision=plan.revision,
             equipment_order=prefs.equipment_order,
             max_session_minutes=prefs.max_session_minutes,

@@ -98,6 +98,7 @@ def test_settings_view(ppl6: Editor) -> None:
     settings = ppl6.api.get(f"{ppl6.url}/settings").json()
 
     assert settings["revision"] == 2
+    assert settings["name"] == ppl6.plan["name"]
     assert settings["equipment_order"] == EQUIPMENT
     assert settings["max_session_minutes"] == 60
     quads = next(m for m in settings["muscles"] if m["code"] == "quads")
