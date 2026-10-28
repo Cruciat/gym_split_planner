@@ -13,7 +13,7 @@ from gym_split_planner.config import Settings
 
 @pytest.fixture
 def settings(tmp_path: Path) -> Settings:
-    return Settings(database_url=f"sqlite:///{tmp_path / 'data' / 'test.db'}")
+    return Settings(database_url=f"sqlite:///{tmp_path / 'data' / 'test.db'}", backup_enabled=False)
 
 
 @pytest.fixture
