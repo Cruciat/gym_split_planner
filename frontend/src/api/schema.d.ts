@@ -412,6 +412,47 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/api/plans/{plan_id}/regenerate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Applica la rigenerazione
+     * @description Applica le differenze degli slot scelti; ``If-Match`` con la revisione dell'anteprima.
+     */
+    post: operations['post_regenerate']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/plans/{plan_id}/regenerate/preview': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Anteprima della rigenerazione
+     * @description Differenze con una nuova generazione, senza modificare nulla; non richiede
+     *     ``If-Match`` ma dice su quale revisione sono calcolate.
+     */
+    post: operations['post_regenerate_preview']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/api/plans/{plan_id}/settings': {
     parameters: {
       query?: never
@@ -466,6 +507,51 @@ export interface paths {
      * @description Con punteggio, voci del punteggio, esclusioni ed effetto sul volume. Non modifica nulla.
      */
     get: operations['read_slot_candidates']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/settings': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Impostazioni globali
+     * @description Pesi dei livelli, tetto per seduta, pesi del punteggio, durata, riscaldamento, RIR.
+     */
+    get: operations['read_settings']
+    /**
+     * Sostituisce le impostazioni
+     * @description Effetto immediato sulle analisi; la generazione già fatta non cambia finché non si
+     *     rigenera.
+     */
+    put: operations['put_settings']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/api/settings/defaults': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Impostazioni predefinite
+     * @description I valori dei dati iniziali, per "Ripristina predefiniti".
+     */
+    get: operations['read_default_settings']
     put?: never
     post?: never
     delete?: never
@@ -784,6 +870,38 @@ export interface components {
       /** Name */
       name: string
     }
+    /**
+     * DurationParamsIO
+     * @description Parametri della stima della durata delle sedute (algoritmo, § 6.1).
+     */
+    DurationParamsIO: {
+      /** Change Seconds */
+      change_seconds: number
+      /** Rest Compound Seconds */
+      rest_compound_seconds: number
+      /** Rest Isolation Seconds */
+      rest_isolation_seconds: number
+      /** Set Seconds */
+      set_seconds: number
+      /** Stretching Minutes */
+      stretching_minutes: number
+      /** Warmup Minutes */
+      warmup_minutes: number
+      /** Warmup Rest Seconds */
+      warmup_rest_seconds: number
+      /** Warmup Set Seconds */
+      warmup_set_seconds: number
+    }
+    /**
+     * EffortIO
+     * @description Intensità indicata nel PDF: RIR obiettivo e ultima serie a cedimento.
+     */
+    EffortIO: {
+      /** Failure Last Set */
+      failure_last_set: boolean
+      /** Rir */
+      rir: string
+    }
     /** EquipmentOut */
     EquipmentOut: {
       /** Code */
@@ -963,6 +1081,13 @@ export interface components {
       /** Tags */
       tags?: components['schemas']['TagLinkIn'][]
     }
+    /** ExerciseRefOut */
+    ExerciseRefOut: {
+      /** Exercise Id */
+      exercise_id: number
+      /** Name */
+      name: string
+    }
     /**
      * ExerciseSummaryOut
      * @description Riepilogo di un esercizio: basta per la lista e per i filtri (US-01).
@@ -1105,6 +1230,16 @@ export interface components {
       status: 'ok' | 'error'
       /** Version */
       version: string
+    }
+    /**
+     * LevelWeightsIO
+     * @description Valore delle serie per un muscolo primario (P) e secondario (S).
+     */
+    LevelWeightsIO: {
+      /** P */
+      P: number
+      /** S */
+      S: number
     }
     /** MuscleGroupOut */
     MuscleGroupOut: {
@@ -1424,6 +1559,44 @@ export interface components {
       version: number
     }
     /**
+     * RegenerateIn
+     * @description Slot dell'anteprima da applicare, tutti o una parte.
+     */
+    RegenerateIn: {
+      /** Slot Ids */
+      slot_ids: number[]
+    }
+    /**
+     * RegenerationChangeOut
+     * @description Uno slot che la rigenerazione cambierebbe.
+     */
+    RegenerationChangeOut: {
+      current: components['schemas']['ExerciseRefOut'] | null
+      /** Day Id */
+      day_id: number
+      /** Day Name */
+      day_name: string
+      /** Position */
+      position: number
+      proposed: components['schemas']['ExerciseRefOut']
+      /** Slot Id */
+      slot_id: number
+      /** Volume Delta */
+      volume_delta: components['schemas']['VolumeDeltaOut'][]
+    }
+    /**
+     * RegenerationPreviewOut
+     * @description Differenze calcolate sulla ``revision`` indicata, senza modificare nulla.
+     */
+    RegenerationPreviewOut: {
+      /** Changes */
+      changes: components['schemas']['RegenerationChangeOut'][]
+      /** Locked Slots */
+      locked_slots: number
+      /** Revision */
+      revision: number
+    }
+    /**
      * RoutineItemOut
      * @description Voce del mini-allenamento quotidiano.
      */
@@ -1465,6 +1638,22 @@ export interface components {
       tags: number
     }
     /**
+     * ScoreWeightsIO
+     * @description Pesi della base del punteggio (algoritmo, § 3.2).
+     */
+    ScoreWeightsIO: {
+      /** Confidence */
+      confidence: number
+      /** Equipment */
+      equipment: number
+      /** Family */
+      family: number
+      /** Rank */
+      rank: number
+      /** Stretch */
+      stretch: number
+    }
+    /**
      * SessionOut
      * @description Seduta concreta: due per i giorni con una variante della seconda seduta.
      */
@@ -1476,6 +1665,20 @@ export interface components {
       minutes: number
       /** Session */
       session: number
+    }
+    /**
+     * SettingsIO
+     * @description Tutte le impostazioni globali: il ``PUT`` le sostituisce insieme.
+     */
+    SettingsIO: {
+      duration_params: components['schemas']['DurationParamsIO']
+      effort: components['schemas']['EffortIO']
+      level_weights: components['schemas']['LevelWeightsIO']
+      score_weights: components['schemas']['ScoreWeightsIO']
+      /** Session Cap */
+      session_cap: number
+      /** Warmup Text */
+      warmup_text: string
     }
     /** SlotExerciseOut */
     SlotExerciseOut: {
@@ -3164,6 +3367,103 @@ export interface operations {
       }
     }
   }
+  post_regenerate: {
+    parameters: {
+      query?: never
+      header?: {
+        /** @description Revisione della scheda, es. `"17"` */
+        'if-match'?: string | null
+      }
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RegenerateIn']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PlanOut']
+        }
+      }
+      /** @description Scheda inesistente (`not-found`) */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Revisione non aggiornata (`revision-mismatch`, con `current_revision`) */
+      412: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+      /** @description Manca `If-Match` (`revision-required`) */
+      428: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  post_regenerate_preview: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        plan_id: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RegenerationPreviewOut']
+        }
+      }
+      /** @description Scheda o slot inesistente */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
   read_plan_settings: {
     parameters: {
       query?: never
@@ -3356,6 +3656,79 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  read_settings: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SettingsIO']
+        }
+      }
+    }
+  }
+  put_settings: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SettingsIO']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SettingsIO']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  read_default_settings: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['SettingsIO']
         }
       }
     }

@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from gym_split_planner.domain.model import Catalog, Day, LevelWeights
+from gym_split_planner.domain.model import Catalog, Day, LevelWeights, Slot
 from gym_split_planner.domain.scoring import (
     Candidate,
     Preferences,
@@ -35,6 +35,34 @@ def _delta(
         if change:
             result[muscle] = change
     return result
+
+
+def slot_occurrences(day: Day, slot: Slot) -> int:
+    """Sedute settimanali in cui si usa l'esercizio principale dello slot.
+
+    ``t`` volte a settimana, oppure ``t - 1`` se c'è una variante della seconda seduta.
+    """
+    has_second = slot.second_exercise is not None and day.times_per_week >= 2
+    return day.times_per_week - 1 if has_second else day.times_per_week
+
+
+def main_exercise_delta(
+    day: Day,
+    position: int,
+    new: str,
+    catalog: Catalog,
+    level_weights: LevelWeights | None = None,
+) -> dict[str, float]:
+    """Effetto sul volume settimanale di cambiare l'esercizio principale dello slot.
+
+    È la stessa formula dell'anteprima delle varianti (§ 5); serve anche alle
+    differenze della rigenerazione (§ 4.2). Uno slot facoltativo non cambia nulla.
+    """
+    slot = day.slots[position - 1]
+    if slot.optional:
+        return {}
+    sets = slot.sets * slot.weekly_weight * slot_occurrences(day, slot)
+    return _delta(catalog, new, slot.exercise, sets, level_weights or LevelWeights())
 
 
 def variant_previews(
@@ -72,8 +100,7 @@ def variant_previews(
         occurrences = 1
         current = slot.second_exercise or slot.exercise
     else:
-        has_second = slot.second_exercise is not None and day.times_per_week >= 2
-        occurrences = day.times_per_week - 1 if has_second else day.times_per_week
+        occurrences = slot_occurrences(day, slot)
         current = slot.exercise
     sets = 0.0 if slot.optional else slot.sets * slot.weekly_weight * occurrences
     return [

@@ -438,6 +438,93 @@
         "title": "DayStretchOut",
         "type": "object"
       },
+      "DurationParamsIO": {
+        "additionalProperties": false,
+        "description": "Parametri della stima della durata delle sedute (algoritmo, § 6.1).",
+        "properties": {
+          "change_seconds": {
+            "maximum": 600.0,
+            "minimum": 0.0,
+            "title": "Change Seconds",
+            "type": "number"
+          },
+          "rest_compound_seconds": {
+            "maximum": 600.0,
+            "minimum": 0.0,
+            "title": "Rest Compound Seconds",
+            "type": "number"
+          },
+          "rest_isolation_seconds": {
+            "maximum": 600.0,
+            "minimum": 0.0,
+            "title": "Rest Isolation Seconds",
+            "type": "number"
+          },
+          "set_seconds": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 300.0,
+            "title": "Set Seconds",
+            "type": "number"
+          },
+          "stretching_minutes": {
+            "maximum": 60.0,
+            "minimum": 0.0,
+            "title": "Stretching Minutes",
+            "type": "number"
+          },
+          "warmup_minutes": {
+            "maximum": 60.0,
+            "minimum": 0.0,
+            "title": "Warmup Minutes",
+            "type": "number"
+          },
+          "warmup_rest_seconds": {
+            "maximum": 600.0,
+            "minimum": 0.0,
+            "title": "Warmup Rest Seconds",
+            "type": "number"
+          },
+          "warmup_set_seconds": {
+            "maximum": 300.0,
+            "minimum": 0.0,
+            "title": "Warmup Set Seconds",
+            "type": "number"
+          }
+        },
+        "required": [
+          "set_seconds",
+          "rest_compound_seconds",
+          "rest_isolation_seconds",
+          "change_seconds",
+          "warmup_set_seconds",
+          "warmup_rest_seconds",
+          "warmup_minutes",
+          "stretching_minutes"
+        ],
+        "title": "DurationParamsIO",
+        "type": "object"
+      },
+      "EffortIO": {
+        "additionalProperties": false,
+        "description": "Intensità indicata nel PDF: RIR obiettivo e ultima serie a cedimento.",
+        "properties": {
+          "failure_last_set": {
+            "title": "Failure Last Set",
+            "type": "boolean"
+          },
+          "rir": {
+            "pattern": "^\\d{1,2}(-\\d{1,2})?$",
+            "title": "Rir",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rir",
+          "failure_last_set"
+        ],
+        "title": "EffortIO",
+        "type": "object"
+      },
       "EquipmentOut": {
         "properties": {
           "code": {
@@ -920,6 +1007,24 @@
         "title": "ExerciseIn",
         "type": "object"
       },
+      "ExerciseRefOut": {
+        "properties": {
+          "exercise_id": {
+            "title": "Exercise Id",
+            "type": "integer"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "exercise_id",
+          "name"
+        ],
+        "title": "ExerciseRefOut",
+        "type": "object"
+      },
       "ExerciseSummaryOut": {
         "description": "Riepilogo di un esercizio: basta per la lista e per i filtri (US-01).",
         "properties": {
@@ -1293,6 +1398,30 @@
           "database"
         ],
         "title": "HealthOut",
+        "type": "object"
+      },
+      "LevelWeightsIO": {
+        "additionalProperties": false,
+        "description": "Valore delle serie per un muscolo primario (P) e secondario (S).",
+        "properties": {
+          "P": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 2.0,
+            "title": "P",
+            "type": "number"
+          },
+          "S": {
+            "maximum": 2.0,
+            "minimum": 0.0,
+            "title": "S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "P",
+          "S"
+        ],
+        "title": "LevelWeightsIO",
         "type": "object"
       },
       "MuscleGroupOut": {
@@ -2187,6 +2316,105 @@
         "title": "PreferencesOut",
         "type": "object"
       },
+      "RegenerateIn": {
+        "additionalProperties": false,
+        "description": "Slot dell'anteprima da applicare, tutti o una parte.",
+        "properties": {
+          "slot_ids": {
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 200,
+            "minItems": 1,
+            "title": "Slot Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "slot_ids"
+        ],
+        "title": "RegenerateIn",
+        "type": "object"
+      },
+      "RegenerationChangeOut": {
+        "description": "Uno slot che la rigenerazione cambierebbe.",
+        "properties": {
+          "current": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExerciseRefOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "day_id": {
+            "title": "Day Id",
+            "type": "integer"
+          },
+          "day_name": {
+            "title": "Day Name",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "proposed": {
+            "$ref": "#/components/schemas/ExerciseRefOut"
+          },
+          "slot_id": {
+            "title": "Slot Id",
+            "type": "integer"
+          },
+          "volume_delta": {
+            "items": {
+              "$ref": "#/components/schemas/VolumeDeltaOut"
+            },
+            "title": "Volume Delta",
+            "type": "array"
+          }
+        },
+        "required": [
+          "slot_id",
+          "day_id",
+          "day_name",
+          "position",
+          "current",
+          "proposed",
+          "volume_delta"
+        ],
+        "title": "RegenerationChangeOut",
+        "type": "object"
+      },
+      "RegenerationPreviewOut": {
+        "description": "Differenze calcolate sulla ``revision`` indicata, senza modificare nulla.",
+        "properties": {
+          "changes": {
+            "items": {
+              "$ref": "#/components/schemas/RegenerationChangeOut"
+            },
+            "title": "Changes",
+            "type": "array"
+          },
+          "locked_slots": {
+            "title": "Locked Slots",
+            "type": "integer"
+          },
+          "revision": {
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "revision",
+          "changes",
+          "locked_slots"
+        ],
+        "title": "RegenerationPreviewOut",
+        "type": "object"
+      },
       "RoutineItemOut": {
         "description": "Voce del mini-allenamento quotidiano.",
         "properties": {
@@ -2278,6 +2506,51 @@
         "title": "ScoreBreakdownOut",
         "type": "object"
       },
+      "ScoreWeightsIO": {
+        "additionalProperties": false,
+        "description": "Pesi della base del punteggio (algoritmo, § 3.2).",
+        "properties": {
+          "confidence": {
+            "maximum": 20.0,
+            "minimum": 0.0,
+            "title": "Confidence",
+            "type": "number"
+          },
+          "equipment": {
+            "maximum": 20.0,
+            "minimum": 0.0,
+            "title": "Equipment",
+            "type": "number"
+          },
+          "family": {
+            "maximum": 20.0,
+            "minimum": 0.0,
+            "title": "Family",
+            "type": "number"
+          },
+          "rank": {
+            "maximum": 20.0,
+            "minimum": 0.0,
+            "title": "Rank",
+            "type": "number"
+          },
+          "stretch": {
+            "maximum": 20.0,
+            "minimum": 0.0,
+            "title": "Stretch",
+            "type": "number"
+          }
+        },
+        "required": [
+          "confidence",
+          "equipment",
+          "stretch",
+          "family",
+          "rank"
+        ],
+        "title": "ScoreWeightsIO",
+        "type": "object"
+      },
       "SessionOut": {
         "description": "Seduta concreta: due per i giorni con una variante della seconda seduta.",
         "properties": {
@@ -2311,6 +2584,45 @@
           "max_muscle_volume"
         ],
         "title": "SessionOut",
+        "type": "object"
+      },
+      "SettingsIO": {
+        "additionalProperties": false,
+        "description": "Tutte le impostazioni globali: il ``PUT`` le sostituisce insieme.",
+        "properties": {
+          "duration_params": {
+            "$ref": "#/components/schemas/DurationParamsIO"
+          },
+          "effort": {
+            "$ref": "#/components/schemas/EffortIO"
+          },
+          "level_weights": {
+            "$ref": "#/components/schemas/LevelWeightsIO"
+          },
+          "score_weights": {
+            "$ref": "#/components/schemas/ScoreWeightsIO"
+          },
+          "session_cap": {
+            "exclusiveMinimum": 0.0,
+            "maximum": 50.0,
+            "title": "Session Cap",
+            "type": "number"
+          },
+          "warmup_text": {
+            "maxLength": 2000,
+            "title": "Warmup Text",
+            "type": "string"
+          }
+        },
+        "required": [
+          "level_weights",
+          "session_cap",
+          "score_weights",
+          "duration_params",
+          "warmup_text",
+          "effort"
+        ],
+        "title": "SettingsIO",
         "type": "object"
       },
       "SlotExerciseOut": {
@@ -5519,6 +5831,132 @@
         ]
       }
     },
+    "/api/plans/{plan_id}/regenerate": {
+      "post": {
+        "description": "Applica le differenze degli slot scelti; ``If-Match`` con la revisione dell'anteprima.",
+        "operationId": "post_regenerate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          },
+          {
+            "description": "Revisione della scheda, es. `\"17\"`",
+            "in": "header",
+            "name": "if-match",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Revisione della scheda, es. `\"17\"`",
+              "title": "If-Match"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegenerateIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda inesistente (`not-found`)"
+          },
+          "412": {
+            "description": "Revisione non aggiornata (`revision-mismatch`, con `current_revision`)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "428": {
+            "description": "Manca `If-Match` (`revision-required`)"
+          }
+        },
+        "summary": "Applica la rigenerazione",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
+    "/api/plans/{plan_id}/regenerate/preview": {
+      "post": {
+        "description": "Differenze con una nuova generazione, senza modificare nulla; non richiede\n``If-Match`` ma dice su quale revisione sono calcolate.",
+        "operationId": "post_regenerate_preview",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "title": "Plan Id",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegenerationPreviewOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Scheda o slot inesistente"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Anteprima della rigenerazione",
+        "tags": [
+          "schede"
+        ]
+      }
+    },
     "/api/plans/{plan_id}/settings": {
       "get": {
         "description": "Per ogni muscolo ed etichetta: valore del catalogo, personalizzazione, effettivo.",
@@ -5796,6 +6234,90 @@
         "summary": "Candidati di uno slot",
         "tags": [
           "schede"
+        ]
+      }
+    },
+    "/api/settings": {
+      "get": {
+        "description": "Pesi dei livelli, tetto per seduta, pesi del punteggio, durata, riscaldamento, RIR.",
+        "operationId": "read_settings",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsIO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Impostazioni globali",
+        "tags": [
+          "sistema"
+        ]
+      },
+      "put": {
+        "description": "Effetto immediato sulle analisi; la generazione già fatta non cambia finché non si\nrigenera.",
+        "operationId": "put_settings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettingsIO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsIO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Sostituisce le impostazioni",
+        "tags": [
+          "sistema"
+        ]
+      }
+    },
+    "/api/settings/defaults": {
+      "get": {
+        "description": "I valori dei dati iniziali, per \"Ripristina predefiniti\".",
+        "operationId": "read_default_settings",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsIO"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Impostazioni predefinite",
+        "tags": [
+          "sistema"
         ]
       }
     },

@@ -15,7 +15,7 @@ from gym_split_planner.domain.model import (
     PlanShape,
     Slot,
 )
-from gym_split_planner.domain.preview import variant_previews
+from gym_split_planner.domain.preview import main_exercise_delta, slot_occurrences, variant_previews
 from gym_split_planner.domain.scoring import Preferences
 from tests.domain.conftest import push_day
 
@@ -167,3 +167,34 @@ def test_session_cap_warning(catalog: Catalog) -> None:
     assert (
         PlanWarning("volume-above", muscle="triceps-lateral", volume=5.5) not in analysis.warnings
     )
+
+
+# --- Effetto sul volume di un cambio dell'esercizio principale (rigenerazione) ---------
+
+
+def test_main_exercise_delta_matches_the_variant_preview(catalog: Catalog) -> None:
+    day = push_day(2)
+
+    delta = main_exercise_delta(day, 6, "cable-kickback", catalog)
+
+    assert delta == _deltas(day, 6, catalog)["cable-kickback"]
+    assert delta == {"triceps-long": 2.0}
+
+
+def test_main_exercise_delta_with_a_second_session(catalog: Catalog) -> None:
+    slots = list(push_day(2).slots)
+    slots[5] = replace(slots[5], second_exercise="pushdown-rope")
+    day = replace(push_day(2), slots=tuple(slots))
+
+    # La seconda seduta usa la variante: il principale conta una volta sola.
+    assert main_exercise_delta(day, 6, "cable-kickback", catalog) == {"triceps-long": 1.0}
+    assert slot_occurrences(day, day.slots[5]) == 1
+    assert slot_occurrences(day, day.slots[0]) == 2
+
+
+def test_main_exercise_delta_of_an_optional_or_empty_slot(catalog: Catalog) -> None:
+    day = push_day(1)
+    empty = replace(day, slots=(replace(day.slots[0], exercise=None),))
+
+    assert main_exercise_delta(day, 7, "dumbbell-shoulder-press", catalog) == {}
+    assert main_exercise_delta(empty, 1, "chest-press-incline", catalog)["chest-upper"] == 3.0
