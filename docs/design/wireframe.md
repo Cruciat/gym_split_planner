@@ -6,7 +6,7 @@
 | Data | 2026-10-28 |
 | Riferimenti | Specifica fase 1 v0.2; contratto delle API v0.1; ADR 0004, 0008, 0014 |
 
-Bozze a bassa fedeltà delle schermate: cosa c'è, dove sta, come ci si muove. Non decidono colori, font e spaziature, che si fissano nel tema di PrimeVue durante M3. Gli schizzi sono in testo, così restano versionati e modificabili insieme agli altri documenti.
+Bozze a bassa fedeltà delle schermate: cosa c'è, dove sta, come ci si muove. Non decidono colori, font e spaziature, che si fissano nel tema di Naive UI durante M3 (ADR 0015). Gli schizzi sono in testo, così restano versionati e modificabili insieme agli altri documenti.
 
 Legenda degli schizzi: `[Pulsante]`, `(•)` scelta, `[x]` casella, `▾` menu a tendina, `⋮` menu di azioni, `🔒`/`🔓` lucchetto, `⚠` e `⊘` simboli di etichette, `≡` maniglia per trascinare.
 

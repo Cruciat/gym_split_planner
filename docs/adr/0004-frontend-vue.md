@@ -2,7 +2,7 @@
 
 | Campo | Valore |
 | --- | --- |
-| Stato | Accettato (2026-10-28) |
+| Stato | Accettato (2026-10-28); la scelta di PrimeVue è superata da ADR 0015 |
 | Data | 2026-10-27 |
 
 ## Contesto
@@ -14,7 +14,7 @@ L'interfaccia ha parti molto interattive: editor della scheda con trascinamento,
 - **Vue 3** con Composition API e `<script setup>`, **TypeScript** in modalità stretta, build con **Vite**.
 - **Vue Router** per le pagine; i filtri del catalogo stanno nei parametri dell'URL (US-01 CA3).
 - **Pinia** per lo stato condiviso (scheda aperta, stato del salvataggio).
-- **PrimeVue** come libreria di componenti (DataTable con filtri, OrderList o drag and drop, Dialog, Menu, Tabs), con tema configurato per modalità chiara e scura.
+- ~~**PrimeVue**~~ (superato da ADR 0015: Naive UI) come libreria di componenti (DataTable con filtri, OrderList o drag and drop, Dialog, Menu, Tabs), con tema configurato per modalità chiara e scura.
 - Client HTTP con tipi **generati dallo schema OpenAPI** del backend (`openapi-typescript`), così un cambio del contratto rompe la compilazione invece di rompere l'app in esecuzione.
 - Test con **Vitest** e **Vue Test Utils**; end-to-end con **Playwright** sui flussi critici.
 

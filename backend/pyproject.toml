@@ -1,0 +1,98 @@
+[project]
+name = "gym-split-planner"
+version = "0.1.0"
+description = "Servizio web personale per creare schede di allenamento a partire da una banca dati di esercizi"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "alembic>=1.20.1",
+    "fastapi>=0.162.0",
+    "pydantic-settings>=2.16.1",
+    "sqlalchemy>=2.1.6",
+    "uvicorn[standard]>=0.54.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gym_split_planner"]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "import-linter>=2.15",
+    "mypy>=2.4.0",
+    "pre-commit>=4.7.0",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+    "ruff>=0.17.3",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B", "SIM", "RUF", "N", "C4", "PT", "RET", "TID", "PTH"]
+# ApiProblem rispecchia il nome dello standard (Problem Details), senza suffisso Error.
+ignore = ["N818"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/gym_split_planner/db/migrations/versions/*" = ["N999"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+mypy_path = "src"
+packages = ["gym_split_planner", "tests"]
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_decorators = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+filterwarnings = [
+    "error",
+    # Avviso di Starlette sul client di test basato su httpx: si rivaluta quando
+    # FastAPI aggiornerà il proprio TestClient.
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]
+
+[tool.coverage.run]
+source = ["src/gym_split_planner"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+
+[tool.importlinter]
+root_package = "gym_split_planner"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Strati: api -> services -> db -> domain (ADR 0005)"
+type = "layers"
+layers = [
+    "gym_split_planner.api",
+    "gym_split_planner.services",
+    "gym_split_planner.db",
+    "gym_split_planner.domain",
+]
+
+[[tool.importlinter.contracts]]
+name = "api parla solo con services (ADR 0005)"
+type = "forbidden"
+source_modules = ["gym_split_planner.api"]
+forbidden_modules = ["gym_split_planner.db", "gym_split_planner.domain"]
+
+[[tool.importlinter.contracts]]
+name = "domain usa solo la libreria standard (ADR 0005)"
+type = "forbidden"
+source_modules = ["gym_split_planner.domain"]
+forbidden_modules = ["fastapi", "starlette", "pydantic", "pydantic_settings", "sqlalchemy", "alembic"]
