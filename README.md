@@ -2,7 +2,7 @@
 
 Servizio web personale per consultare la banca dati degli esercizi e creare schede di allenamento, con il controllo continuo del volume settimanale per muscolo e l'esportazione in PDF.
 
-Stato: fase 1 in sviluppo. Completate le tappe M0-M3 (scheletro, dati, motore, catalogo); la prossima è M4, l'editor delle schede.
+Stato: fase 1 in sviluppo. Completate le tappe M0-M4 (scheletro, dati, motore, catalogo, editor delle schede); la prossima è M5, il PDF della scheda.
 
 La documentazione di progetto è in [`docs/`](docs/README.md): processo di sviluppo, specifica, decisioni architetturali (ADR), modello dati, algoritmo, dati iniziali, contratto delle API e bozze delle schermate.
 

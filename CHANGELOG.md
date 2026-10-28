@@ -4,26 +4,25 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ## [Non rilasciato]
 
+## [0.5.0] - 2026-10-28
+
+Tappa M4: l'editor. Le schede si creano, si modificano e si confrontano con le fasce di volume, dal computer e dal telefono (US-10 → US-21).
+
 ### Aggiunto
 
+- Elenco delle schede con split, giorni, data di modifica e scheda attiva; rinomina, duplica, rendi attiva ed elimina con conferma. L'app si apre sulla scheda attiva, o sull'elenco se non ce n'è.
+- Creazione guidata in tre passi: split predefinito o scheda vuota, preferenze già pronte, nome. La scheda nasce con gli esercizi scelti dal motore.
+- Preferenze della scheda: ordine degli attrezzi, durata massima della seduta, personalizzazioni di muscoli ed etichette con il valore del catalogo e il ripristino. Si salvano da sole; gli errori compaiono accanto ai campi.
+- Editor della scheda: giorni in schede; esercizi con famiglia, simboli delle etichette, variante della seconda seduta e nota; serie e ripetizioni modificabili nella riga, lucchetto, facoltativo, settimane alterne; aggiunta (famiglia, poi esercizio), cambio di famiglia ed eliminazione.
+- Giorni: aggiunta, nome e volte a settimana (con conferma se si perdono varianti della seconda seduta), spostamento, eliminazione con conferma.
+- Riordino di giorni ed esercizi trascinandoli; sul telefono, e da tastiera, con la modalità "Riordina" e le frecce.
+- Pannello del volume con fasce, stato a parole e con icona, filtro (prioritari, con obiettivo, tutti) e muscoli personalizzati segnati; avvisi (fasce, tetto per seduta, durata, slot vuoti) che portano al muscolo, al giorno o all'esercizio. Sul telefono una barra con il riassunto apre il pannello a tutto schermo.
 - Varianti di un esercizio toccandone il nome: candidati con attrezzo, simboli, punteggio e cambi di volume in verde se avvicinano alla fascia e in arancione se allontanano; «Perché?» con le voci del punteggio; esclusi in fondo, scelti solo dopo conferma.
 - Variante della seconda seduta: «Nessuna variante», gli esercizi della famiglia, poi le altre famiglie con la ricerca per nome.
-- Rigenerazione dall'editor: differenze con le preferenze attuali, tutte spuntate, applicazione solo di quelle scelte; gli esercizi bloccati restano e sono contati.
+- Rigenerazione: differenze con le preferenze attuali, tutte spuntate, applicazione solo di quelle scelte; gli esercizi bloccati restano e sono contati.
+- Salvataggio automatico in coda, una modifica alla volta, con indicatore di stato e "Riprova" senza rete. Revisioni tra dispositivi (`ETag` e `If-Match`): se la scheda è cambiata altrove, l'editor la ricarica e lo dice.
+- API delle schede, delle preferenze, di giorni e slot, dei candidati con punteggio ed effetto sul volume, della rigenerazione e delle impostazioni globali (lettura, sostituzione validata, valori iniziali).
 - Primi test end-to-end con Playwright sull'app compilata, su desktop e telefono (`make e2e`), anche nella CI.
-- Editor della scheda: giorni in schede, esercizi con famiglia, simboli delle etichette, variante della seconda seduta e nota; serie e ripetizioni modificabili nella riga, lucchetto, facoltativo, settimane alterne; aggiunta (famiglia, poi esercizio), cambio di famiglia ed eliminazione degli esercizi.
-- Giorni: aggiunta, nome e volte a settimana (con conferma se si perdono varianti della seconda seduta), spostamento, eliminazione con conferma.
-- Riordino di giorni ed esercizi trascinandoli; sul telefono, e per la tastiera, con la modalità "Riordina" e le frecce.
-- Pannello del volume con fasce, stato a parole e con icona, filtro (prioritari, con obiettivo, tutti) e muscoli personalizzati segnati; avvisi che portano al muscolo, al giorno o all'esercizio. Sul telefono una barra con il riassunto apre il pannello a tutto schermo.
-- Salvataggio automatico in coda, una modifica alla volta: indicatore di stato, "Riprova" senza rete, ricarica con avviso se la scheda è cambiata su un altro dispositivo.
-- Elenco delle schede con split, giorni, data di modifica e scheda attiva; rinomina, duplica, rendi attiva ed elimina con conferma. L'app si apre sulla scheda attiva, o sull'elenco se non ce n'è.
-- Creazione guidata in tre passi: split predefinito o scheda vuota, preferenze (già pronte), nome; poi si apre la scheda.
-- Preferenze della scheda: ordine degli attrezzi, durata massima, personalizzazioni di muscoli ed etichette con il valore del catalogo e il ripristino. Si salvano da sole; gli errori compaiono accanto ai campi.
-- API delle schede (tappa M4, ancora senza interfaccia): split predefiniti, creazione da uno split con generazione automatica o vuota, scheda completa con volumi, sedute e avvisi, elenco, rinomina, duplicazione, eliminazione, scheda attiva.
-- Controllo delle revisioni tra dispositivi: `ETag` e `If-Match` sulle schede, con `412` se la scheda è cambiata nel frattempo.
-- Gli avvisi di slot vuoto dicono quali etichette escludono gli esercizi della famiglia.
-- API per modificare una scheda: preferenze e personalizzazioni con i valori del catalogo e quelli effettivi; giorni (aggiunta, modifica, eliminazione, ordine); slot (aggiunta con il miglior candidato, cambio di esercizio o di famiglia, variante della seconda seduta, serie, ripetizioni, facoltativo, settimane alterne, lucchetto, nota, eliminazione, ordine); candidati di uno slot con punteggio ed effetto sul volume.
-- API della rigenerazione: anteprima delle differenze con le preferenze correnti (slot bloccati esclusi e contati) e applicazione di tutte o di una parte, senza toccare serie e ripetizioni.
-- API delle impostazioni globali: lettura, sostituzione validata e valori iniziali; le analisi delle schede si aggiornano subito.
 
 ### Modificato
 
@@ -77,7 +76,8 @@ Prima versione: scheletro del progetto (tappa M0). Nessuna funzione per l'utente
 - Immagine Docker unica (API e frontend) e workflow di rilascio su GHCR.
 - `GET /api/pdf/test`: PDF di prova generato con WeasyPrint, temporaneo fino a M5.
 
-[Non rilasciato]: https://github.com/Cruciat/gym_split_planner/compare/v0.4.0...HEAD
+[Non rilasciato]: https://github.com/Cruciat/gym_split_planner/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Cruciat/gym_split_planner/compare/v0.1.0...v0.2.0
