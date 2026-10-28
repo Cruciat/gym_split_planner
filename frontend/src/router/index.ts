@@ -11,7 +11,7 @@ import { api } from '@/api/client'
 // Pagine caricate al primo accesso: il bundle iniziale resta piccolo anche sul telefono.
 const PlansPage = () => import('@/pages/PlansPage.vue')
 const PlanNewPage = () => import('@/pages/PlanNewPage.vue')
-const PlanPage = () => import('@/pages/PlanPage.vue')
+const PlanEditorPage = () => import('@/pages/PlanEditorPage.vue')
 const PlanPreferencesPage = () => import('@/pages/PlanPreferencesPage.vue')
 const CatalogPage = () => import('@/pages/CatalogPage.vue')
 const ExerciseDetailPage = () => import('@/pages/ExerciseDetailPage.vue')
@@ -41,7 +41,7 @@ export const routes: RouteRecordRaw[] = [
   { path: '/', name: 'home', component: PlansPage, beforeEnter: openActivePlan },
   { path: '/schede', name: 'plans', component: PlansPage },
   { path: '/schede/nuova', name: 'plan-new', component: PlanNewPage },
-  { path: '/schede/:id(\\d+)', name: 'plan', component: PlanPage, props: planId },
+  { path: '/schede/:id(\\d+)', name: 'plan', component: PlanEditorPage, props: planId },
   {
     path: '/schede/:id(\\d+)/preferenze',
     name: 'plan-preferences',

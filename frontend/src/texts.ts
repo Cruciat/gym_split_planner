@@ -8,6 +8,12 @@ import type { Confidence, Kind, Level, Priority, Stretch } from '@/api/client'
 const plural = (n: number, one: string, many: string): string =>
   `${String(n)} ${n === 1 ? one : many}`
 
+/** Numero all'italiana, con al più due decimali: 12,5 serie. */
+export const formatNumber = (n: number): string =>
+  n.toLocaleString('it-IT', { maximumFractionDigits: 2 })
+
+const quoted = (names: string[]): string => `«${names.join('», «')}»`
+
 export const texts = {
   appName: 'Gym Split Planner',
 
@@ -125,13 +131,145 @@ export const texts = {
   plan: {
     notFound: 'Scheda non trovata.',
     backToPlans: 'Torna alle schede',
+  },
+
+  editor: {
+    reloaded: 'La scheda è stata modificata da un altro dispositivo ed è stata ricaricata.',
+    retry: 'Riprova',
     preferences: 'Preferenze',
-    timesPerWeek: (n: number): string => (n > 1 ? `×${String(n)}` : ''),
-    emptySlot: 'nessun esercizio',
+    more: 'Altre azioni',
+    rename: 'Rinomina',
+    renameTitle: 'Rinomina la scheda',
+    renameLabel: (name: string): string => `Rinomina ${name}`,
+    name: 'Nome',
+    save: 'Salva',
+    cancel: 'Annulla',
+    nameRequired: 'Serve un nome.',
+    days: 'Giorni della scheda',
+    addDay: 'Giorno',
+    addDayLabel: 'Aggiungi un giorno',
+    addDayTitle: 'Nuovo giorno',
+    editDayTitle: (name: string): string => `Modifica «${name}»`,
+    dayName: 'Nome',
+    dayNamePlaceholder: 'es. Push',
+    times: 'Volte a settimana',
+    add: 'Aggiungi',
+    emptyPlan: 'Questa scheda non ha ancora giorni.',
+    addFirstDay: 'Aggiungi il primo giorno',
+    dayTab: (name: string, times: number): string =>
+      times > 1 ? `${name} ×${String(times)}` : name,
+    timesPerWeek: (n: number): string =>
+      n === 1 ? '1 volta a settimana' : `${String(n)} volte a settimana`,
+    minutes: (values: number[]): string =>
+      `${values.map((v) => `~${String(Math.round(v))}`).join(' / ')} min`,
+    dayActions: (name: string): string => `Azioni per il giorno ${name}`,
+    dayMenu: {
+      edit: 'Rinomina e volte a settimana',
+      moveBefore: 'Sposta prima',
+      moveAfter: 'Sposta dopo',
+      reorder: 'Riordina esercizi',
+      delete: 'Elimina giorno',
+    },
+    endReorder: 'Fine riordino',
+    reorderHelp: 'Trascina gli esercizi dalla maniglia, o usa le frecce.',
+    removeVariantsTitle: 'Togliere le varianti della seconda seduta?',
+    removeVariants: (day: string, pairs: string[]): string =>
+      `Con una sola seduta a settimana «${day}» non ha più una seconda seduta: ${
+        pairs.length === 1 ? 'verrà tolta la variante' : 'verranno tolte le varianti'
+      } ${pairs.join('; ')}.`,
+    variantPair: (main: string, second: string): string => `«${second}» al posto di «${main}»`,
+    removeVariantsAction: 'Cambia e togli le varianti',
+    deleteDayTitle: 'Eliminare il giorno?',
+    deleteDayConfirm: (name: string, slots: number): string =>
+      `«${name}» verrà eliminato con ${plural(slots, 'esercizio', 'esercizi')}. L’eliminazione non si può annullare.`,
+    deleteDayAction: 'Elimina giorno',
     emptyDay: 'Nessun esercizio in questo giorno.',
-    noDays: 'Nessun giorno: la scheda è vuota.',
-    sets: (sets: number, min: number, max: number): string =>
-      `${String(sets)} × ${String(min)}-${String(max)}`,
+    addSlot: 'Aggiungi esercizio',
+    addSlotTitle: 'Aggiungi un esercizio',
+    family: 'Famiglia',
+    familyPlaceholder: 'Scegli la famiglia',
+    exercise: 'Esercizio',
+    bestCandidate: 'Il migliore della famiglia (scelta automatica)',
+    changeFamilyTitle: 'Cambia famiglia',
+    changeFamilyHelp:
+      'Serie e ripetizioni restano; l’esercizio diventa il migliore della nuova famiglia.',
+    change: 'Cambia',
+    noteTitle: 'Nota',
+    notePlaceholder: 'es. presa stretta, schiena appoggiata',
+    slotActions: (name: string): string => `Azioni per ${name}`,
+    slotMenu: {
+      changeFamily: 'Cambia famiglia',
+      optionalOn: 'Segna come facoltativo',
+      optionalOff: 'Non più facoltativo',
+      alternateOn: 'A settimane alterne',
+      alternateOff: 'Ogni settimana',
+      note: 'Nota',
+      delete: 'Elimina',
+    },
+    optional: 'facoltativo',
+    alternate: 'settimane alterne',
+    secondSession: (name: string): string => `2ª seduta: ${name}`,
+    emptySlot: 'nessun esercizio disponibile',
+    emptySlotExcluded: (tags: string[]): string => `tutti esclusi da ${quoted(tags)}`,
+    lock: (name: string): string => `Blocca ${name}`,
+    unlock: (name: string): string => `Sblocca ${name}`,
+    lockedHelp: 'Bloccato: la rigenerazione non lo cambia.',
+    sets: 'Serie',
+    repMin: 'Ripetizioni minime',
+    repMax: 'Ripetizioni massime',
+    setsOf: (name: string): string => `Serie di ${name}`,
+    repMinOf: (name: string): string => `Ripetizioni minime di ${name}`,
+    repMaxOf: (name: string): string => `Ripetizioni massime di ${name}`,
+    deleteSlotTitle: 'Eliminare l’esercizio?',
+    deleteSlotConfirm: (name: string): string => `«${name}» verrà tolto da questo giorno.`,
+    deleteSlotAction: 'Elimina esercizio',
+    stretching: 'Stretching',
+    moveUp: (name: string): string => `Sposta ${name} più in alto`,
+    moveDown: (name: string): string => `Sposta ${name} più in basso`,
+    drag: (name: string): string => `Trascina ${name}`,
+    leaveTitle: 'Uscire con modifiche non salvate?',
+    leaveText:
+      'La connessione si è interrotta: alcune modifiche non sono state inviate e andranno perse.',
+    leave: 'Esci comunque',
+    stay: 'Resta',
+    close: 'Chiudi',
+  },
+
+  volume: {
+    title: 'Volume settimanale',
+    filter: 'Muscoli da mostrare',
+    filters: { priority: 'Prioritari', target: 'Con obiettivo', all: 'Tutti' },
+    below: 'sotto',
+    above: 'sopra',
+    customized: 'personalizzato nella scheda',
+    noTarget: (n: number): string => `Senza obiettivo (${String(n)})`,
+    band: (min: number, max: number): string => `${formatNumber(min)}–${formatNumber(max)}`,
+    row: (name: string, volume: number, min: number | null, max: number | null): string =>
+      min === null || max === null
+        ? `${name}: ${formatNumber(volume)} serie`
+        : `${name}: ${formatNumber(volume)} serie, fascia ${formatNumber(min)}–${formatNumber(max)}`,
+    warnings: (n: number): string => `Avvisi (${String(n)})`,
+    noWarnings: 'Nessun avviso.',
+    summary: (below: number, above: number): string =>
+      `↓${String(below)} sotto · ↑${String(above)} sopra`,
+    summaryWarnings: (n: number): string => (n === 0 ? '' : ` · ${plural(n, 'avviso', 'avvisi')}`),
+    open: 'Apri il pannello del volume',
+    close: 'Chiudi',
+    warning: {
+      below: (muscle: string, volume: number, min: number, max: number): string =>
+        `${muscle} sotto fascia (${formatNumber(volume)} / ${formatNumber(min)}–${formatNumber(max)})`,
+      above: (muscle: string, volume: number, min: number, max: number): string =>
+        `${muscle} sopra fascia (${formatNumber(volume)} / ${formatNumber(min)}–${formatNumber(max)})`,
+      cap: (day: string, muscle: string, volume: number): string =>
+        `${day}: ${muscle} a ${formatNumber(volume)} serie, oltre il tetto per seduta`,
+      long: (day: string, minutes: number, max: number | null): string =>
+        max === null
+          ? `${day}: seduta di ~${String(Math.round(minutes))} min`
+          : `${day}: seduta di ~${String(Math.round(minutes))} min, oltre i ${String(max)} previsti`,
+      empty: (day: string, position: number, family: string): string =>
+        `${day}, esercizio ${String(position)}: nessun esercizio per «${family}»`,
+      secondSession: (day: string): string => `${day} (2ª seduta)`,
+    },
   },
 
   saveState: {

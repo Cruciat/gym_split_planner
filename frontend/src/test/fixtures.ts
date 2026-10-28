@@ -370,6 +370,139 @@ export function makePlan(overrides: Partial<Plan> = {}): Plan {
   }
 }
 
+/**
+ * Scheda per l'editor: Push due volte a settimana con due esercizi (il secondo con la
+ * variante della seconda seduta), Pull una volta con uno slot vuoto.
+ */
+export function makeEditorPlan(overrides: Partial<Plan> = {}): Plan {
+  const base = makePlan()
+  const push = base.days[0]
+  const first = push?.slots[0]
+  const main = first?.exercise
+  if (push === undefined || first === undefined || !main) throw new Error('fixture')
+  const exercise = (id: number, code: string, name: string) => ({
+    ...main,
+    id,
+    code,
+    name,
+  })
+  const second = {
+    ...first,
+    id: 101,
+    position: 2,
+    family: { id: 3, code: 'triceps-overhead', name: 'Estensione sopra la testa' },
+    exercise: {
+      ...exercise(4, 'cable-overhead-extension', 'Estensione sopra la testa ai cavi'),
+      kind: 'isolation' as const,
+      badges: [
+        {
+          tag_id: 2,
+          code: 'neck-caution',
+          name: 'Collo: attenzione',
+          symbol: 'warning',
+          color: 'warning' as const,
+          note: 'Schiena appoggiata',
+        },
+      ],
+    },
+    second_exercise: exercise(5, 'katana-extension', 'Estensione katana'),
+    sets: 3,
+    rep_min: 10,
+    rep_max: 15,
+  }
+  const empty = {
+    ...first,
+    id: 200,
+    position: 1,
+    family: { id: 2, code: 'press-horizontal', name: 'Spinta orizzontale' },
+    exercise: null,
+  }
+  return makePlan({
+    days: [
+      {
+        ...push,
+        times_per_week: 2,
+        slots: [first, second],
+        stretches: [{ id: 1, code: 'pec-doorway', name: 'Stretch allo stipite', dose: '30 s' }],
+      },
+      { id: 11, name: 'Pull', position: 2, times_per_week: 1, stretches: [], slots: [empty] },
+    ],
+    analysis: {
+      volumes: makeVolumes(),
+      sessions: [
+        { day_id: 10, session: 1, minutes: 61.2, max_muscle_volume: null },
+        { day_id: 10, session: 2, minutes: 63.4, max_muscle_volume: null },
+        { day_id: 11, session: 1, minutes: 20, max_muscle_volume: null },
+      ],
+      warnings: [
+        {
+          code: 'volume-below',
+          day_id: null,
+          session: null,
+          slot_id: null,
+          position: null,
+          family_id: null,
+          muscle_id: 3,
+          volume: 8,
+          weekly_min: 10,
+          weekly_max: 18,
+          minutes: null,
+          excluded_by: [],
+        },
+        {
+          code: 'empty-slot',
+          day_id: 11,
+          session: null,
+          slot_id: 200,
+          position: 1,
+          family_id: 2,
+          muscle_id: null,
+          volume: null,
+          weekly_min: null,
+          weekly_max: null,
+          minutes: null,
+          excluded_by: ['neck-caution'],
+        },
+      ],
+    },
+    ...overrides,
+  })
+}
+
+/** Volumi della scheda: uno per stato, uno personalizzato, uno senza obiettivo. */
+export function makeVolumes(): Plan['analysis']['volumes'] {
+  const row = (
+    muscle_id: number,
+    code: string,
+    short_name: string,
+    group_code: string,
+    volume: number,
+    priority: 'priority' | 'standard' | 'none',
+    band: [number, number] | null,
+    status: 'below' | 'within' | 'above' | null,
+    overridden = false,
+  ) => ({
+    muscle_id,
+    code,
+    name: short_name,
+    short_name,
+    group_code,
+    volume,
+    priority,
+    weekly_min: band?.[0] ?? null,
+    weekly_max: band?.[1] ?? null,
+    status,
+    overridden,
+  })
+  return [
+    row(1, 'chest-upper', 'Petto alto', 'chest', 12, 'priority', [10, 18], 'within'),
+    row(2, 'chest-mid', 'Petto medio', 'chest', 15, 'priority', [10, 14], 'above', true),
+    row(3, 'triceps-long', 'Capo lungo', 'triceps', 8, 'priority', [10, 18], 'below'),
+    row(4, 'quads', 'Quadricipiti', 'legs', 7, 'standard', [6, 10], 'within'),
+    row(5, 'forearm-flexors', 'Flessori', 'forearms', 1.5, 'none', null, null),
+  ]
+}
+
 /** Vista delle preferenze della scheda 1, con il petto medio personalizzato. */
 export function makePlanSettings(): PlanSettings {
   const catalog = makeCatalog()
