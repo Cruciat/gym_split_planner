@@ -7,6 +7,7 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 ### Aggiunto
 
 - Motore: volume settimanale frazionario, valori effettivi con le personalizzazioni, volume per seduta e tetto.
+- Motore: punteggio dei candidati con etichette e preferenze, generazione e rigenerazione delle schede; test di riferimento sui volumi dei 6 split.
 
 ## [0.2.0] - 2026-10-28
 
