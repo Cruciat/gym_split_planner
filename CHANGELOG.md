@@ -6,6 +6,11 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 
 ### Aggiunto
 
+- Editor della scheda: giorni in schede, esercizi con famiglia, simboli delle etichette, variante della seconda seduta e nota; serie e ripetizioni modificabili nella riga, lucchetto, facoltativo, settimane alterne; aggiunta (famiglia, poi esercizio), cambio di famiglia ed eliminazione degli esercizi.
+- Giorni: aggiunta, nome e volte a settimana (con conferma se si perdono varianti della seconda seduta), spostamento, eliminazione con conferma.
+- Riordino di giorni ed esercizi trascinandoli; sul telefono, e per la tastiera, con la modalità "Riordina" e le frecce.
+- Pannello del volume con fasce, stato a parole e con icona, filtro (prioritari, con obiettivo, tutti) e muscoli personalizzati segnati; avvisi che portano al muscolo, al giorno o all'esercizio. Sul telefono una barra con il riassunto apre il pannello a tutto schermo.
+- Salvataggio automatico in coda, una modifica alla volta: indicatore di stato, "Riprova" senza rete, ricarica con avviso se la scheda è cambiata su un altro dispositivo.
 - Elenco delle schede con split, giorni, data di modifica e scheda attiva; rinomina, duplica, rendi attiva ed elimina con conferma. L'app si apre sulla scheda attiva, o sull'elenco se non ce n'è.
 - Creazione guidata in tre passi: split predefinito o scheda vuota, preferenze (già pronte), nome; poi si apre la scheda.
 - Preferenze della scheda: ordine degli attrezzi, durata massima, personalizzazioni di muscoli ed etichette con il valore del catalogo e il ripristino. Si salvano da sole; gli errori compaiono accanto ai campi.

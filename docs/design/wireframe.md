@@ -129,7 +129,7 @@ Passo 3 di 3 — Nome
 - `⋮` = Variante per la seconda seduta · Cambia famiglia · Facoltativo sì/no · Settimane alterne sì/no · Nota · Elimina.
 - Gli esercizi facoltativi sono in grigio con l'etichetta "facoltativo".
 
-**Testata del giorno**: nome, volte a settimana, durata stimata; `⋮` = Rinomina · Volte a settimana · Elimina giorno. Se il giorno ha una seconda seduta diversa, la durata mostra le due stime ("~60 / ~62 min"). Le schede dei giorni si riordinano trascinandole.
+**Testata del giorno**: nome, volte a settimana, durata stimata; `⋮` = Rinomina e volte a settimana · Sposta prima · Sposta dopo · Riordina esercizi · Elimina giorno. In modalità "Riordina" ogni riga ha anche le frecce su e giù, per chi usa la tastiera. Se il giorno ha una seconda seduta diversa, la durata mostra le due stime ("~60 / ~62 min"). Le schede dei giorni si riordinano trascinandole.
 
 **Pannello volume**
 

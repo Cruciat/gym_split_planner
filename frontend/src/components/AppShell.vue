@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { NDialogProvider, NMessageProvider, useThemeVars } from 'naive-ui'
-import { computed } from 'vue'
+import { computed, watchEffect } from 'vue'
 import { RouterView } from 'vue-router'
 
 import AppNav from '@/components/AppNav.vue'
 
 /**
  * Struttura comune delle pagine: navigazione e contenuto. Espone alcuni colori del
- * tema di Naive UI come variabili CSS, così anche gli stili delle pagine seguono il
+ * tema di Naive UI come variabili CSS sulla radice del documento, così anche gli stili
+ * delle pagine, e delle finestre e dei fogli che Naive UI mette nel `body`, seguono il
  * tema chiaro o scuro.
  */
 const vars = useThemeVars()
@@ -18,9 +19,16 @@ const style = computed(() => ({
   '--hover-color': vars.value.hoverColor,
   '--muted-color': vars.value.textColor3,
   '--error-color': vars.value.errorColor,
+  '--warning-color': vars.value.warningColor,
   '--on-primary-color': vars.value.baseColor,
   '--page-color': vars.value.bodyColor,
 }))
+
+watchEffect(() => {
+  for (const [name, value] of Object.entries(style.value)) {
+    document.documentElement.style.setProperty(name, value)
+  }
+})
 </script>
 
 <template>

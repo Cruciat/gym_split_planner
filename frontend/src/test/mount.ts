@@ -98,8 +98,15 @@ export async function chooseOption(
   const selector = `[data-testid="${testId}"] .n-base-selection`
   const trigger = wrapper.find(selector).exists() ? wrapper.get(selector) : inBody(selector)[0]
   if (trigger === undefined) throw new Error(`Nessun menu ${testId}`)
-  await trigger.trigger('click')
-  await flushPromises()
+  // In jsdom la trappola del focus delle finestre richiude subito i menu con ricerca
+  // (`filterable`): il focus non serve a scegliere, e qui si salta.
+  const focus = vi.spyOn(HTMLElement.prototype, 'focus').mockImplementation(() => undefined)
+  try {
+    await trigger.trigger('click')
+    await flushPromises()
+  } finally {
+    focus.mockRestore()
+  }
   const option = inBody('.n-base-select-option').find((o) => o.text() === label)
   if (option === undefined) throw new Error(`Nessuna opzione «${label}» in ${testId}`)
   await option.trigger('click')

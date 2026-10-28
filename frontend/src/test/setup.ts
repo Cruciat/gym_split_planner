@@ -5,3 +5,6 @@
 if (typeof Element.prototype.scrollTo !== 'function') {
   Element.prototype.scrollTo = () => undefined
 }
+
+// jsdom non scorre: l'editor porta agli elementi con `scrollIntoView`.
+Element.prototype.scrollIntoView = function scrollIntoView() {}
