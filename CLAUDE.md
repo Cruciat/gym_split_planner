@@ -45,6 +45,7 @@ make api-types      # dopo ogni modifica al contratto delle API
 - **Test:** il dominio si scrive con i test prima del codice; copertura del dominio ≥ 90%. I test di riferimento (volumi dell'Excel) non si cambiano senza motivarlo nella PR.
 - **Migrazioni:** ogni modifica allo schema ha la sua migrazione Alembic (`uv run alembic revision --autogenerate -m "…"` in `backend/`), con `render_as_batch` per SQLite.
 - **Dipendenze:** solo licenze permissive (MIT, ISC, BSD, Apache). Per questo niente PrimeVue (ADR 0015). Controlla la licenza prima di aggiungere un pacchetto.
+- **Dati iniziali:** `backend/src/gym_split_planner/db/seed/data/*.yaml`, caricati solo su database vuoto (`python -m gym_split_planner seed`). Cambiarli non tocca le installazioni esistenti: per quelle serve una migrazione di dati.
 - **Tipi del client:** `frontend/src/api/schema.d.ts` è generato, non si modifica a mano.
 
 ## Rilasci (ADR 0010)

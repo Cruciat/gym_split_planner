@@ -1,6 +1,7 @@
 """Comandi di servizio: ``python -m gym_split_planner <comando>``.
 
 - ``migrate``: porta il database all'ultima revisione;
+- ``seed``: carica i dati iniziali, solo se il database è vuoto e ``GSP_SKIP_SEED`` non è attivo;
 - ``openapi``: stampa lo schema OpenAPI, usato per generare i tipi del frontend.
 """
 
@@ -12,6 +13,7 @@ from gym_split_planner.app import create_app
 from gym_split_planner.config import get_settings
 from gym_split_planner.db.engine import make_engine
 from gym_split_planner.db.migrate import current_revision, upgrade_to_head
+from gym_split_planner.db.seed.loader import seed_if_empty
 
 
 def _migrate() -> None:
@@ -19,6 +21,23 @@ def _migrate() -> None:
     upgrade_to_head(engine)
     print(f"Database alla revisione {current_revision(engine)}")
     engine.dispose()
+
+
+def _seed() -> None:
+    settings = get_settings()
+    if settings.skip_seed:
+        print("Dati iniziali saltati (GSP_SKIP_SEED attivo)")
+        return
+    engine = make_engine(settings.database_url)
+    report = seed_if_empty(engine)
+    engine.dispose()
+    if report is None:
+        print("Database già popolato: dati iniziali non caricati")
+    else:
+        print(
+            f"Dati iniziali caricati: {report.exercises} esercizi, "
+            f"{report.families} famiglie, {report.splits} split"
+        )
 
 
 def _openapi() -> None:
@@ -29,12 +48,9 @@ def _openapi() -> None:
 
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="gym_split_planner")
-    parser.add_argument("command", choices=["migrate", "openapi"])
+    parser.add_argument("command", choices=["migrate", "seed", "openapi"])
     args = parser.parse_args(argv)
-    if args.command == "migrate":
-        _migrate()
-    else:
-        _openapi()
+    {"migrate": _migrate, "seed": _seed, "openapi": _openapi}[args.command]()
 
 
 if __name__ == "__main__":

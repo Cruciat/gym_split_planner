@@ -40,6 +40,7 @@ Muscoli:
 | DA | `delt-front` | Deltoide anteriore |
 | DL | `delt-lateral` | Deltoide laterale |
 | DP | `delt-rear` | Deltoide posteriore |
+| — | `rotator-cuff` | Cuffia dei rotatori (extrarotatori: sottospinato e piccolo rotondo). **Non nell'Excel:** aggiunto perché l'extrarotazione (E023) aveva solo il deltoide posteriore come secondario, e ogni esercizio deve avere un muscolo primario (modello dati, § 7). Nessun obiettivo |
 | TLU | `triceps-long` | Tricipite, capo lungo |
 | TLA | `triceps-lateral` | Tricipite, capo laterale |
 | TME | `triceps-medial` | Tricipite, capo mediale |
@@ -561,6 +562,7 @@ Volumi della generazione con le preferenze predefinite, in serie frazionarie a s
 | Deltoide anteriore | `delt-front` | — | 9 | 4,5 | 6 | 7,5 | 8 | 7,5 |
 | Deltoide laterale | `delt-lateral` | prioritario · 10-18 | 11 | **5,5** | **8** | **9,5** | 11 | 11,5 |
 | Deltoide posteriore | `delt-rear` | prioritario · 10-18 | 13 | **6,5** | 10 | 11,5 | 12 | 10 |
+| Cuffia dei rotatori | `rotator-cuff` | — | 0 | 0 | 0 | 0 | 0 | 0 |
 | Tricipite, capo lungo | `triceps-long` | prioritario · 10-18 | **8** | **4** | **6** | **7** | **6** | **5** |
 | Tricipite, capo laterale | `triceps-lateral` | prioritario · 10-18 | 16 | **8** | 12 | 14 | 12 | 10,5 |
 | Tricipite, capo mediale | `triceps-medial` | prioritario · 10-18 | 16 | **8** | 12 | 14 | 12 | 10,5 |
@@ -613,10 +615,12 @@ Cosa dice la tabella:
 
 ## 9. Seed
 
-- I dati di questo documento diventano file YAML nel backend (`seed/`), uno per tabella del catalogo più uno per gli split. Si usano i `code`, mai gli `id`.
+- I dati di questo documento sono file YAML in `backend/src/gym_split_planner/db/seed/data/`: `anatomy.yaml` (gruppi, muscoli, attrezzi), `sources.yaml`, `tags.yaml`, `families.yaml`, `exercises.yaml`, `routines.yaml` (stretching e mini-allenamento), `splits.yaml`, `settings.yaml`. Si usano i `code`, mai gli `id`; `excel_id` negli esercizi serve solo a ritrovare la riga dell'Excel e non si salva.
+- La forma dei file è validata (campi sconosciuti compresi) prima di scrivere: un refuso o un riferimento inesistente fermano il caricamento con un messaggio che dice file e voce. Il caricamento è una sola transazione.
+- Il container esegue `python -m gym_split_planner migrate` e poi `python -m gym_split_planner seed`.
 - Il seed si esegue **solo su un database vuoto**, al primo avvio dopo le migrazioni. Non si riesegue agli avvii successivi: altrimenti rimetterebbe nel catalogo ciò che hai eliminato dall'interfaccia. Con `GSP_SKIP_SEED=1` non si esegue nemmeno la prima volta, per importare un'esportazione su un'istanza nuova (API, § 6.11). Correzioni ai dati iniziali in versioni successive dell'app passano da migrazioni di dati Alembic, scritte caso per caso.
-- Un test di validità dei dati (tappa M1) controlla sul seed: ogni esercizio ha almeno un muscolo P; il gruppo della famiglia coincide con quello dell'Excel; ogni slot di ogni split ha almeno un candidato attivo non escluso; i `code` sono unici; i volumi di § 8.1.
-- Lo script di verifica usato per questo documento diventa il primo abbozzo del test: è già scritto in modo da confrontare i volumi muscolo per muscolo.
+- I test di validità (`tests/db/test_seed.py`) controllano sul seed: conteggi; ogni esercizio ha almeno un muscolo P; ranghi consecutivi in ogni famiglia; ogni famiglia ha un esercizio principale; ogni slot di ogni split ha almeno un candidato attivo non escluso; giorni a settimana degli split; fasce; etichette sul collo; file di riferimento completi. La coerenza del gruppo delle famiglie con l'Excel è stata verificata generando i file.
+- I valori attesi di § 8 sono in `backend/tests/data/golden_volumes.csv` e `golden_durations.csv`; il confronto con la generazione arriva in M2.
 
 ## 10. Domande aperte
 

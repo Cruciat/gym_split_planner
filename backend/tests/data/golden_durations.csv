@@ -1,0 +1,11 @@
+split_code,day_code,expected_minutes
+ppl-6,push,60.5
+ppl-6,pull,56.0
+ppl-6,legs,59.0
+ul-4,upper,75.5
+ul-4,lower,56.8
+pp-4,push-quads,70.2
+pp-4,pull-hamstrings,67.2
+fb-3,full-a,74.2
+fb-3,full-b,75.0
+fb-3,full-c,72.8

@@ -7,6 +7,7 @@ Tutte le modifiche rilevanti, per versione. Formato basato su [Keep a Changelog]
 ### Aggiunto
 
 - Modello dati della fase 1 (catalogo, etichette, split, schede, impostazioni) con migrazione e vincoli nel database.
+- Dati iniziali caricati al primo avvio: 81 esercizi, 40 famiglie, 33 muscoli, 3 etichette, 6 split, stretching, mini-allenamento, impostazioni.
 
 ## [0.1.0] - 2026-10-28
 

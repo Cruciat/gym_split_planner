@@ -1,0 +1,297 @@
+# Dati iniziali di Gym Split Planner (docs/design/dati-iniziali.md).
+# Caricati una sola volta, su database vuoto, al primo avvio. Riferimenti per `code`.
+# Origine: banca_dati_esercizi.xlsx (ricerca), più famiglie, etichette e split nuovi
+# decisi nel documento sui dati iniziali. Dopo il primo avvio il catalogo si modifica
+# dall'app: questi file non vengono riletti.
+#
+# Fonti della ricerca, con la numerazione dell'Excel (F01 → src-01).
+
+sources:
+- code: src-01
+  title: Haugen et al. 2023
+  kind: Meta-analisi
+  url: https://doaj.org/article/a7282dba5e674176bde2a8239832d2f7
+  reliability: Alta
+  used_for: Macchine contro pesi liberi
+- code: src-02
+  title: Pelland et al. 2024
+  kind: Meta-regressione
+  url: https://sportrxiv.org/index.php/server/preprint/view/460
+  reliability: Alta
+  used_for: Conteggio frazionario, volume, frequenza
+- code: src-03
+  title: Kay e Blazevich 2012
+  kind: Revisione sistematica
+  url: https://coachsci.sdsu.edu:443/csa/vol201/kay.htm
+  reliability: Alta
+  used_for: Stretching statico prima dei pesi
+- code: src-04
+  title: Rodríguez-Ridao et al. 2020
+  kind: Studio EMG
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC7579505/
+  reliability: Media
+  used_for: Angolo della panca inclinata
+- code: src-05
+  title: Chaves et al. 2020
+  kind: Studio longitudinale
+  url: https://busqueda.bvsalud.org/portal/resource/pt/mdl-32922646
+  reliability: Media
+  used_for: Piana contro inclinata
+- code: src-06
+  title: Higuchi et al. 2021
+  kind: Studio clinico
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC8568813/
+  reliability: Media
+  used_for: Stretch allo stipite
+- code: src-07
+  title: Classifica di Nippard, petto (BarBend)
+  kind: Opinione esperta
+  url: https://barbend.com/jeff-nippard-ranks-chest-exercises-for-hypertrophy
+  reliability: Media
+  used_for: Scelta esercizi petto
+- code: src-08
+  title: Larsen et al. 2025
+  kind: Studio longitudinale
+  url: https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2025.1611468/full
+  reliability: Media-alta
+  used_for: Alzate ai cavi contro manubri
+- code: src-09
+  title: Andersen et al. 2008
+  kind: Studio randomizzato
+  url: https://www.epistemonikos.org/en/documents/1562a53538ea5791ace6ab89611bbc273b5c1c75
+  reliability: Alta
+  used_for: Rinforzo del trapezio e dolore al collo
+- code: src-10
+  title: McClure et al. 2007
+  kind: Studio randomizzato
+  url: https://search.pedro.org.au/search-results/record-detail/18480
+  reliability: Media
+  used_for: Stretch a braccio incrociato
+- code: src-11
+  title: Schoenfeld et al. 2011
+  kind: Articolo tecnico
+  url: https://scholars.nova.edu/en/publications/the-upright-row-implications-for-preventing-subacromial-impingeme/
+  reliability: Media
+  used_for: Rischio delle tirate al mento
+- code: src-12
+  title: Studio sulla presa al reverse pec deck
+  kind: Studio EMG
+  url: https://scholars.nova.edu/en/publications/effect-of-hand-position-on-emg-activity-of-the-posterior-shoulder/
+  reliability: Media
+  used_for: Presa neutra
+- code: src-13
+  title: Classifica di Nippard, spalle (BarBend)
+  kind: Opinione esperta
+  url: https://barbend.com/news/best-worst-shoulder-exercises-tier-list/
+  reliability: Media
+  used_for: Scelta esercizi spalle
+- code: src-14
+  title: Maeo et al. 2023
+  kind: Studio longitudinale (risonanza)
+  url: https://pubmed.ncbi.nlm.nih.gov/35819335/
+  reliability: Media-alta
+  used_for: Estensione sopra la testa contro pushdown
+- code: src-15
+  title: Brandão et al. 2020
+  kind: Studio longitudinale (risonanza)
+  url: https://pubmed.ncbi.nlm.nih.gov/32149887/
+  reliability: Media
+  used_for: Quanto le spinte allenano il tricipite
+- code: src-16
+  title: Classifica di Nippard, tricipiti (Fitness Volt)
+  kind: Opinione esperta
+  url: https://fitnessvolt.com/jeff-nippard-ranks-the-20-best-and-worst-triceps-exercises/
+  reliability: Media
+  used_for: Scelta esercizi tricipiti
+- code: src-17
+  title: Ekstrom et al. 2003
+  kind: Studio EMG
+  url: https://pubmed.ncbi.nlm.nih.gov/12774999/
+  reliability: Media
+  used_for: Esercizi per le parti del trapezio
+- code: src-18
+  title: Classifica di Nippard, schiena (BOXROX)
+  kind: Opinione esperta
+  url: https://www.boxrox.com/best-and-worst-back-exercises-ranked/
+  reliability: Media
+  used_for: Scelta esercizi schiena
+- code: src-19
+  title: Henselmans, lat prayer
+  kind: Divulgazione basata su studi
+  url: https://mennohenselmans.com/lat-prayers/
+  reliability: Media
+  used_for: Pullover al cavo
+- code: src-20
+  title: StrengthLog, rematori e bicipiti
+  kind: Divulgazione basata su studi
+  url: https://www.strengthlog.com/are-rows-and-lat-pulldowns-enough-for-great-biceps-growth/
+  reliability: Media
+  used_for: Quanto le trazioni allenano il bicipite
+- code: src-21
+  title: Kobayashi et al. 2026
+  kind: Studio longitudinale
+  url: https://www.omnicuris.com/medshots/daily_updates/incline-vs-preacher-curls-elbow-flexor-hypertrophy_05-Oct-26_05-18
+  reliability: Media
+  used_for: Scott contro panca inclinata
+- code: src-22
+  title: Studio 2025 Scott contro inclinata (BarBend)
+  kind: Studio longitudinale
+  url: https://barbend.com/news/preacher-vs-incline-biceps-curls/
+  reliability: Media
+  used_for: Crescita per zona del bicipite
+- code: src-23
+  title: Classifica di Nippard, bicipiti (Fitness Volt)
+  kind: Opinione esperta
+  url: https://fitnessvolt.com/jeff-nippard-ranks-best-and-worst-bicep-exercises/
+  reliability: Media
+  used_for: Scelta esercizi bicipiti
+- code: src-24
+  title: Iwane et al. 2023
+  kind: Studio con elastografia
+  url: https://repository.kulib.kyoto-u.ac.jp/dspace/handle/2433/285089
+  reliability: Media
+  used_for: Stretch dei capi del bicipite
+- code: src-25
+  title: Studio su 78 climber (Frontiers 2023)
+  kind: Studio sperimentale
+  url: https://www.frontiersin.org/journals/sports-and-active-living/articles/10.3389/fspor.2023.1243354/pdf
+  reliability: Media-alta
+  used_for: Squilibrio flessori-estensori
+- code: src-26
+  title: Nippard, avambracci (sintesi del video)
+  kind: Divulgazione basata su studi
+  url: https://rosetta.to/u/jeffnippard/how-to-build-huge-forearms-optimal-training-explained-5-best-exercises
+  reliability: Media
+  used_for: Esercizi per gli avambracci
+- code: src-27
+  title: Maeo et al. 2021
+  kind: Studio longitudinale (risonanza)
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC7969179/
+  reliability: Media
+  used_for: Leg curl da seduti contro sdraiato
+- code: src-28
+  title: Kubo et al. 2019 (analisi Stronger by Science)
+  kind: Studio longitudinale
+  url: https://www.strongerbyscience.com/?p=52411
+  reliability: Media
+  used_for: Squat profondo, femorali
+- code: src-29
+  title: Maeo et al., leg extension contro pressa
+  kind: Studio longitudinale
+  url: https://www.fisiologiadelejercicio.com/wp-content/uploads/2026/02/hypertrophic_effects_of_single__versus_multi_joint.1002-1.pdf
+  reliability: Media
+  used_for: Retto femorale
+- code: src-30
+  title: Larsen et al. 2024
+  kind: Studio longitudinale
+  url: https://rgu-repository.worktribe.com/OutputFile/2619788
+  reliability: Media
+  used_for: Leg extension reclinata
+- code: src-31
+  title: Plotkin et al. 2023
+  kind: Studio longitudinale (risonanza)
+  url: https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2023.1279170/full
+  reliability: Media
+  used_for: Hip thrust contro squat
+- code: src-32
+  title: Kinoshita et al. 2023
+  kind: Studio longitudinale
+  url: https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2023.1272106/full
+  reliability: Media
+  used_for: Calf raise in piedi contro seduti
+- code: src-33
+  title: Built With Science, esercizi addominali
+  kind: Test EMG divulgativi
+  url: https://builtwithscience.com/fitness-tips/best-ab-exercises/
+  reliability: Media-bassa
+  used_for: Classifica addominali, leg raise
+- code: src-34
+  title: Milo Wolf (T3)
+  kind: Opinione esperta
+  url: https://t3.com/active/an-exercise-scientist-ranks-every-ab-exercise-and-the-worst-one-may-surprise-you
+  reliability: Media
+  used_for: Crunch al cavo
+- code: src-35
+  title: Revisione sui Big 3 di McGill
+  kind: Revisione di studi randomizzati
+  url: https://www.medrxiv.org/content/10.1101/2022.01.21.22269311.full.pdf
+  reliability: Media
+  used_for: Esercizi di stabilità
+- code: src-36
+  title: Robinson et al. 2024
+  kind: Meta-regressione
+  url: https://rke.abertay.ac.uk/en/publications/exploring-the-dose-response-relationship-between-estimated-resist/
+  reliability: Alta
+  used_for: Vicinanza al cedimento
+- code: src-37
+  title: Singer et al. 2024
+  kind: Meta-analisi bayesiana
+  url: https://rgu-repository.worktribe.com/output/2344312
+  reliability: Media-alta
+  used_for: Recuperi tra le serie
+- code: src-38
+  title: Schoenfeld et al. 2017
+  kind: Meta-analisi
+  url: https://pubmed.ncbi.nlm.nih.gov/28834797/
+  reliability: Alta
+  used_for: Carico e ripetizioni
+- code: src-39
+  title: Nunes et al. 2021
+  kind: Meta-analisi
+  url: https://lida.sport-iat.de/ta/Record/4059795?lng=en
+  reliability: Alta
+  used_for: Ordine degli esercizi
+- code: src-40
+  title: Schoenfeld et al. 2015
+  kind: Meta-analisi
+  url: https://pubmed.ncbi.nlm.nih.gov/25601394/
+  reliability: Media-alta
+  used_for: Velocità di esecuzione
+- code: src-41
+  title: Remmert et al. 2025
+  kind: Meta-regressione (preprint)
+  url: https://sportrxiv.org/index.php/server/preprint/view/537
+  reliability: Media-alta
+  used_for: Volume per seduta
+- code: src-42
+  title: Mueller et al. 2023
+  kind: Meta-analisi
+  url: https://search.pedro.org.au/search-results/record-detail/75804
+  reliability: Alta
+  used_for: Esercizio per il dolore cervicale
+- code: src-43
+  title: Preece et al. 2021
+  kind: Studio sperimentale
+  url: https://salford-repository.worktribe.com/output/1340135/comparison-of-pelvic-tilt-before-and-after-hip-flexor-stretching-in-healthy-adults
+  reliability: Media
+  used_for: Stretch dei flessori dell'anca
+- code: src-44
+  title: Warneke et al. 2024
+  kind: Meta-analisi
+  url: https://pmc.ncbi.nlm.nih.gov/articles/PMC11150224/
+  reliability: Media-alta
+  used_for: Stretch e rinforzo sulla postura
+- code: src-45
+  title: Dimitrijević et al. 2022
+  kind: Meta-analisi
+  url: https://www.mdpi.com/1660-4601/19/8/4906
+  reliability: Media
+  used_for: Programmi correttivi e lordosi
+- code: src-46
+  title: Herrington 2011 e altri (E3 Rehab)
+  kind: Studi osservazionali (sintesi)
+  url: https://e3rehab.com/stop-trying-to-fix-anterior-pelvic-tilt/
+  reliability: Media-alta
+  used_for: Normalità dell'anterior pelvic tilt
+- code: src-47
+  title: MyPersonalTrainer
+  kind: Divulgazione
+  url: https://www.my-personaltrainer.it/
+  reliability: Media
+  used_for: Anatomia ed esecuzione
+- code: src-48
+  title: Henselmans, crunch e reverse crunch
+  kind: Divulgazione basata su studi
+  url: https://mennohenselmans.com/?p=21050
+  reliability: Media
+  used_for: Esercizi per il retto dell'addome

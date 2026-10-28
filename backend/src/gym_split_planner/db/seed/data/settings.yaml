@@ -1,0 +1,35 @@
+# Dati iniziali di Gym Split Planner (docs/design/dati-iniziali.md).
+# Caricati una sola volta, su database vuoto, al primo avvio. Riferimenti per `code`.
+# Origine: banca_dati_esercizi.xlsx (ricerca), più famiglie, etichette e split nuovi
+# decisi nel documento sui dati iniziali. Dopo il primo avvio il catalogo si modifica
+# dall'app: questi file non vengono riletti.
+#
+# Impostazioni globali (modello dati, § 5; algoritmo, § 3 e § 6).
+
+settings:
+  level_weights:
+    P: 1.0
+    S: 0.5
+  session_cap: 10
+  score_weights:
+    confidence: 3
+    equipment: 4
+    stretch: 1
+    family: 1
+    rank: 0.5
+  duration_params:
+    set_seconds: 45
+    rest_compound_seconds: 150
+    rest_isolation_seconds: 90
+    change_seconds: 60
+    warmup_set_seconds: 30
+    warmup_rest_seconds: 60
+    warmup_minutes: 10
+    stretching_minutes: 6
+  warmup_text: 5-10 minuti di cardio leggero (cyclette, ellittica, camminata in salita); mobilità dinamica
+    dei distretti del giorno (circonduzioni, rotazioni toraciche, rotazioni esterne con elastico); sul
+    primo esercizio di ogni muscolo due serie di avvicinamento, una leggera (circa 50%) e una più pesante
+    (circa 75-80% del carico di lavoro), poche ripetizioni, senza fatica.
+  effort:
+    rir: 0-2
+    failure_last_set: true

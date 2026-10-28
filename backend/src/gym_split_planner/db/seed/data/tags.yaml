@@ -1,0 +1,33 @@
+# Dati iniziali di Gym Split Planner (docs/design/dati-iniziali.md).
+# Caricati una sola volta, su database vuoto, al primo avvio. Riferimenti per `code`.
+# Origine: banca_dati_esercizi.xlsx (ricerca), più famiglie, etichette e split nuovi
+# decisi nel documento sui dati iniziali. Dopo il primo avvio il catalogo si modifica
+# dall'app: questi file non vengono riletti.
+#
+# Etichette iniziali (dati iniziali, § 5; ADR 0014).
+
+tags:
+- code: neck-tip
+  name: 'Collo: accorgimento'
+  description: Esercizio adatto al collo a una condizione, scritta nella nota.
+  symbol: info
+  color: info
+  effect: none
+  points: 0
+  show_badge: true
+- code: neck-caution
+  name: 'Collo: attenzione'
+  description: 'Esercizio che può affaticare il collo: penalizzato, non escluso.'
+  symbol: warning
+  color: warning
+  effect: penalty
+  points: 3
+  show_badge: true
+- code: neck-avoid
+  name: 'Collo: evitare'
+  description: 'Esercizio da evitare per il collo: mai scelto automaticamente.'
+  symbol: ban
+  color: danger
+  effect: exclude
+  points: 0
+  show_badge: true

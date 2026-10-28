@@ -8,6 +8,7 @@ setup: ## Installa le dipendenze e gli hook di pre-commit
 
 dev-backend: ## API su http://127.0.0.1:8000 (ricarica automatica)
 	cd backend && uv run python -m gym_split_planner migrate && \
+		uv run python -m gym_split_planner seed && \
 		uv run uvicorn gym_split_planner.app:create_app --factory --reload
 
 dev-frontend: ## Frontend su http://127.0.0.1:5173, con /api inoltrato al backend
@@ -28,5 +29,5 @@ api-types: ## Rigenera schema OpenAPI e tipi del client
 	cd backend && uv run python -m gym_split_planner openapi > ../openapi.json
 	cd frontend && npm run -s api:types
 
-migrate: ## Applica le migrazioni al database locale
-	cd backend && uv run python -m gym_split_planner migrate
+migrate: ## Applica le migrazioni e, su database vuoto, i dati iniziali
+	cd backend && uv run python -m gym_split_planner migrate && uv run python -m gym_split_planner seed

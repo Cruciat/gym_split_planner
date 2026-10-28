@@ -146,6 +146,8 @@ jobs:
           docker exec gsp python -c "import json, urllib.request; print(json.load(urllib.request.urlopen('http://127.0.0.1:8000/api/health')))"
           docker exec gsp python -c "import urllib.request; assert b'id=\"app\"' in urllib.request.urlopen('http://127.0.0.1:8000/schede/1').read()"
           docker exec gsp test -f /data/gym_split_planner.db
+          docker exec gsp python -c "import sqlite3; n = sqlite3.connect('/data/gym_split_planner.db').execute('select count(*) from exercise').fetchone()[0]; print('esercizi:', n); assert n == 81"
+          docker logs gsp 2>&1 | grep -q "Dati iniziali caricati"
           docker exec gsp python -c "import urllib.request; r = urllib.request.urlopen('http://127.0.0.1:8000/api/pdf/test'); assert r.headers['Content-Type'] == 'application/pdf' and r.read(5) == b'%PDF-'"
           if docker logs gsp 2>&1 | grep -q "HarfBuzz-Subset"; then
             echo "::error::Nell'immagine manca HarfBuzz-Subset, richiesta da WeasyPrint"

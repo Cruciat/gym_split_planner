@@ -1,0 +1,1318 @@
+# Dati iniziali di Gym Split Planner (docs/design/dati-iniziali.md).
+# Caricati una sola volta, su database vuoto, al primo avvio. Riferimenti per `code`.
+# Origine: banca_dati_esercizi.xlsx (ricerca), più famiglie, etichette e split nuovi
+# decisi nel documento sui dati iniziali. Dopo il primo avvio il catalogo si modifica
+# dall'app: questi file non vengono riletti.
+#
+# Esercizi (dati iniziali, § 4), raggruppati per famiglia principale.
+#
+# muscles: livello P (primario) o S (secondario). excel_id: solo tracciabilità.
+
+exercises:
+- code: chest-press
+  name: Chest press seduta
+  family: press-horizontal
+  family_rank: 1
+  equipment: machine
+  kind: compound
+  stretch: medium
+  stretch_note: Medio-alto (dipende dalla macchina)
+  confidence: solid
+  muscles:
+    chest-upper: S
+    chest-mid: P
+    chest-lower: S
+    delt-front: S
+    triceps-lateral: S
+    triceps-medial: S
+  sources: [src-07, src-01]
+  excel_id: E001
+- code: bench-press
+  name: Panca piana
+  family: press-horizontal
+  family_rank: 2
+  equipment: free-weight
+  equipment_detail: L (manubri, bilanciere) o Smith
+  kind: compound
+  stretch: high
+  stretch_note: Alto con manubri, medio col bilanciere
+  confidence: solid
+  muscles:
+    chest-upper: S
+    chest-mid: P
+    chest-lower: S
+    delt-front: S
+    triceps-lateral: S
+    triceps-medial: S
+  tags:
+  - tag: neck-caution
+  sources: [src-07, src-05]
+  excel_id: E003
+- code: chest-press-incline
+  name: Chest press inclinata
+  family: press-incline
+  family_rank: 1
+  equipment: machine
+  kind: compound
+  stretch: medium
+  confidence: limited
+  muscles:
+    chest-upper: P
+    chest-mid: S
+    delt-front: S
+    triceps-lateral: S
+    triceps-medial: S
+  sources: [src-07, src-04, src-05]
+  excel_id: E002
+- code: incline-bench-press
+  name: Panca inclinata a 30°
+  family: press-incline
+  family_rank: 2
+  equipment: free-weight
+  equipment_detail: L o Smith
+  kind: compound
+  stretch: high
+  stretch_note: Alto con manubri
+  confidence: limited
+  muscles:
+    chest-upper: P
+    chest-mid: S
+    delt-front: S
+    triceps-lateral: S
+    triceps-medial: S
+  tags:
+  - tag: neck-caution
+  sources: [src-04, src-05, src-07]
+  excel_id: E004
+- code: cable-fly-seated
+  name: Croci ai cavi da seduti
+  family: fly-horizontal
+  family_rank: 1
+  equipment: cable
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    chest-upper: S
+    chest-mid: P
+    chest-lower: S
+    delt-front: S
+  sources: [src-07]
+  excel_id: E005
+- code: pec-deck
+  name: Pec deck (chest fly a macchina)
+  family: fly-horizontal
+  family_rank: 2
+  equipment: machine
+  kind: isolation
+  stretch: medium
+  stretch_note: Medio (alcune macchine limitano l'apertura)
+  confidence: opinion
+  muscles:
+    chest-upper: S
+    chest-mid: P
+    chest-lower: S
+    delt-front: S
+  sources: [src-07]
+  excel_id: E006
+- code: cable-fly-low-high
+  name: Croci ai cavi dal basso verso l'alto
+  family: fly-low-high
+  family_rank: 1
+  equipment: cable
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    chest-upper: P
+    chest-mid: S
+    delt-front: S
+  tags:
+  - tag: neck-caution
+  sources: [src-07]
+  excel_id: E007
+- code: incline-dumbbell-fly
+  name: Croci su panca inclinata
+  family: fly-low-high
+  family_rank: 2
+  equipment: free-weight
+  equipment_detail: L o C
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    chest-upper: P
+    chest-mid: S
+    delt-front: S
+  sources: [src-07]
+  excel_id: E008
+- code: cable-fly-high-low
+  name: Croci ai cavi dall'alto verso il basso
+  family: fly-high-low
+  family_rank: 1
+  equipment: cable
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    chest-mid: S
+    chest-lower: P
+  sources: [src-07]
+  excel_id: E009
+- code: dip
+  name: Dip (parallele, assistite o macchina dip)
+  family: dip-decline
+  family_rank: 1
+  secondary_family: triceps-press
+  equipment: bodyweight
+  equipment_detail: Corpo libero o M
+  kind: compound
+  stretch: high
+  confidence: limited
+  muscles:
+    chest-upper: S
+    chest-mid: P
+    chest-lower: P
+    delt-front: S
+    triceps-lateral: S
+    triceps-medial: S
+  tags:
+  - tag: neck-caution
+    note: Attenzione anche per le spalle
+  sources: [src-07]
+  excel_id: E010
+- code: decline-press
+  name: Panca o chest press declinata
+  family: dip-decline
+  family_rank: 2
+  equipment: machine
+  equipment_detail: M o Smith
+  kind: compound
+  stretch: low
+  stretch_note: Basso-medio
+  confidence: limited
+  muscles:
+    chest-mid: P
+    chest-lower: P
+    delt-front: S
+    triceps-lateral: S
+    triceps-medial: S
+  sources: [src-07]
+  excel_id: E011
+- code: machine-shoulder-press
+  name: Shoulder press a macchina
+  family: press-vertical
+  family_rank: 1
+  equipment: machine
+  kind: compound
+  stretch: medium
+  confidence: opinion
+  muscles:
+    delt-front: P
+    delt-lateral: S
+    traps-upper: S
+    triceps-lateral: S
+    triceps-medial: S
+  tags:
+  - tag: neck-caution
+  sources: [src-13]
+  excel_id: E012
+- code: dumbbell-shoulder-press
+  name: Lento con manubri da seduti
+  family: press-vertical
+  family_rank: 2
+  equipment: free-weight
+  kind: compound
+  stretch: medium
+  confidence: opinion
+  muscles:
+    delt-front: P
+    delt-lateral: S
+    traps-upper: S
+    triceps-lateral: S
+    triceps-medial: S
+  tags:
+  - tag: neck-caution
+  sources: [src-13]
+  excel_id: E013
+- code: cable-lateral-raise
+  name: Alzate laterali ai cavi, un braccio
+  family: raise-lateral
+  family_rank: 1
+  equipment: cable
+  kind: isolation
+  stretch: high
+  confidence: limited
+  muscles:
+    delt-lateral: P
+    traps-upper: S
+  tags:
+  - tag: neck-tip
+    note: Se le spalle non salgono
+  sources: [src-08, src-13]
+  excel_id: E014
+- code: machine-lateral-raise
+  name: Alzate laterali a macchina
+  family: raise-lateral
+  family_rank: 2
+  equipment: machine
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    delt-lateral: P
+    traps-upper: S
+  sources: [src-13]
+  excel_id: E015
+- code: dumbbell-lateral-raise
+  name: Alzate laterali con manubri
+  family: raise-lateral
+  family_rank: 3
+  equipment: free-weight
+  kind: isolation
+  stretch: low
+  confidence: limited
+  muscles:
+    delt-lateral: P
+    traps-upper: S
+  tags:
+  - tag: neck-caution
+  sources: [src-08, src-13]
+  excel_id: E016
+- code: lying-lateral-raise
+  name: Alzate laterali sdraiato su un fianco
+  family: raise-lateral
+  family_rank: 4
+  equipment: free-weight
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    delt-lateral: P
+    traps-upper: S
+  sources: [src-13]
+  excel_id: E017
+- code: wide-upright-row
+  name: Tirate al mento a presa larga (barra o corda)
+  family: raise-lateral
+  family_rank: 5
+  equipment: cable
+  equipment_detail: C o L
+  kind: compound
+  stretch: low
+  confidence: limited
+  muscles:
+    delt-front: S
+    delt-lateral: P
+    delt-rear: S
+    traps-upper: S
+  tags:
+  - tag: neck-caution
+  sources: [src-11, src-13]
+  excel_id: E021
+- code: reverse-pec-deck
+  name: Reverse pec deck, presa neutra
+  family: rear-delt
+  family_rank: 1
+  equipment: machine
+  kind: isolation
+  stretch: medium
+  confidence: limited
+  muscles:
+    delt-lateral: S
+    delt-rear: P
+    traps-mid: S
+    traps-lower: S
+  sources: [src-12, src-13]
+  excel_id: E018
+- code: cable-reverse-fly
+  name: Croci inverse ai cavi
+  family: rear-delt
+  family_rank: 2
+  equipment: cable
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    delt-lateral: S
+    delt-rear: P
+    traps-mid: S
+    traps-lower: S
+  sources: [src-13]
+  excel_id: E019
+- code: face-pull
+  name: Face pull
+  family: rear-delt
+  family_rank: 3
+  equipment: cable
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    delt-lateral: S
+    delt-rear: P
+    traps-mid: S
+    traps-lower: S
+  tags:
+  - tag: neck-caution
+    note: In piedi attenzione; da sdraiati OK
+  sources: [src-13]
+  excel_id: E020
+- code: front-raise
+  name: Alzate frontali
+  family: raise-front
+  family_rank: 1
+  equipment: free-weight
+  equipment_detail: L o C
+  kind: isolation
+  stretch: low
+  confidence: opinion
+  muscles:
+    delt-front: P
+    delt-lateral: S
+    chest-upper: S
+  tags:
+  - tag: neck-caution
+  sources: [src-13]
+  notes: Superflue per la maggior parte delle persone
+  excel_id: E022
+- code: cable-external-rotation
+  name: Extrarotazioni ai cavi o con elastico
+  family: external-rotation
+  family_rank: 1
+  equipment: cable
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    rotator-cuff: P
+    delt-rear: S
+  sources: [src-13]
+  notes: 'Cuffia dei rotatori: lavoro facoltativo'
+  excel_id: E023
+- code: cable-overhead-extension
+  name: Estensione sopra la testa ai cavi (barra o corda)
+  family: triceps-overhead
+  family_rank: 1
+  equipment: cable
+  kind: isolation
+  stretch: high
+  confidence: limited
+  muscles:
+    triceps-long: P
+    triceps-lateral: P
+    triceps-medial: P
+  tags:
+  - tag: neck-caution
+  sources: [src-14, src-16]
+  excel_id: E024
+- code: machine-overhead-extension
+  name: Estensione sopra la testa alla macchina
+  family: triceps-overhead
+  family_rank: 2
+  equipment: machine
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    triceps-long: P
+    triceps-lateral: P
+    triceps-medial: P
+  sources: [src-14, src-16]
+  excel_id: E025
+- code: dumbbell-overhead-extension
+  name: Estensione a un braccio con manubrio, da seduti con schienale
+  family: triceps-overhead
+  family_rank: 3
+  equipment: free-weight
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    triceps-long: P
+    triceps-lateral: P
+    triceps-medial: P
+  sources: [src-14, src-16]
+  excel_id: E026
+- code: katana-extension
+  name: Estensione katana ai cavi (braccia incrociate)
+  family: triceps-overhead
+  family_rank: 4
+  equipment: cable
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    triceps-long: P
+    triceps-lateral: P
+    triceps-medial: P
+  sources: [src-16]
+  excel_id: E027
+- code: ez-skull-crusher
+  name: Skull crusher con bilanciere EZ, portato dietro la testa
+  family: triceps-overhead
+  family_rank: 5
+  equipment: free-weight
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    triceps-long: P
+    triceps-lateral: P
+    triceps-medial: P
+  tags:
+  - tag: neck-tip
+    note: Testa appoggiata
+  sources: [src-16]
+  excel_id: E028
+- code: pushdown-bar
+  name: Pushdown al cavo con barra
+  family: triceps-pushdown
+  family_rank: 1
+  equipment: cable
+  kind: isolation
+  stretch: low
+  confidence: limited
+  muscles:
+    triceps-long: S
+    triceps-lateral: P
+    triceps-medial: P
+  sources: [src-14, src-16]
+  excel_id: E029
+- code: pushdown-rope
+  name: Pushdown al cavo con corda
+  family: triceps-pushdown
+  family_rank: 2
+  equipment: cable
+  kind: isolation
+  stretch: low
+  confidence: opinion
+  muscles:
+    triceps-long: S
+    triceps-lateral: P
+    triceps-medial: P
+  sources: [src-16]
+  excel_id: E030
+- code: cable-kickback
+  name: Kickback ai cavi
+  family: triceps-pushdown
+  family_rank: 3
+  equipment: cable
+  kind: isolation
+  stretch: low
+  confidence: opinion
+  muscles:
+    triceps-long: P
+    triceps-lateral: P
+    triceps-medial: P
+  sources: [src-16]
+  excel_id: E031
+- code: close-grip-bench-press
+  name: Panca a presa stretta (bilanciere o Smith)
+  family: triceps-press
+  family_rank: 1
+  equipment: free-weight
+  equipment_detail: L o M
+  kind: compound
+  stretch: medium
+  confidence: limited
+  muscles:
+    triceps-long: S
+    triceps-lateral: P
+    triceps-medial: S
+    chest-mid: S
+    delt-front: S
+  tags:
+  - tag: neck-caution
+  sources: [src-15, src-16]
+  excel_id: E032
+- code: machine-dip
+  name: Dip alla macchina (seduti) o dip a busto verticale
+  family: triceps-press
+  family_rank: 2
+  equipment: machine
+  equipment_detail: M o corpo libero
+  kind: compound
+  stretch: medium
+  confidence: opinion
+  muscles:
+    triceps-long: S
+    triceps-lateral: P
+    triceps-medial: S
+    chest-lower: S
+    delt-front: S
+  sources: [src-16]
+  excel_id: E033
+- code: lat-pulldown-wide
+  name: Lat machine, presa prona media o larga, al petto
+  family: pull-vertical
+  family_rank: 1
+  equipment: machine
+  equipment_detail: M o C
+  kind: compound
+  stretch: high
+  confidence: limited
+  muscles:
+    lats: P
+    traps-mid: S
+    traps-lower: S
+    delt-rear: S
+    biceps: S
+    brachialis: S
+    brachioradialis: S
+    forearm-flexors: S
+  sources: [src-18]
+  excel_id: E034
+- code: lat-pulldown-neutral
+  name: Lat machine, presa neutra o supina stretta
+  family: pull-vertical
+  family_rank: 2
+  equipment: machine
+  equipment_detail: M o C
+  kind: compound
+  stretch: high
+  confidence: limited
+  muscles:
+    lats: P
+    traps-mid: S
+    delt-rear: S
+    biceps: S
+    brachialis: S
+    brachioradialis: S
+    forearm-flexors: S
+  sources: [src-18]
+  excel_id: E035
+- code: single-arm-pulldown
+  name: Lat machine a un braccio, in ginocchio
+  family: pull-vertical
+  family_rank: 3
+  equipment: cable
+  kind: compound
+  stretch: high
+  confidence: opinion
+  muscles:
+    lats: P
+    traps-lower: S
+    delt-rear: S
+    biceps: S
+    brachialis: S
+    brachioradialis: S
+    forearm-flexors: S
+  sources: [src-18]
+  excel_id: E036
+- code: assisted-pull-up
+  name: Trazioni alla macchina assistita, presa neutra
+  family: pull-vertical
+  family_rank: 4
+  equipment: machine
+  kind: compound
+  stretch: high
+  confidence: opinion
+  muscles:
+    lats: P
+    traps-mid: S
+    traps-lower: S
+    delt-rear: S
+    biceps: S
+    brachialis: S
+    brachioradialis: S
+    forearm-flexors: S
+  sources: [src-18]
+  excel_id: E037
+- code: chest-supported-row
+  name: Rematore con appoggio al petto (macchina o T-bar)
+  family: pull-horizontal
+  family_rank: 1
+  equipment: machine
+  kind: compound
+  stretch: high
+  confidence: opinion
+  muscles:
+    lats: P
+    traps-mid: P
+    traps-lower: S
+    delt-rear: S
+    biceps: S
+    brachialis: S
+    brachioradialis: S
+    forearm-flexors: S
+  sources: [src-18, src-20]
+  excel_id: E038
+- code: cable-row-wide
+  name: Pulley basso, presa larga
+  family: pull-horizontal
+  family_rank: 2
+  equipment: cable
+  kind: compound
+  stretch: high
+  confidence: opinion
+  muscles:
+    lats: S
+    traps-mid: P
+    traps-lower: S
+    delt-rear: S
+    biceps: S
+    brachialis: S
+    brachioradialis: S
+    forearm-flexors: S
+  sources: [src-18, src-20]
+  excel_id: E039
+- code: cable-row-close
+  name: Pulley basso, presa stretta, gomiti vicini al corpo
+  family: pull-horizontal
+  family_rank: 3
+  equipment: cable
+  kind: compound
+  stretch: high
+  confidence: opinion
+  muscles:
+    lats: P
+    traps-mid: S
+    delt-rear: S
+    biceps: S
+    brachialis: S
+    brachioradialis: S
+    forearm-flexors: S
+  sources: [src-18, src-20]
+  excel_id: E040
+- code: dumbbell-row
+  name: Rematore a un braccio con manubrio su panca
+  family: pull-horizontal
+  family_rank: 4
+  equipment: free-weight
+  kind: compound
+  stretch: high
+  confidence: opinion
+  muscles:
+    lats: P
+    traps-mid: S
+    delt-rear: S
+    biceps: S
+    brachialis: S
+    brachioradialis: S
+    forearm-flexors: S
+  tags:
+  - tag: neck-caution
+  sources: [src-18, src-20]
+  excel_id: E041
+- code: straight-arm-pulldown
+  name: Pullover al cavo o macchina pullover (braccia tese)
+  family: straight-arm
+  family_rank: 1
+  equipment: cable
+  equipment_detail: C o M
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    lats: P
+    traps-lower: S
+    triceps-long: S
+  sources: [src-19, src-18]
+  excel_id: E042
+- code: shrug-dumbbell-machine
+  name: Scrollate con manubri o alla macchina
+  family: shrug
+  family_rank: 1
+  equipment: machine
+  equipment_detail: L o M
+  kind: isolation
+  stretch: medium
+  confidence: limited
+  muscles:
+    traps-upper: P
+    traps-mid: S
+    forearm-flexors: S
+  tags:
+  - tag: neck-caution
+  sources: [src-17, src-09]
+  notes: Flessori dell'avambraccio solo con i manubri
+  excel_id: E043
+- code: prone-y-raise
+  name: Y-raise da proni su panca inclinata
+  family: y-raise
+  family_rank: 1
+  equipment: free-weight
+  kind: isolation
+  stretch: low
+  confidence: limited
+  muscles:
+    traps-lower: P
+    traps-mid: S
+    delt-rear: S
+  tags:
+  - tag: neck-caution
+  sources: [src-17]
+  excel_id: E044
+- code: back-extension
+  name: Back extension a 45° o macchina lombare
+  family: lower-back
+  family_rank: 1
+  secondary_family: hip-hinge
+  equipment: machine
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    erectors: P
+    hamstrings: S
+    glute-max: S
+    stabilizers: S
+  sources: [src-18]
+  excel_id: E045
+- code: machine-preacher-curl
+  name: Curl alla macchina Scott (preacher)
+  family: curl-front
+  family_rank: 1
+  equipment: machine
+  kind: isolation
+  stretch: high
+  confidence: limited
+  muscles:
+    biceps: P
+    brachialis: P
+    brachioradialis: S
+    forearm-flexors: S
+  sources: [src-21, src-22, src-23]
+  excel_id: E046
+- code: dumbbell-preacher-curl
+  name: Curl con manubrio su panca Scott
+  family: curl-front
+  family_rank: 2
+  equipment: free-weight
+  kind: isolation
+  stretch: high
+  confidence: limited
+  muscles:
+    biceps: P
+    brachialis: P
+    brachioradialis: S
+    forearm-flexors: S
+  sources: [src-21, src-22, src-23]
+  excel_id: E047
+- code: standing-cable-curl
+  name: Curl al cavo in piedi (barra o EZ)
+  family: curl-front
+  family_rank: 3
+  equipment: cable
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    biceps: P
+    brachialis: P
+    brachioradialis: S
+    forearm-flexors: S
+  tags:
+  - tag: neck-caution
+  sources: [src-23]
+  excel_id: E051
+- code: standing-curl
+  name: Curl con bilanciere EZ o manubri, in piedi
+  family: curl-front
+  family_rank: 4
+  equipment: free-weight
+  kind: isolation
+  stretch: low
+  confidence: opinion
+  muscles:
+    biceps: P
+    brachialis: P
+    brachioradialis: S
+    forearm-flexors: S
+  tags:
+  - tag: neck-caution
+  sources: [src-23]
+  excel_id: E052
+- code: incline-dumbbell-curl
+  name: Curl su panca inclinata con manubri
+  family: curl-behind
+  family_rank: 1
+  equipment: free-weight
+  kind: isolation
+  stretch: high
+  confidence: limited
+  muscles:
+    biceps: P
+    brachialis: S
+    brachioradialis: S
+    forearm-flexors: S
+  tags:
+  - tag: neck-tip
+    note: Testa appoggiata
+  sources: [src-21, src-22, src-23]
+  excel_id: E049
+- code: bayesian-curl
+  name: Bayesian curl (di spalle al cavo, braccio dietro il corpo)
+  family: curl-behind
+  family_rank: 2
+  equipment: cable
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    biceps: P
+    brachialis: S
+    brachioradialis: S
+    forearm-flexors: S
+  tags:
+  - tag: neck-caution
+  sources: [src-23]
+  excel_id: E050
+- code: preacher-hammer-curl
+  name: Hammer curl su panca Scott
+  family: curl-hammer
+  family_rank: 1
+  equipment: free-weight
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    biceps: S
+    brachialis: P
+    brachioradialis: P
+    forearm-flexors: S
+  sources: [src-23]
+  excel_id: E048
+- code: hammer-curl
+  name: Hammer curl con manubri o corda al cavo
+  family: curl-hammer
+  family_rank: 2
+  equipment: free-weight
+  equipment_detail: L o C
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    biceps: S
+    brachialis: P
+    brachioradialis: P
+    forearm-flexors: S
+  tags:
+  - tag: neck-caution
+  sources: [src-23]
+  excel_id: E053
+- code: wrist-curl
+  name: Curl del polso, palmi in su, avambraccio appoggiato
+  family: wrist-flexion
+  family_rank: 1
+  equipment: free-weight
+  equipment_detail: L o C
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    forearm-flexors: P
+  sources: [src-26]
+  excel_id: E054
+- code: wrist-roller
+  name: Wrist roller
+  family: wrist-flexion
+  family_rank: 2
+  secondary_family: wrist-extension
+  equipment: free-weight
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    forearm-flexors: P
+    forearm-extensors: P
+    delt-front: S
+  tags:
+  - tag: neck-caution
+  sources: [src-26]
+  excel_id: E057
+- code: reverse-wrist-curl
+  name: Curl del polso inverso, palmi in giù, avambraccio appoggiato
+  family: wrist-extension
+  family_rank: 1
+  equipment: free-weight
+  equipment_detail: L o C
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    forearm-extensors: P
+    brachioradialis: S
+  sources: [src-25, src-26]
+  excel_id: E055
+- code: reverse-curl
+  name: Reverse curl (presa prona, bilanciere EZ o cavo)
+  family: wrist-extension
+  family_rank: 2
+  secondary_family: curl-hammer
+  equipment: free-weight
+  equipment_detail: L o C
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    forearm-extensors: S
+    brachioradialis: P
+    brachialis: P
+    biceps: S
+  tags:
+  - tag: neck-caution
+  sources: [src-26]
+  excel_id: E056
+- code: static-holds
+  name: Prese statiche (presa al disco, camminata del contadino, sospensione alla sbarra)
+  family: grip
+  family_rank: 1
+  equipment: free-weight
+  equipment_detail: L o corpo libero
+  kind: isolation
+  stretch: low
+  confidence: opinion
+  muscles:
+    forearm-flexors: P
+    forearm-extensors: S
+    traps-upper: S
+    obliques: S
+    stabilizers: S
+  tags:
+  - tag: neck-caution
+    note: Attenzione nella camminata del contadino; le altre prese OK
+  sources: [src-26]
+  notes: Trapezio, obliqui e stabilizzatori solo nella camminata del contadino
+  excel_id: E058
+- code: pronation-supination
+  name: Pronazione e supinazione con manubrio sbilanciato
+  family: forearm-rotation
+  family_rank: 1
+  equipment: free-weight
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    pronators-supinators: P
+    brachioradialis: S
+  sources: [src-26]
+  excel_id: E059
+- code: hack-squat
+  name: Hack squat o pendulum squat, profondo
+  family: squat-guided
+  family_rank: 1
+  equipment: machine
+  kind: compound
+  stretch: high
+  confidence: opinion
+  muscles:
+    quads: P
+    glute-max: S
+    adductors: S
+  sources: [src-28]
+  excel_id: E060
+- code: leg-press
+  name: Pressa a 45°, profonda
+  family: squat-guided
+  family_rank: 2
+  equipment: machine
+  kind: compound
+  stretch: high
+  confidence: limited
+  muscles:
+    quads: P
+    glute-max: S
+    adductors: S
+  sources: [src-28, src-29]
+  excel_id: E061
+- code: smith-squat
+  name: Squat al multipower (Smith), profondo
+  family: squat-guided
+  family_rank: 3
+  equipment: machine
+  kind: compound
+  stretch: high
+  confidence: limited
+  muscles:
+    quads: P
+    glute-max: P
+    adductors: P
+    erectors: S
+    obliques: S
+    stabilizers: S
+  tags:
+  - tag: neck-caution
+  sources: [src-28, src-31]
+  excel_id: E062
+- code: leg-extension
+  name: Leg extension, schienale reclinato
+  family: knee-extension
+  family_rank: 1
+  equipment: machine
+  kind: isolation
+  stretch: medium
+  confidence: limited
+  muscles:
+    quads: P
+    rectus-femoris: P
+  sources: [src-29, src-30]
+  excel_id: E063
+- code: seated-leg-curl
+  name: Leg curl da seduti
+  family: knee-flexion
+  family_rank: 1
+  equipment: machine
+  kind: isolation
+  stretch: high
+  confidence: limited
+  muscles:
+    hamstrings: P
+    gastrocnemius: S
+  sources: [src-27]
+  excel_id: E064
+- code: lying-leg-curl
+  name: Leg curl sdraiato
+  family: knee-flexion
+  family_rank: 2
+  equipment: machine
+  kind: isolation
+  stretch: medium
+  confidence: limited
+  muscles:
+    hamstrings: P
+    gastrocnemius: S
+  sources: [src-27]
+  excel_id: E065
+- code: romanian-deadlift
+  name: Stacco rumeno (manubri o bilanciere)
+  family: hip-hinge
+  family_rank: 1
+  equipment: free-weight
+  kind: compound
+  stretch: high
+  confidence: opinion
+  muscles:
+    hamstrings: P
+    glute-max: P
+    adductors: S
+    erectors: S
+    forearm-flexors: S
+    obliques: S
+    stabilizers: S
+  tags:
+  - tag: neck-caution
+  sources: [src-28]
+  excel_id: E066
+- code: hip-thrust-machine
+  name: Hip thrust alla macchina o al multipower
+  family: hip-thrust
+  family_rank: 1
+  equipment: machine
+  kind: compound
+  stretch: low
+  confidence: limited
+  muscles:
+    glute-max: P
+    quads: S
+    adductors: S
+  sources: [src-31]
+  excel_id: E067
+- code: hip-abduction
+  name: Abduzione dell'anca alla macchina
+  family: abduction
+  family_rank: 1
+  equipment: machine
+  kind: isolation
+  stretch: medium
+  confidence: limited
+  muscles:
+    glute-med: P
+  sources: [src-31]
+  excel_id: E068
+- code: hip-adduction
+  name: Adduzione dell'anca alla macchina
+  family: adduction
+  family_rank: 1
+  equipment: machine
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    adductors: P
+  sources: [src-28]
+  excel_id: E069
+- code: calf-raise-straight
+  name: Calf raise alla pressa o in piedi, gambe tese
+  family: calf-straight
+  family_rank: 1
+  equipment: machine
+  kind: isolation
+  stretch: high
+  confidence: limited
+  muscles:
+    gastrocnemius: P
+    soleus: P
+  tags:
+  - tag: neck-tip
+    note: Alla pressa OK; in piedi attenzione
+  sources: [src-32]
+  excel_id: E070
+- code: seated-calf-raise
+  name: Calf raise da seduti
+  family: calf-bent
+  family_rank: 1
+  equipment: machine
+  kind: isolation
+  stretch: high
+  confidence: limited
+  muscles:
+    soleus: P
+  sources: [src-32]
+  excel_id: E071
+- code: kneeling-cable-crunch
+  name: Crunch al cavo in ginocchio (corda)
+  family: crunch
+  family_rank: 1
+  equipment: cable
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    rectus-abdominis: P
+    obliques: S
+  tags:
+  - tag: neck-tip
+    note: Se la testa segue il busto
+  sources: [src-34, src-33]
+  excel_id: E072
+- code: seated-cable-crunch
+  name: Crunch al cavo seduto alla lat machine, di spalle
+  family: crunch
+  family_rank: 2
+  equipment: cable
+  kind: isolation
+  stretch: high
+  confidence: opinion
+  muscles:
+    rectus-abdominis: P
+    obliques: S
+  sources: [src-33]
+  excel_id: E073
+- code: machine-crunch
+  name: Crunch alla macchina
+  family: crunch
+  family_rank: 3
+  equipment: machine
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    rectus-abdominis: P
+    obliques: S
+  sources: [src-48]
+  excel_id: E074
+- code: floor-crunch
+  name: Crunch a terra o curl-up
+  family: crunch
+  family_rank: 4
+  equipment: bodyweight
+  kind: isolation
+  stretch: low
+  confidence: opinion
+  muscles:
+    rectus-abdominis: P
+    obliques: S
+  tags:
+  - tag: neck-avoid
+    note: 'Giudizio della ricerca: evitare, al più attenzione'
+  sources: [src-48]
+  notes: Da evitare per il collo
+  excel_id: E077
+- code: bench-reverse-crunch
+  name: Reverse crunch su panca piana o declinata
+  family: reverse-crunch
+  family_rank: 1
+  equipment: bodyweight
+  kind: isolation
+  stretch: medium
+  confidence: opinion
+  muscles:
+    rectus-abdominis: P
+    obliques: S
+    hip-flexors: S
+  tags:
+  - tag: neck-tip
+    note: Testa appoggiata
+  sources: [src-48, src-33]
+  excel_id: E075
+- code: leg-raise
+  name: Leg raise alla sedia romana o appesi, bacino arrotolato
+  family: reverse-crunch
+  family_rank: 2
+  equipment: bodyweight
+  equipment_detail: Corpo libero o M
+  kind: isolation
+  stretch: medium
+  confidence: limited
+  muscles:
+    rectus-abdominis: P
+    obliques: S
+    hip-flexors: S
+    forearm-flexors: S
+  tags:
+  - tag: neck-caution
+    note: Alla sedia romana OK; appesi attenzione
+  sources: [src-33]
+  notes: Flessori dell'avambraccio solo nella versione appesi
+  excel_id: E076
+- code: side-plank
+  name: Side plank
+  family: anti-rotation
+  family_rank: 1
+  equipment: bodyweight
+  kind: isolation
+  stretch: low
+  confidence: limited
+  muscles:
+    obliques: P
+    stabilizers: P
+  tags:
+  - tag: neck-caution
+  sources: [src-35]
+  excel_id: E078
+- code: pallof-press
+  name: Pallof press al cavo
+  family: anti-rotation
+  family_rank: 2
+  equipment: cable
+  kind: isolation
+  stretch: low
+  confidence: opinion
+  muscles:
+    obliques: P
+    stabilizers: P
+  sources: [src-35]
+  excel_id: E079
+- code: bird-dog
+  name: Bird dog
+  family: core-stability
+  family_rank: 1
+  equipment: bodyweight
+  kind: isolation
+  stretch: low
+  confidence: opinion
+  muscles:
+    stabilizers: P
+    erectors: S
+    glute-max: S
+  sources: [src-35]
+  excel_id: E080
+- code: dead-bug
+  name: Dead bug
+  family: core-stability
+  family_rank: 2
+  equipment: bodyweight
+  kind: isolation
+  stretch: low
+  confidence: opinion
+  muscles:
+    stabilizers: P
+    rectus-abdominis: S
+    hip-flexors: S
+  tags:
+  - tag: neck-tip
+    note: Testa a terra
+  sources: [src-35]
+  excel_id: E081
